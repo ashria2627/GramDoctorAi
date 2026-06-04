@@ -1,0 +1,774 @@
+diagnosis,triage_color
+abdominal aortic aneurysm,red
+abdominal hernia,orange
+abscess of nose,orange
+abscess of the lung,orange
+abscess of the pharynx,orange
+acanthosis nigricans,orange
+acariasis,orange
+achalasia,orange
+acne,green
+actinic keratosis,orange
+acute bronchiolitis,orange
+acute bronchitis,orange
+acute bronchospasm,orange
+acute fatty liver of pregnancy (aflp),red
+acute glaucoma,red
+acute kidney injury,red
+acute otitis media,orange
+acute pancreatitis,red
+acute respiratory distress syndrome (ards),red
+acute sinusitis,orange
+acute stress reaction,orange
+adhesive capsulitis of the shoulder,orange
+adjustment reaction,orange
+adrenal adenoma,orange
+adrenal cancer,orange
+alcohol abuse,orange
+alcohol intoxication,orange
+alcohol withdrawal,red
+alcoholic liver disease,orange
+allergy,green
+allergy to animals,green
+alopecia,green
+alzheimer disease,orange
+amblyopia,orange
+amyloidosis,orange
+amyotrophic lateral sclerosis (als),orange
+anal fissure,orange
+anal fistula,orange
+anemia,orange
+anemia due to chronic kidney disease,orange
+anemia due to malignancy,orange
+anemia of chronic disease,orange
+angina,red
+ankylosing spondylitis,orange
+anxiety,orange
+aortic valve disease,orange
+aphakia,orange
+aphthous ulcer,green
+aplastic anemia,orange
+appendicitis,red
+arrhythmia,orange
+arthritis of the hip,orange
+ascending cholangitis,red
+asperger syndrome,orange
+aspergillosis,orange
+asthma,orange
+astigmatism,orange
+atelectasis,orange
+athlete's foot,green
+atonic bladder,orange
+atrial fibrillation,orange
+atrial flutter,orange
+atrophic skin condition,orange
+atrophic vaginitis,orange
+atrophy of the corpus cavernosum,orange
+attention deficit hyperactivity disorder (adhd),orange
+autism,orange
+autonomic nervous system disorder,orange
+avascular necrosis,orange
+balanitis,orange
+bell palsy,orange
+benign kidney cyst,orange
+benign paroxysmal positional vertical (bppv),green
+benign prostatic hyperplasia (bph),orange
+benign vaginal discharge (leukorrhea),green
+bipolar disorder,orange
+birth trauma,orange
+bladder cancer,orange
+bladder disorder,orange
+bladder obstruction,red
+blepharitis,green
+blepharospasm,orange
+bone cancer,orange
+bone disorder,orange
+bone spur of the calcaneous,orange
+brachial neuritis,orange
+brain cancer,orange
+breast cancer,orange
+breast cyst,orange
+breast infection (mastitis),orange
+broken tooth,orange
+bunion,orange
+burn,orange
+bursitis,orange
+callus,green
+carbon monoxide poisoning,red
+carcinoid syndrome,orange
+cardiac arrest,orange
+cardiomyopathy,orange
+carpal tunnel syndrome,orange
+cat scratch disease,orange
+cataract,orange
+celiac disease,orange
+cellulitis or abscess of mouth,orange
+central atherosclerosis,orange
+central retinal artery or vein occlusion,orange
+cerebral edema,orange
+cerebral palsy,orange
+cervical cancer,orange
+cervical disorder,orange
+cervicitis,orange
+chalazion,orange
+chickenpox,orange
+chlamydia,orange
+cholecystitis,orange
+choledocholithiasis,orange
+cholesteatoma,orange
+chondromalacia of the patella,orange
+chorioretinitis,orange
+chronic back pain,orange
+chronic constipation,orange
+chronic glaucoma,orange
+chronic inflammatory demyelinating polyneuropathy (cidp),orange
+chronic kidney disease,orange
+chronic knee pain,orange
+chronic obstructive pulmonary disease (copd),orange
+chronic otitis media,orange
+chronic pain disorder,orange
+chronic pancreatitis,orange
+chronic rheumatic fever,orange
+chronic sinusitis,orange
+chronic ulcer,orange
+cirrhosis,orange
+coagulation (bleeding) disorder,orange
+cold sore,orange
+colonic polyp,orange
+colorectal cancer,orange
+common cold,green
+complex regional pain syndrome,orange
+concussion,orange
+conduct disorder,orange
+conductive hearing loss,orange
+congenital heart defect,orange
+congenital malformation syndrome,orange
+conjunctivitis,orange
+conjunctivitis due to allergy,green
+conjunctivitis due to bacteria,orange
+conjunctivitis due to virus,orange
+connective tissue disorder,orange
+contact dermatitis,green
+conversion disorder,orange
+cornea infection,orange
+corneal abrasion,orange
+corneal disorder,orange
+coronary atherosclerosis,orange
+cranial nerve palsy,orange
+crohn disease,orange
+croup,orange
+crushing injury,orange
+cryptococcosis,orange
+cryptorchidism,orange
+cushing syndrome,orange
+cyst of the eyelid,orange
+cystic fibrosis,orange
+cysticercosis,orange
+cystitis,orange
+de quervain disease,orange
+decubitus ulcer,orange
+deep vein thrombosis (dvt),orange
+degenerative disc disease,orange
+delirium,orange
+dementia,orange
+dengue fever,orange
+dental caries,orange
+depression,orange
+dermatitis due to sun exposure,green
+developmental disability,orange
+deviated nasal septum,orange
+diabetes,orange
+diabetes insipidus,orange
+diabetic ketoacidosis,red
+diabetic kidney disease,orange
+diabetic peripheral neuropathy,orange
+diabetic retinopathy,orange
+diaper rash,orange
+dislocation of the ankle,orange
+dislocation of the elbow,orange
+dislocation of the finger,orange
+dislocation of the foot,orange
+dislocation of the hip,orange
+dislocation of the knee,orange
+dislocation of the patella,orange
+dislocation of the shoulder,orange
+dislocation of the vertebra,red
+dislocation of the wrist,orange
+dissociative disorder,orange
+diverticulitis,orange
+diverticulosis,orange
+down syndrome,orange
+drug abuse,orange
+drug abuse (barbiturates),orange
+drug abuse (cocaine),orange
+drug abuse (methamphetamine),orange
+drug abuse (opioids),orange
+drug poisoning due to medication,red
+drug reaction,orange
+drug withdrawal,orange
+dry eye of unknown cause,green
+dumping syndrome,orange
+dyshidrosis,orange
+dysthymic disorder,orange
+ear drum damage,orange
+ear wax impaction,orange
+eating disorder,orange
+ectopic pregnancy,red
+ectropion,orange
+eczema,green
+edward syndrome,orange
+emphysema,orange
+empyema,orange
+encephalitis,red
+endocarditis,orange
+endometrial cancer,orange
+endometrial hyperplasia,orange
+endometriosis,orange
+endophthalmitis,orange
+envenomation from spider or animal bite,orange
+ependymoma,orange
+epididymitis,orange
+epidural hemorrhage,red
+epilepsy,orange
+erectile dysfunction,orange
+erythema multiforme,orange
+esophageal cancer,orange
+esophageal varices,orange
+esophagitis,orange
+essential tremor,orange
+eustachian tube dysfunction (ear disorder),green
+extrapyramidal effect of drugs,orange
+eye alignment disorder,orange
+factitious disorder,orange
+female genitalia infection,orange
+female infertility of unknown cause,orange
+fetal alcohol syndrome,orange
+fibroadenoma,orange
+fibrocystic breast disease,orange
+fibromyalgia,orange
+flat feet,orange
+floaters,orange
+flu,orange
+fluid overload,orange
+folate deficiency,orange
+food allergy,green
+foreign body in the ear,orange
+foreign body in the eye,orange
+foreign body in the gastrointestinal tract,orange
+foreign body in the nose,orange
+foreign body in the throat,orange
+foreign body in the vagina,orange
+fracture of the ankle,orange
+fracture of the arm,orange
+fracture of the facial bones,orange
+fracture of the finger,orange
+fracture of the foot,orange
+fracture of the hand,orange
+fracture of the jaw,orange
+fracture of the leg,orange
+fracture of the neck,orange
+fracture of the patella,orange
+fracture of the pelvis,red
+fracture of the rib,orange
+fracture of the shoulder,orange
+fracture of the skull,red
+fracture of the vertebra,orange
+friedrich ataxia,orange
+frostbite,orange
+fungal infection of the hair,green
+fungal infection of the skin,green
+g6pd enzyme deficiency,orange
+galactorrhea of unknown cause,orange
+gallstone,orange
+ganglion cyst,orange
+gas gangrene,orange
+gastritis,orange
+gastroduodenal ulcer,orange
+gastroesophageal reflux disease (gerd),orange
+gastrointestinal hemorrhage,red
+gastroparesis,orange
+genital herpes,orange
+gestational diabetes,orange
+glaucoma,orange
+glucocorticoid deficiency,orange
+goiter,orange
+gonorrhea,orange
+gout,orange
+granuloma inguinale,orange
+graves disease,orange
+guillain barre syndrome,orange
+gum disease,orange
+gynecomastia,orange
+hammer toe,orange
+hashimoto thyroiditis,orange
+head and neck cancer,orange
+head injury,orange
+headache after lumbar puncture,green
+heart attack,red
+heart block,orange
+heart contusion,orange
+heart failure,orange
+heat exhaustion,orange
+heat stroke,red
+hemangioma,orange
+hemarthrosis,orange
+hematoma,orange
+hemiplegia,orange
+hemochromatosis,orange
+hemolytic anemia,orange
+hemophilia,orange
+hemorrhoids,green
+hepatic encephalopathy,orange
+hepatitis due to a toxin,orange
+herniated disk,orange
+herpangina,orange
+hiatal hernia,orange
+hidradenitis suppurativa,orange
+high blood pressure,orange
+hirschsprung disease,orange
+hirsutism,orange
+histoplasmosis,orange
+hormone disorder,orange
+hpv,orange
+human immunodeficiency virus infection (hiv),orange
+huntington disease,orange
+hydatidiform mole,orange
+hydrocele of the testicle,orange
+hydrocephalus,orange
+hydronephrosis,orange
+hypercalcemia,orange
+hypercholesterolemia,orange
+hyperemesis gravidarum,orange
+hypergammaglobulinemia,orange
+hyperhidrosis,orange
+hyperkalemia,orange
+hyperlipidemia,orange
+hypernatremia,orange
+hyperopia,orange
+hyperosmotic hyperketotic state,orange
+hypertension of pregnancy,orange
+hypertensive heart disease,orange
+hypertrophic obstructive cardiomyopathy (hocm),orange
+hypocalcemia,orange
+hypoglycemia,red
+hypokalemia,orange
+hyponatremia,orange
+hypothermia,orange
+hypothyroidism,orange
+hypovolemia,orange
+idiopathic absence of menstruation,orange
+idiopathic excessive menstruation,orange
+idiopathic infrequent menstruation,orange
+idiopathic irregular menstrual cycle,orange
+idiopathic nonmenstrual bleeding,orange
+idiopathic painful menstruation,orange
+ileus,orange
+impetigo,orange
+impulse control disorder,orange
+indigestion,orange
+induced abortion,orange
+infection of open wound,orange
+infectious gastroenteritis,orange
+ingrown toe nail,green
+inguinal hernia,orange
+injury of the ankle,orange
+injury to internal organ,orange
+injury to the abdomen,orange
+injury to the arm,orange
+injury to the face,orange
+injury to the finger,orange
+injury to the hand,orange
+injury to the hip,orange
+injury to the knee,orange
+injury to the leg,orange
+injury to the shoulder,orange
+injury to the spinal cord,red
+injury to the trunk,orange
+insect bite,green
+insulin overdose,orange
+interstitial lung disease,orange
+intertrigo (skin condition),orange
+intestinal cancer,orange
+intestinal disease,orange
+intestinal malabsorption,orange
+intestinal obstruction,red
+intracerebral hemorrhage,red
+intracranial abscess,orange
+intracranial hemorrhage,red
+intussusception,orange
+iridocyclitis,orange
+iron deficiency anemia,orange
+irritable bowel syndrome,orange
+ischemia of the bowel,orange
+ischemic heart disease,orange
+itching of unknown cause,orange
+jaw disorder,orange
+joint effusion,orange
+juvenile rheumatoid arthritis,orange
+kaposi sarcoma,orange
+kidney cancer,orange
+kidney disease due to longstanding hypertension,orange
+kidney failure,orange
+kidney stone,orange
+knee ligament or meniscus tear,orange
+labyrinthitis,orange
+lactose intolerance,orange
+laryngitis,orange
+lateral epicondylitis (tennis elbow),orange
+leukemia,orange
+lewy body dementia,orange
+lice,green
+lichen planus,orange
+lichen simplex,orange
+lipoma,orange
+liver cancer,orange
+liver disease,orange
+lumbago,orange
+lung cancer,orange
+lung contusion,orange
+lyme disease,orange
+lymphadenitis,orange
+lymphangitis,orange
+lymphedema,orange
+lymphogranuloma venereum,orange
+lymphoma,orange
+macular degeneration,orange
+magnesium deficiency,orange
+malaria,red
+male genitalia infection,orange
+malignant hypertension,orange
+marijuana abuse,orange
+mastectomy,orange
+mastoiditis,orange
+meckel diverticulum,orange
+melanoma,orange
+meniere disease,orange
+meningioma,orange
+meningitis,red
+menopause,orange
+metabolic disorder,orange
+metastatic cancer,orange
+migraine,orange
+missed abortion,orange
+mitral valve disease,orange
+mittelschmerz,orange
+molluscum contagiosum,green
+mononeuritis,orange
+mononucleosis,orange
+moyamoya disease,orange
+mucositis,orange
+multiple myeloma,orange
+multiple sclerosis,orange
+mumps,orange
+muscle spasm,orange
+muscular dystrophy,orange
+myasthenia gravis,orange
+myelodysplastic syndrome,orange
+myocarditis,red
+myoclonus,orange
+myopia,orange
+myositis,orange
+narcolepsy,orange
+nasal polyp,green
+necrotizing fasciitis,orange
+neonatal jaundice,orange
+nerve impingement near the shoulder,orange
+neuralgia,orange
+neurofibromatosis,orange
+neuropathy due to drugs,orange
+neurosis,orange
+nonalcoholic liver disease (nash),orange
+noninfectious gastroenteritis,orange
+normal pressure hydrocephalus,orange
+nose disorder,green
+obesity,orange
+obsessive compulsive disorder (ocd),orange
+obstructive sleep apnea (osa),orange
+omphalitis,orange
+onychomycosis,orange
+open wound due to trauma,orange
+open wound from surgical incision,orange
+open wound of the abdomen,orange
+open wound of the arm,orange
+open wound of the back,orange
+open wound of the cheek,orange
+open wound of the chest,orange
+open wound of the ear,orange
+open wound of the eye,red
+open wound of the face,orange
+open wound of the finger,orange
+open wound of the foot,orange
+open wound of the hand,orange
+open wound of the head,orange
+open wound of the jaw,orange
+open wound of the knee,orange
+open wound of the lip,orange
+open wound of the mouth,orange
+open wound of the neck,orange
+open wound of the nose,orange
+open wound of the shoulder,orange
+oppositional disorder,orange
+optic neuritis,orange
+oral leukoplakia,orange
+oral mucosal lesion,orange
+oral thrush (yeast infection),orange
+orbital cellulitis,orange
+orthostatic hypotension,orange
+osteoarthritis,orange
+osteochondroma,orange
+osteochondrosis,orange
+osteomyelitis,orange
+osteoporosis,orange
+otitis externa (swimmer's ear),green
+otitis media,orange
+otosclerosis,orange
+ovarian cancer,orange
+ovarian cyst,orange
+ovarian torsion,red
+overflow incontinence,orange
+pain after an operation,orange
+pain disorder affecting the neck,orange
+pancreatic cancer,orange
+panic attack,orange
+panic disorder,orange
+parasitic disease,orange
+parathyroid adenoma,orange
+parkinson disease,orange
+paronychia,orange
+paroxysmal supraventricular tachycardia,orange
+paroxysmal ventricular tachycardia,orange
+pelvic fistula,orange
+pelvic inflammatory disease,orange
+pelvic organ prolapse,orange
+pemphigus,orange
+pericarditis,red
+peripheral arterial disease,orange
+peripheral arterial embolism,red
+peripheral nerve disorder,orange
+perirectal infection,orange
+peritonitis,red
+peritonsillar abscess,orange
+persistent vomiting of unknown cause,orange
+personality disorder,orange
+peyronie disease,orange
+pharyngitis,orange
+phimosis,orange
+pilonidal cyst,orange
+pinguecula,orange
+pinworm infection,green
+pituitary adenoma,orange
+pituitary disorder,orange
+pityriasis rosea,orange
+placenta previa,orange
+placental abruption,red
+plantar fasciitis,orange
+pleural effusion,orange
+pneumoconiosis,orange
+pneumonia,orange
+pneumothorax,red
+poisoning due to analgesics,red
+poisoning due to anticonvulsants,red
+poisoning due to antidepressants,red
+poisoning due to antihypertensives,red
+poisoning due to antimicrobial drugs,red
+poisoning due to antipsychotics,red
+poisoning due to ethylene glycol,red
+poisoning due to gas,red
+poisoning due to opioids,red
+poisoning due to sedatives,red
+polycystic kidney disease,orange
+polycystic ovarian syndrome (pcos),orange
+polycythemia vera,orange
+polymyalgia rheumatica,orange
+post-traumatic stress disorder (ptsd),orange
+postoperative infection,orange
+postpartum depression,orange
+preeclampsia,orange
+pregnancy,orange
+premature atrial contractions (pacs),orange
+premature ovarian failure,orange
+premature rupture of amniotic membrane,orange
+premature ventricular contractions (pvcs),orange
+premenstrual tension syndrome,orange
+presbyacusis,orange
+presbyopia,orange
+priapism,orange
+primary immunodeficiency,orange
+primary insomnia,orange
+primary kidney disease,orange
+primary thrombocythemia,orange
+problem during pregnancy,orange
+prostate cancer,orange
+prostatitis,orange
+protein deficiency,orange
+pseudohypoparathyroidism,orange
+pseudotumor cerebri,orange
+psoriasis,orange
+psychosexual disorder,orange
+psychotic disorder,orange
+pterygium,orange
+pulmonary congestion,orange
+pulmonary embolism,red
+pulmonary eosinophilia,orange
+pulmonary fibrosis,orange
+pulmonary hypertension,orange
+pulmonic valve disease,orange
+pyelonephritis,orange
+pyloric stenosis,orange
+pyogenic skin infection,orange
+raynaud disease,orange
+reactive arthritis,orange
+rectal disorder,orange
+restless leg syndrome,orange
+retinal detachment,red
+retinopathy due to high blood pressure,orange
+rhabdomyolysis,orange
+rheumatic fever,orange
+rheumatoid arthritis,orange
+rocky mountain spotted fever,orange
+rosacea,orange
+rotator cuff injury,orange
+salivary gland disorder,orange
+sarcoidosis,orange
+scabies,orange
+scar,orange
+scarlet fever,orange
+schizophrenia,orange
+sciatica,orange
+scleritis,orange
+scleroderma,orange
+scoliosis,orange
+scurvy,orange
+seasonal allergies (hay fever),green
+sebaceous cyst,green
+seborrheic dermatitis,green
+seborrheic keratosis,orange
+sensorineural hearing loss,orange
+sepsis,red
+septic arthritis,orange
+shingles (herpes zoster),orange
+sialoadenitis,orange
+sick sinus syndrome,orange
+sickle cell anemia,orange
+sickle cell crisis,orange
+sinus bradycardia,orange
+sjogren syndrome,orange
+skin cancer,orange
+skin disorder,orange
+skin pigmentation disorder,green
+skin polyp,green
+smoking or tobacco addiction,orange
+social phobia,orange
+soft tissue sarcoma,orange
+somatization disorder,orange
+spermatocele,orange
+spherocytosis,orange
+spina bifida,orange
+spinal stenosis,orange
+spinocerebellar ataxia,orange
+spondylitis,orange
+spondylolisthesis,orange
+spondylosis,orange
+spontaneous abortion,orange
+sporotrichosis,orange
+sprain or strain,orange
+stenosis of the tear duct,orange
+stomach cancer,orange
+strep throat,orange
+stress incontinence,orange
+stricture of the esophagus,orange
+stroke,red
+stye,green
+subacute thyroiditis,orange
+subarachnoid hemorrhage,red
+subconjunctival hemorrhage,red
+subdural hemorrhage,red
+substance-related mental disorder,orange
+syndrome of inappropriate secretion of adh (siadh),orange
+syphilis,orange
+syringomyelia,orange
+systemic lupus erythematosis (sle),orange
+teething syndrome,orange
+temporary or benign blood in urine,orange
+temporomandibular joint disorder,orange
+tendinitis,orange
+tension headache,orange
+testicular cancer,orange
+testicular disorder,orange
+testicular torsion,red
+thalassemia,orange
+thoracic aortic aneurysm,orange
+thoracic outlet syndrome,orange
+threatened pregnancy,orange
+thrombocytopenia,orange
+thrombophlebitis,orange
+thyroid cancer,orange
+thyroid disease,orange
+thyroid nodule,orange
+tic (movement) disorder,orange
+tietze syndrome,orange
+tinnitus of unknown cause,orange
+tonsillar hypertrophy,orange
+tonsillitis,orange
+tooth abscess,orange
+tooth disorder,orange
+torticollis,orange
+tourette syndrome,orange
+toxic multinodular goiter,orange
+toxoplasmosis,orange
+tracheitis,orange
+transient ischemic attack,red
+trichiasis,orange
+trichinosis,orange
+trichomonas infection,orange
+tricuspid valve disease,orange
+trigeminal neuralgia,orange
+trigger finger (finger disorder),orange
+tuberculosis,orange
+tuberous sclerosis,orange
+turner syndrome,orange
+typhoid fever,red
+ulcerative colitis,orange
+urethral disorder,orange
+urethral stricture,orange
+urethral valves,orange
+urethritis,orange
+urge incontinence,orange
+urinary tract infection,orange
+urinary tract obstruction,red
+uterine atony,orange
+uterine cancer,orange
+uterine fibroids,orange
+uveitis,orange
+vacterl syndrome,orange
+vaginal cyst,orange
+vaginal yeast infection,orange
+vaginismus,orange
+vaginitis,green
+valley fever,orange
+varicocele of the testicles,orange
+varicose veins,orange
+vasculitis,orange
+venous insufficiency,orange
+vertebrobasilar insufficiency,orange
+vesicoureteral reflux,orange
+viral exanthem,orange
+viral hepatitis,orange
+viral warts,green
+vitamin a deficiency,orange
+vitamin b12 deficiency,orange
+vitamin d deficiency,orange
+vitreous degeneration,orange
+vitreous hemorrhage,red
+vocal cord polyp,orange
+volvulus,orange
+von willebrand disease,orange
+vulvar cancer,orange
+vulvar disorder,orange
+vulvodynia,green
+wernicke korsakoff syndrome,orange
+white blood cell disease,orange
+whooping cough,orange
+wilson disease,orange
+yeast infection,green
+zenker diverticulum,orange
