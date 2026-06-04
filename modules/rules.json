@@ -1,0 +1,216 @@
+{
+  "red_flag_rules": [
+    {
+      "rule_id": 1,
+      "name": "Heart Attack",
+      "conditions": ["sharp chest pain", "sweating", "shortness of breath"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 2,
+      "name": "Stroke",
+      "conditions": ["slurring words OR blindness OR diminished vision", "headache", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 3,
+      "name": "Pregnancy Emergency",
+      "conditions": ["ispregnant", "spotting or bleeding during pregnancy OR headache OR abnormal involuntary movements"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 4,
+      "name": "Dengue Warning",
+      "conditions": ["fever", "vomiting", "sharp abdominal pain", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 5,
+      "name": "Child Convulsion",
+      "conditions": ["age under 13", "seizures OR abnormal involuntary movements"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 6,
+      "name": "Severe Bleeding",
+      "conditions": ["blood in stool OR vomiting blood OR rectal bleeding", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 7,
+      "name": "Cardiac Arrhythmia",
+      "conditions": ["irregular heartbeat", "weakness", "fainting"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 8,
+      "name": "Silent Heart Attack (Female)",
+      "conditions": ["sex = female", "nausea", "sweating", "arm pain", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 9,
+      "name": "Ectopic Pregnancy",
+      "conditions": ["sex = female", "sharp abdominal pain", "dizziness", "fainting"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 10,
+      "name": "Appendicitis",
+      "conditions": ["sharp abdominal pain", "fever", "vomiting", "decreased appetite"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 11,
+      "name": "Pulmonary Embolism",
+      "conditions": ["shortness of breath", "sharp chest pain", "leg swelling"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 12,
+      "name": "Testicular Torsion",
+      "conditions": ["pain in testicles", "vomiting", "sweating"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 13,
+      "name": "Aortic Dissection",
+      "conditions": ["back pain", "sharp chest pain", "sweating"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 14,
+      "name": "Meningitis",
+      "conditions": ["headache", "dizziness", "nausea", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 15,
+      "name": "Epiglottitis",
+      "conditions": ["difficulty in swallowing", "hoarse voice"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 16,
+      "name": "Cauda Equina",
+      "conditions": ["back pain", "involuntary urination", "loss of sensation"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 17,
+      "name": "Child Intussusception",
+      "conditions": ["age under 13", "depressive or psychotic symptoms", "blood in stool", "vomiting"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 18,
+      "name": "Air Embolism",
+      "conditions": ["blindness", "sharp chest pain", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 19,
+      "name": "Silent Stroke",
+      "note": "vision loss mistaken for migraine",
+      "conditions": ["diminished vision", "headache"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 20,
+      "name": "Abdominal Sepsis or Kala azar",
+      "conditions": ["fever", "weakness", "stomach bloating", "age over 5"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 21,
+      "name": "Acute Psychosis With Neurological Symptoms",
+      "conditions": ["delusions or hallucinations", "no sweating", "headache", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 22,
+      "name": "Organophosphate poisoning",
+      "conditions": ["sweating", "vomiting", "seizures"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 23,
+      "name": "Neonatal tetanus",
+      "conditions": ["age under 1", "seizures", "difficulty in swallowing"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 24,
+      "name": "Neuromuscular Airway Compromise or Snake bite",
+      "conditions": ["sleepiness", "difficulty in swallowing", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 25,
+      "name": "Severe Preeclampsia",
+      "conditions": ["ispregnant", "headache", "leg swelling", "spots or clouds in vision"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 26,
+      "name": "Cholera  Dehydration",
+      "conditions": ["diarrhea", "vomiting", "weakness", "dizziness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 27,
+      "name": " Dengue Shock Warning",
+      "conditions": ["no fever", "weakness", "sweating", "dizziness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 28,
+      "name": " Diabetic foot",
+      "conditions": ["age over 50", "no foot or toe pain", "skin swelling", "loss of sensation"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 29,
+      "name": "Hip fracture in Elderly",
+      "conditions": ["age over 60", "leg pain", "problems with movement", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 30,
+      "name": " Silent pneumonia in Elderly",
+      "conditions": ["age over 60", "no fever", "shortness of breath", "weakness", "decreased appetite"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 31,
+      "name": "Urinary Retention Emergency",
+      "conditions": ["sex = male", "age over 50", "retention of urine", "lower abdominal pain"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 32,
+      "name": "Testicular cancer",
+      "conditions": ["sex = male", "swelling of scrotum", "back pain", "no pain in testicles"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 33,
+      "name": " Hernia gone bad",
+      "conditions": ["sex = male", "sharp abdominal pain", "vomiting", "constipation"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 34,
+      "name": "Leptospirosis (flood water exposure)",
+      "conditions": ["fever", "leg pain", "jaundice"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 35,
+      "name": "Eye injury from crop/tool",
+      "conditions": ["pain in eye", "eye redness", "diminished vision"],
+      "logic": "AND"
+    }
+
+  ]
+}
