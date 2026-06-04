@@ -111,9 +111,106 @@
     {
       "rule_id": 19,
       "name": "Silent Stroke",
-      "note": "Fupu case — vision loss mistaken for migraine",
+      "note": "vision loss mistaken for migraine",
       "conditions": ["diminished vision", "headache"],
       "logic": "AND"
+    },
+    {
+      "rule_id": 20,
+      "name": "Abdominal Sepsis or Kala azar",
+      "conditions": ["fever", "weakness", "stomach bloating", "age over 5"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 21,
+      "name": "Acute Psychosis With Neurological Symptoms",
+      "conditions": ["delusions or hallucinations", "no sweating", "headache", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 22,
+      "name": "Organophosphate poisoning",
+      "conditions": ["sweating", "vomiting", "seizures"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 23,
+      "name": "Neonatal tetanus",
+      "conditions": ["age under 1", "seizures", "difficulty in swallowing"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 24,
+      "name": "Neuromuscular Airway Compromise or Snake bite",
+      "conditions": ["sleepiness", "difficulty in swallowing", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 25,
+      "name": "Severe Preeclampsia",
+      "conditions": ["ispregnant", "headache", "leg swelling", "spots or clouds in vision"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 26,
+      "name": "Cholera  Dehydration",
+      "conditions": ["diarrhea", "vomiting", "weakness", "dizziness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 27,
+      "name": " Dengue Shock Warning",
+      "conditions": ["no fever", "weakness", "sweating", "dizziness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 28,
+      "name": " Diabetic foot",
+      "conditions": ["age over 50", "no foot or toe pain", "skin swelling", "loss of sensation"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 29,
+      "name": "Hip fracture in Elderly",
+      "conditions": ["age over 60", "leg pain", "problems with movement", "weakness"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 30,
+      "name": " Silent pneumonia in Elderly",
+      "conditions": ["age over 60", "no fever", "shortness of breath", "weakness", "decreased appetite"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 31,
+      "name": "Urinary Retention Emergency",
+      "conditions": ["sex = male", "age over 50", "retention of urine", "lower abdominal pain"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 32,
+      "name": "Testicular cancer",
+      "conditions": ["sex = male", "swelling of scrotum", "back pain", "no pain in testicles"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 33,
+      "name": " Hernia gone bad",
+      "conditions": ["sex = male", "sharp abdominal pain", "vomiting", "constipation"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 34,
+      "name": "Leptospirosis (flood water exposure)",
+      "conditions": ["fever", "leg pain", "jaundice"],
+      "logic": "AND"
+    },
+    {
+      "rule_id": 35,
+      "name": "Eye injury from crop/tool",
+      "conditions": ["pain in eye", "eye redness", "diminished vision"],
+      "logic": "AND"
     }
+
   ]
 }

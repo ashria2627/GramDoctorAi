@@ -16,8 +16,16 @@ y_test=test['triage-no']
 model.fit(X_train,y_train)
 
 y_pred = model.predict(x_test)
-# print(classification_report(y_test, y_pred, target_names=['green', 'orange', 'red']))
+#print(classification_report(y_test, y_pred, target_names=['green', 'orange', 'red']))
+# precision    recall  f1-score   support
 
+#        green       0.93      0.92      0.93      3881
+#       orange       0.92      0.92      0.92      3653
+#          red       0.94      0.96      0.95      2720
+
+#     accuracy                           0.93     10254
+#    macro avg       0.93      0.93      0.93     10254
+# weighted avg       0.93      0.93      0.93     10254
 with open('used_model.pkl', 'wb') as f:
     pickle.dump(model, f)
 feature_cols = list(X_train.columns)
