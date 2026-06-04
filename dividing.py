@@ -1,6 +1,7 @@
 import pandas as pd
 
-df = pd.read_csv('gramdoctor_dataset_v2.csv')
+df = pd.DataFrame(pd.read_csv('gramdoctor_dataset_v2.csv'))
+df = df.sample(frac=1, random_state=42).reset_index(drop=True)
 print("Total patients:", len(df))
 df['triage-no']=df['triage'].map({
     'green':0,
