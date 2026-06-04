@@ -16,7 +16,9 @@ y_test=test['triage-no']
 model.fit(X_train,y_train)
 
 y_pred = model.predict(x_test)
-print(classification_report(y_test, y_pred, target_names=['green', 'orange', 'red']))
+
+#print(classification_report(y_test, y_pred, target_names=['green', 'orange', 'red']))
+
 # precision    recall  f1-score   support
 
 #        green       0.93      0.92      0.93      3881
@@ -31,7 +33,9 @@ with open('used_model.pkl', 'wb') as f:
 feature_cols = list(X_train.columns)
 pickle.dump(feature_cols, open('feature_cols.pkl', 'wb'))
 # print("Model saved!")
-print(confusion_matrix(y_test,y_pred,labels=[0,1,2]))
+
+# print(confusion_matrix(y_test,y_pred,labels=[0,1,2]))
+
 
 important=model.feature_importances_
 cols=X_train.columns
@@ -44,4 +48,6 @@ common_symptoms=important_df.head(20)
 # print(common_symptoms)
 fig=px.pie(common_symptoms, values='importance', names='symptoms', title='Most Common Symptoms',color_discrete_sequence=px.colors.sequential.RdBu)
 
-#fig.show()
+
+fig.show()
+
