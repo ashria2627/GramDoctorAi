@@ -1,7 +1,7 @@
 import streamlit as st
 from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
-
+from modules.gemini_helper import generate_ai_response
 
 st.set_page_config(
     page_title="GramDoctor AI",
@@ -34,6 +34,8 @@ if "triage_result" not in st.session_state:
 if "symptoms" not in st.session_state:
     st.session_state.symptoms = None
 
+if "ai_response" not in st.session_state:
+    st.session_state.ai_response = None
 
 tab1, tab2 = st.tabs(["Patient Form", "Result"])
 
@@ -98,7 +100,7 @@ with tab1:
 
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
-
+        st.session_state.ai_response = None
         st.success("Triage completed. Open the Result tab.")
 
 
@@ -125,3 +127,17 @@ with tab2:
 
         st.write("Decision source:", result["source"])
         st.write("Reason:", result["message"])
+        st.divider()
+
+        if st.button("Generate AI Explanation", key="generate_ai_button"):
+            with st.spinner("Generating AI explanation..."):
+                ai_response = generate_ai_response(
+                    st.session_state.symptoms,
+                    st.session_state.triage_result
+                )
+
+            st.session_state.ai_response = ai_response
+
+        if st.session_state.ai_response:
+            st.subheader("AI Explanation and Referral Note")
+            st.write(st.session_state.ai_response)

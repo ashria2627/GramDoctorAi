@@ -27,6 +27,57 @@ def get_active_symptoms(symptoms):
     return ", ".join(active)
 
 
+def get_fallback_response(triage_result, error_message):
+    color = triage_result["color"]
+
+    if color == "green":
+        fallback = """
+Bangla Explanation:
+আপনার দেওয়া তথ্য অনুযায়ী লক্ষণগুলো আপাতত কম ঝুঁকিপূর্ণ মনে হচ্ছে। তবে এটি কোনো চূড়ান্ত রোগ নির্ণয় নয়।
+
+Immediate Advice:
+বাসায় বিশ্রাম নিন, পর্যাপ্ত পানি পান করুন এবং লক্ষণ পর্যবেক্ষণ করুন। লক্ষণ বাড়লে চিকিৎসকের পরামর্শ নিন।
+
+What Not To Do:
+লক্ষণ খারাপ হলে বা নতুন বিপদজনক লক্ষণ দেখা দিলে বাসায় অপেক্ষা করবেন না।
+
+Referral Note:
+Patient currently has low-risk symptoms based on triage input. Home observation advised with medical follow-up if symptoms worsen.
+"""
+
+    elif color == "orange":
+        fallback = """
+Bangla Explanation:
+আপনার লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে। এটি জরুরি অবস্থা নাও হতে পারে, তবে দেরি করা উচিত নয়।
+
+Immediate Advice:
+১–২ দিনের মধ্যে নিকটস্থ ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান।
+
+What Not To Do:
+নিজে নিজে অ্যান্টিবায়োটিক, ব্যথার ওষুধ বা ঝুঁকিপূর্ণ ওষুধ খাবেন না।
+
+Referral Note:
+Patient symptoms require non-emergency medical evaluation within 24–48 hours. Clinical review is advised.
+"""
+
+    else:
+        fallback = """
+Bangla Explanation:
+আপনার লক্ষণগুলোর মধ্যে জরুরি বিপদ সংকেত থাকতে পারে। দ্রুত চিকিৎসা নেওয়া প্রয়োজন।
+
+Immediate Advice:
+এখনই নিকটস্থ হাসপাতাল বা জরুরি বিভাগে যান।
+
+What Not To Do:
+বাসায় অপেক্ষা করবেন না এবং চিকিৎসা নিতে দেরি করবেন না।
+
+Referral Note:
+Patient has emergency-level triage features. Immediate emergency medical evaluation is recommended.
+"""
+
+    return fallback + f"\n\nTechnical note: Gemini unavailable. {error_message}"
+
+
 def generate_ai_response(symptoms, triage_result):
     client = get_gemini_client()
 
@@ -72,9 +123,13 @@ Referral Note:
 ...
 """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
 
-    return response.text
+        return response.text
+
+    except Exception as e:
+        return get_fallback_response(triage_result, str(e))
