@@ -1,5 +1,6 @@
 import streamlit as st
 from modules.model_backend import load_model_and_features, predict_triage
+from modules.BanglaSymptoms import extract_bangla_symptoms
 
 
 st.set_page_config(
@@ -38,6 +39,8 @@ tab1, tab2 = st.tabs(["Patient Form", "Result"])
 
 
 with tab1:
+        
+    
     st.header("Patient Information")
 
     age = st.number_input("Age", min_value=0, max_value=120, value=30)
@@ -51,7 +54,10 @@ with tab1:
         "Pregnancy Status",
         ["Not applicable", "No", "Yes"]
     )
-
+    bangla_text = st.text_area(
+    "Describe symptoms in Bangla",
+    placeholder="যেমন: আমার ৪ দিন ধরে জ্বর, বমি, পেট ব্যথা হচ্ছে"
+    )
     st.header("Symptoms")
 
     manual_fields = ["age", "sex-no", "ispregnant"]
@@ -84,7 +90,10 @@ with tab1:
 
         for symptom_name, value in selected_symptoms.items():
             symptoms[symptom_name] = value
+        bangla_extracted = extract_bangla_symptoms(bangla_text, feature_cols)
 
+        for symptom_name, value in bangla_extracted.items():
+            symptoms[symptom_name] = value
         result = predict_triage(symptoms, model, feature_cols)
 
         st.session_state.symptoms = symptoms
