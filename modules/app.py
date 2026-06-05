@@ -52,15 +52,22 @@ with tab1:
         ["Not applicable", "No", "Yes"]
     )
 
-    st.header("Symptoms")
+ st.header("Symptoms")
 
-    fever = st.checkbox("Fever")
-    chest_pain = st.checkbox("Chest pain")
-    weakness = st.checkbox("Weakness")
-    headache = st.checkbox("Headache")
-    sweating = st.checkbox("Sweating")
-    shortness_of_breath = st.checkbox("Shortness of breath")
-    vomiting = st.checkbox("Vomiting")
+manual_fields = ["age", "sex-no", "ispregnant"]
+
+symptom_features = [
+    col for col in feature_cols
+    if col not in manual_fields
+]
+
+selected_symptoms = {}
+
+cols = st.columns(3)
+
+for index, symptom in enumerate(symptom_features[:60]):
+    with cols[index % 3]:
+        selected_symptoms[symptom] = 1 if st.checkbox(symptom.title()) else 0
 
     if st.button("Check Triage", type="primary"):
         symptoms = {}
@@ -75,13 +82,8 @@ with tab1:
         else:
             symptoms["ispregnant"] = 2
 
-        symptoms["fever"] = 1 if fever else 0
-        symptoms["sharp chest pain"] = 1 if chest_pain else 0
-        symptoms["weakness"] = 1 if weakness else 0
-        symptoms["headache"] = 1 if headache else 0
-        symptoms["sweating"] = 1 if sweating else 0
-        symptoms["shortness of breath"] = 1 if shortness_of_breath else 0
-        symptoms["vomiting"] = 1 if vomiting else 0
+        for symptom_name, value in selected_symptoms.items():
+            symptoms[symptom_name] = value
 
         result = predict_triage(symptoms, model, feature_cols)
 
