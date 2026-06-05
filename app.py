@@ -1,13 +1,44 @@
 import streamlit as st
+
 from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
+
 
 st.set_page_config(
     page_title="GramDoctor AI",
     page_icon="🩺",
     layout="centered"
 )
+
+
+def show_triage_card(color):
+    if color == "green":
+        st.success("GREEN — Home care / observe")
+        st.markdown("""
+        **Meaning:** Current symptoms appear low risk based on triage input.  
+        **Recommended action:** Rest, drink fluids, and monitor symptoms.  
+        **Seek care if:** symptoms worsen, fever persists, or danger signs appear.
+        """)
+
+    elif color == "orange":
+        st.warning("ORANGE — Visit doctor within 1–2 days")
+        st.markdown("""
+        **Meaning:** Symptoms need medical review but may not be an immediate emergency.  
+        **Recommended action:** Visit a local doctor, clinic, or Upazila Health Complex within 24–48 hours.  
+        **Seek urgent care if:** weakness, dehydration, severe pain, or breathing difficulty worsens.
+        """)
+
+    elif color == "red":
+        st.error("RED — Emergency care now")
+        st.markdown("""
+        **Meaning:** Emergency red-flag symptoms may be present.  
+        **Recommended action:** Go to the nearest emergency department immediately.  
+        **Do not:** wait at home or delay medical care.
+        """)
+
+    else:
+        st.info(f"Unknown triage result: {color}")
 
 
 @st.cache_resource
@@ -28,6 +59,24 @@ st.warning(
 )
 
 
+st.sidebar.title("Demo Cases")
+
+st.sidebar.markdown("""
+**Green case:**  
+কাশি, নাক বন্ধ
+
+**Orange case:**  
+জ্বর, বমি, দুর্বলতা
+
+**Red case:**  
+বুকে তীব্র ব্যথা, ঘাম, শ্বাসকষ্ট
+""")
+
+st.sidebar.info(
+    "Use these examples during demo to show green, orange, and red triage outputs."
+)
+
+
 if "triage_result" not in st.session_state:
     st.session_state.triage_result = None
 
@@ -37,15 +86,19 @@ if "symptoms" not in st.session_state:
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = None
 
+
 tab1, tab2 = st.tabs(["Patient Form", "Result"])
 
 
 with tab1:
-        
-    
     st.header("Patient Information")
 
-    age = st.number_input("Age", min_value=0, max_value=120, value=30)
+    age = st.number_input(
+        "Age",
+        min_value=0,
+        max_value=120,
+        value=30
+    )
 
     sex = st.selectbox(
         "Sex",
@@ -56,10 +109,23 @@ with tab1:
         "Pregnancy Status",
         ["Not applicable", "No", "Yes"]
     )
+
     bangla_text = st.text_area(
-    "Describe symptoms in Bangla",
-    placeholder="যেমন: আমার ৪ দিন ধরে জ্বর, বমি, পেট ব্যথা হচ্ছে"
+        "Describe symptoms in Bangla",
+        placeholder="যেমন: আমার ৪ দিন ধরে জ্বর, বমি, পেট ব্যথা হচ্ছে"
     )
+
+    uploaded_file = st.file_uploader(
+        "Optional: Upload patient symptom note",
+        type=["txt"]
+    )
+
+    uploaded_text = ""
+
+    if uploaded_file is not None:
+        uploaded_text = uploaded_file.read().decode("utf-8")
+        st.text_area("Uploaded note preview", uploaded_text, height=150)
+
     st.header("Symptoms")
 
     manual_fields = ["age", "sex-no", "ispregnant"]
@@ -92,15 +158,19 @@ with tab1:
 
         for symptom_name, value in selected_symptoms.items():
             symptoms[symptom_name] = value
-        bangla_extracted = extract_bangla_symptoms(bangla_text, feature_cols)
+
+        combined_text = f"{bangla_text}\n{uploaded_text}"
+        bangla_extracted = extract_bangla_symptoms(combined_text, feature_cols)
 
         for symptom_name, value in bangla_extracted.items():
             symptoms[symptom_name] = value
+
         result = predict_triage(symptoms, model, feature_cols)
 
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
         st.session_state.ai_response = None
+
         st.success("Triage completed. Open the Result tab.")
 
 
@@ -109,24 +179,28 @@ with tab2:
 
     if st.session_state.triage_result is None:
         st.info("No result yet. Fill the patient form first.")
+
     else:
         result = st.session_state.triage_result
         color = result["color"]
 
-        if color == "green":
-            st.success("GREEN — Stay at home and observe")
-            st.write("Suggested action: rest, fluids, symptom monitoring, and follow-up if symptoms worsen.")
-
-        elif color == "orange":
-            st.warning("ORANGE — Visit doctor within 1–2 days")
-            st.write("Suggested action: visit a local doctor, clinic, or Upazila Health Complex within 24–48 hours.")
-
-        elif color == "red":
-            st.error("RED — Emergency visit now")
-            st.write("Suggested action: go to the nearest emergency department immediately.")
+        show_triage_card(color)
 
         st.write("Decision source:", result["source"])
         st.write("Reason:", result["message"])
+
+        active_symptoms = [
+            symptom for symptom, value in st.session_state.symptoms.items()
+            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+        ]
+
+        if active_symptoms:
+            st.subheader("Detected Symptoms")
+            for symptom in active_symptoms:
+                st.write(f"- {symptom}")
+        else:
+            st.info("No specific symptom detected from the current input.")
+
         st.divider()
 
         if st.button("Generate AI Explanation", key="generate_ai_button"):
@@ -140,4 +214,4 @@ with tab2:
 
         if st.session_state.ai_response:
             st.subheader("AI Explanation and Referral Note")
-            st.write(st.session_state.ai_response)
+            st.markdown(st.session_state.ai_response)
