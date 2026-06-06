@@ -2,8 +2,4 @@ streamlit
 pandas
 scikit-learn
 google-genai
-python-dotenv
-streamlit-mic-recorder
-reportlab
-xgboost
-joblib
+python-dotenvgit
