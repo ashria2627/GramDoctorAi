@@ -433,8 +433,4 @@ def extract_bangla_symptoms(text, feature_cols):
             extracted[feature_name] = 1
 
     return extracted
-    "চোখ হলুদ": "jaundice",
-    "শরীর হলুদ": "jaundice"
-
-
-}
+  
