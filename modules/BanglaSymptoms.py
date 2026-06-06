@@ -422,3 +422,14 @@ SYMPTOMS = {
 
 
 }
+def extract_bangla_symptoms(text, feature_cols):
+    extracted = {}
+
+    if not text:
+        return extracted
+
+    for bangla_word, feature_name in SYMPTOMS.items():
+        if bangla_word in text and feature_name in feature_cols:
+            extracted[feature_name] = 1
+
+    return extracted
