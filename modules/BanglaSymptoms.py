@@ -417,7 +417,10 @@ SYMPTOMS = {
 
     # Jaundice
     "জন্ডিস": "jaundice",
-    "নাক দিয়ে রক্ত পড়া": "nosebleed"
+    "চোখ হলুদ": "jaundice",
+    "শরীর হলুদ": "jaundice"
+
+
 }
 def extract_bangla_symptoms(text, feature_cols):
     extracted = {}

@@ -95,7 +95,7 @@ Rules:
 - Do not prescribe medicine.
 - Do not say the patient is safe if emergency symptoms are present.
 - Use simple Bangla for patient-facing explanation.
-- Referral note must be in professional English.
+- Referral note must be in professional English and Bangla.
 - Keep the response short, safe, and structured.
 
 Patient data:
@@ -119,7 +119,10 @@ Immediate Advice:
 What Not To Do:
 ...
 
-Referral Note:
+Referral Note Bangla:
+...
+
+Referral Note English:
 ...
 """
 
