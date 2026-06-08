@@ -3,7 +3,3 @@ pandas
 scikit-learn
 google-genai
 python-dotenvgit
-google-genai
-python-dotenv
-streamlit-mic-recorder
-reportlab
