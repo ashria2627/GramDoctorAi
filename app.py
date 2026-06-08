@@ -93,7 +93,7 @@ today the weather is good
         "pdf_filename": "gramdoctor_referral_note.pdf",
     },
     "বাংলা": {
-        "title": "গ্রামডক্টর AI",
+        "title": "GramDoctor AI",
         "subtitle": "বাংলা AI ট্রায়াজ ও রেফারেল সহকারী",
         "warning": (
             "এই টুল চূড়ান্ত রোগ নির্ণয় করে না। "
@@ -169,30 +169,37 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.success("GREEN — বাসায় পর্যবেক্ষণ")
             st.markdown("""
-            **অর্থ:** বর্তমান তথ্য অনুযায়ী লক্ষণগুলো কম ঝুঁকিপূর্ণ মনে হচ্ছে।  
+            **অর্থ:** বর্তমান তথ্য অনুযায়ী লক্ষণগুলো কম ঝুঁকিপূর্ণ মনে হচ্ছে। 
+             
             **করণীয়:** বিশ্রাম, পর্যাপ্ত পানি এবং লক্ষণ পর্যবেক্ষণ।  
+            
             **চিকিৎসা নিন যদি:** লক্ষণ বাড়ে, জ্বর থাকে, বা বিপদ সংকেত দেখা যায়।
             """)
         else:
             st.success("GREEN — Home care / observe")
             st.markdown("""
-            **Meaning:** Current symptoms appear low risk based on triage input.  
+            **Meaning:** Current symptoms appear low risk based on triage input. 
+             
             **Recommended action:** Rest, drink fluids, and monitor symptoms.  
+            
             **Seek care if:** symptoms worsen, fever persists, or danger signs appear.
             """)
 
     elif color == "orange":
         if language == "বাংলা":
-            st.warning("ORANGE — ১-২ দিনের মধ্যে ডাক্তার দেখান")
+            st.warning("পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।")
             st.markdown("""
             **অর্থ:** লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে।  
-            **করণীয়:** ২৪-৪৮ ঘণ্টার মধ্যে ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান।  
+            
+            **করণীয়:** ২৪-৪৮ ঘণ্টার মধ্যে ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান। 
+             
             **জরুরি চিকিৎসা নিন যদি:** দুর্বলতা, পানিশূন্যতা, তীব্র ব্যথা বা শ্বাসকষ্ট বাড়ে।
             """)
         else:
-            st.warning("ORANGE — Visit doctor within 1-2 days")
+            st.warning("ORANGE — Observe and if worsen Visit doctor within 1-2 days")
             st.markdown("""
             **Meaning:** Symptoms need medical review but may not be an immediate emergency.  
+            
             **Recommended action:** Visit a local doctor, clinic, or Upazila Health Complex within 24-48 hours.  
             **Seek urgent care if:** weakness, dehydration, severe pain, or breathing difficulty worsens.
             """)
@@ -201,15 +208,19 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.error("RED — এখনই জরুরি চিকিৎসা নিন")
             st.markdown("""
-            **অর্থ:** জরুরি বিপদ সংকেত থাকতে পারে।  
+            **অর্থ:** জরুরি বিপদ সংকেত থাকতে পারে।
+              
             **করণীয়:** এখনই নিকটস্থ হাসপাতাল বা জরুরি বিভাগে যান।  
+            
             **করবেন না:** বাসায় অপেক্ষা করবেন না বা চিকিৎসা নিতে দেরি করবেন না।
             """)
         else:
             st.error("RED — Emergency care now")
             st.markdown("""
-            **Meaning:** Emergency red-flag symptoms may be present.  
-            **Recommended action:** Go to the nearest emergency department immediately.  
+            **Meaning:** Emergency red-flag silent symptoms may be present. 
+             
+            **Recommended action:** Go to the nearest emergency department immediately. 
+             
             **Do not:** wait at home or delay medical care.
             """)
 
@@ -217,16 +228,18 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.info("GRAY — লক্ষণ বোঝা যায়নি")
             st.markdown("""
-            **অর্থ:** আপনার ইনপুট থেকে কোনো পরিচিত লক্ষণ পাওয়া যায়নি।  
-            **প্রশ্ন:** আপনি কি কোনো লক্ষণ বোঝাতে চেয়েছেন?  
-            **করণীয়:** অনুগ্রহ করে স্পষ্টভাবে লক্ষণ লিখুন বা বলুন, যেমন: জ্বর, বমি, কাশি, শ্বাসকষ্ট।
+            আপনি কি কোনো লক্ষণ বোঝাতে চেয়েছেন?  
+            
+            অনুগ্রহ করে স্পষ্টভাবে লক্ষণ লিখুন বা বলুন, যেমন: জ্বর, বমি, কাশি, শ্বাসকষ্ট।
             """)
         else:
             st.info("GRAY — Symptom unclear")
             st.markdown("""
-            **Meaning:** No recognized symptom was detected from the input.  
-            **Question:** Are you trying to describe a symptom?  
-            **Action:** Please write or speak symptoms clearly, for example: fever, vomiting, cough, shortness of breath.
+            No recognized symptom was detected from the input.  
+             
+            Are you trying to describe a symptom?  
+            
+            Please write or speak symptoms clearly, for example: fever, vomiting, cough, shortness of breath.
             """)
 
     else:
@@ -571,11 +584,18 @@ with tab1:
 
     selected_symptoms = {}
 
-    cols = st.columns(3)
+    sorted_symptoms = sorted(symptom_features)
 
-    for index, symptom in enumerate(symptom_features[:60]):
-        with cols[index % 3]:
-            selected_symptoms[symptom] = 1 if st.checkbox(symptom.title()) else 0
+    cols = st.columns(4, gap="large")
+    items_per_col = (len(sorted_symptoms) + 3) // 4
+
+    for i, col in enumerate(cols):
+      start = i * items_per_col
+      end = start + items_per_col
+
+      with col:
+        for symptom in sorted_symptoms[start:end]:
+            selected_symptoms[symptom] = st.checkbox(symptom.title())
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
         symptoms = {}
