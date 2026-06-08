@@ -155,6 +155,7 @@ SYMPTOMS = {
     # Vomiting blood
     "রক্তবমি": "vomiting blood",
     "বমির সাথে রক্ত": "vomiting blood",
+    
 
     # Mouth ulcer
     "মুখে ঘা": "mouth ulcer",
@@ -213,21 +214,34 @@ SYMPTOMS = {
        
     # Headache
     "মাথা ব্যথা": "headache",
-    "মাথাব্যথা": "headache",
-    "মাথায় ব্যাথা": "headache",
-    "মাথায় ব্যাথা": "headache",
-    "মাথা ধরেছে": "headache",
-    "মাথা ধরছে": "headache",
-    "মাথা টনটন করছে": "headache",
+"মাথাব্যথা": "headache",
+"মাথায় ব্যথা": "headache",
+"মাথায় ব্যথা": "headache",
+"matha betha": "headache",
+"matha bytha": "headache",
+"matha betha hocche": "headache",
+"matha dukhtese": "headache",
+"head ache": "headache",
+"headache": "headache",
+"মাথা ধরছে": "headache",
+"matha dhorche": "headache",
+"মাথা টনটন করছে": "headache",
 
     # Fever
     "জ্বর": "fever",
-    "গা গরম": "fever",
+     "গা গরম": "fever",
     "শরীর গরম": "fever",
     "জ্বর এসেছে": "fever",
     "জ্বর উঠেছে": "fever",
     "জ্বর জ্বর লাগছে": "fever",
     "তাপমাত্রা বেশি": "fever",
+"jor": "fever",
+"jhor": "fever",
+"gorom lagche": "fever",
+"body gorom": "fever",
+"fever": "fever",
+"fevar": "fever",
+"jwar": "fever",
 
     # Vomiting
     "বমি": "vomiting",
@@ -245,6 +259,12 @@ SYMPTOMS = {
     "গা গুলাচ্ছে": "nausea",
     "গা গোলাচ্ছে": "nausea",
     "গা গুলানি": "nausea",
+    "vomit feeling": "nausea",
+"bomi bomi lagche": "nausea",
+"ga gulochhe": "nausea",
+"ga golacche": "nausea",
+"nausea": "nausea",
+"feeling like vomiting": "nausea",
 
     # Cough
     "কাশি": "cough",
@@ -253,6 +273,11 @@ SYMPTOMS = {
     "কাশ হচ্ছে": "cough",
     "শুকনা কাশি": "cough",
     "শুষ্ক কাশি": "cough",
+"kashi": "cough",
+"cough": "cough",
+"kosi": "cough",
+"kash hoitese": "cough",
+"khashi": "cough",
 
     # Sputum
     "কফ": "coughing up sputum",
@@ -269,6 +294,13 @@ SYMPTOMS = {
     "শ্বাস নিতে কষ্ট": "shortness of breath",
     "হাপাচ্ছি": "shortness of breath",
     "হাঁপানি উঠেছে": "shortness of breath",
+    "শ্বাসকষ্ট": "shortness of breath",
+"shash kosto": "shortness of breath",
+"saas kosto": "shortness of breath",
+"shash nite kosto": "shortness of breath",
+"breathing problem": "shortness of breath",
+"breath problem": "shortness of breath",
+"hapacchi": "shortness of breath",
 
     # Sore throat
     "গলা ব্যথা": "sore throat",
@@ -284,6 +316,14 @@ SYMPTOMS = {
     "বুক ব্যথা": "sharp chest pain",
     "বুকে তীব্র ব্যথা": "sharp chest pain",
     "বুকে চিনচিন ব্যথা": "sharp chest pain",
+    "বুকে ব্যথা": "sharp chest pain",
+"buke betha": "sharp chest pain",
+"booke betha": "sharp chest pain",
+"buk betha": "sharp chest pain",
+"buke jala": "sharp chest pain",
+"buke tight feel": "sharp chest pain",
+"chest pain": "sharp chest pain",
+"chest betha": "sharp chest pain",
 
     # Chest tightness
     "বুকে চাপ": "chest tightness",
@@ -297,6 +337,11 @@ SYMPTOMS = {
     "পেটে অনেক ব্যথা": "abdominal pain",
     "পেট কামড়াচ্ছে": "abdominal pain",
     "পেট মোচড়াচ্ছে": "abdominal pain",
+    "pete betha": "abdominal pain",
+"pet betha": "abdominal pain",
+"pete khub betha": "abdominal pain",
+"pet mochrachhe": "abdominal pain",
+"pet kamracche": "abdominal pain",
 
     # Burning stomach pain
     "পেটে জ্বালা": "burning abdominal pain",
@@ -311,12 +356,20 @@ SYMPTOMS = {
     "বারবার পায়খানা": "diarrhea",
     "পেট খারাপ": "diarrhea",
     "লুজ মোশন": "diarrhea",
+    "diarrhea": "diarrhea",
+"daira": "diarrhea",
+"patla paykhana": "diarrhea",
+"loose motion": "diarrhea",
+"bar bar potty": "diarrhea",
 
     # Constipation
     "কোষ্ঠকাঠিন্য": "constipation",
     "পায়খানা হচ্ছে না": "constipation",
     "পায়খানা শক্ত": "constipation",
     "পেট পরিষ্কার হচ্ছে না": "constipation",
+    "pakhana hocche na": "constipation",
+"pakhana hocche na bhalo vabe": "constipation",
+"pet theke potty hocche na": "constipation",
 
     # Dizziness
     "মাথা ঘোরা": "dizziness",
@@ -324,6 +377,10 @@ SYMPTOMS = {
     "চক্কর": "dizziness",
     "চক্কর লাগছে": "dizziness",
     "ঘুরঘুর লাগছে": "dizziness",
+    "matha ghurche": "dizziness",
+"chokkor": "dizziness",
+"chakkor lagche": "dizziness",
+"ghurghur lagche": "dizziness",
 
     # Weakness
     "দুর্বলতা": "weakness",
@@ -332,7 +389,10 @@ SYMPTOMS = {
     "শক্তি পাচ্ছি না": "weakness",
     "অবসাদ": "weakness",
     "ক্লান্ত লাগছে": "weakness",
-
+    "durbol lagche": "weakness",
+"shorir durbol": "weakness",
+"shokti nai": "weakness",
+"clanto lagche": "weakness",
     # Chills
     "কাঁপুনি": "chills",
     "শীত শীত লাগছে": "chills",
@@ -342,7 +402,9 @@ SYMPTOMS = {
     # Palpitations
     "হৃদকম্পন": "palpitations",
     "বুক ধড়ফড়": "palpitations",
-    "বুক ধড়ফড়": "palpitations",
+    "বুক ধরফর": "palpitations",
+    "বুকে ধরফর": "palpitations",
+    "বুকে ধরফর": "palpitations",
     "হার্ট বিট বেড়ে গেছে": "palpitations",
     "হার্ট দ্রুত চলছে": "palpitations",
 
@@ -408,6 +470,9 @@ SYMPTOMS = {
     "অজ্ঞান": "fainting",
     "অজ্ঞান হয়ে গেছে": "fainting",
     "জ্ঞান হারিয়েছে": "fainting",
+    "gan hariyeche": "fainting",
+    "gyan hariyeche": "fainting",
+    
 
     # Seizure
     "খিঁচুনি": "seizures",
@@ -418,7 +483,10 @@ SYMPTOMS = {
     # Jaundice
     "জন্ডিস": "jaundice",
     "চোখ হলুদ": "jaundice",
-    "শরীর হলুদ": "jaundice"
+    "শরীর হলুদ": "jaundice",
+    "jaundice": "jaundice",
+"chokh holud": "jaundice",
+"shorir holud": "jaundice"
 
 
 }
