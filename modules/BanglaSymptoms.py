@@ -18,6 +18,7 @@ SYMPTOMS = {
     "তলপেট ব্যথা": "lower abdominal pain",
     "তলপেটে ব্যথা": "lower abdominal pain",
     "নিচের পেটে ব্যথা": "lower abdominal pain",
+    "তলপেটে প্রচণ্ড ব্যথা": "lower abdominal pain",
 
     # Arm pain
     "হাতে ব্যথা": "arm pain",
@@ -60,6 +61,7 @@ SYMPTOMS = {
     # Painful urination
     "প্রস্রাবে ব্যথা": "painful urination",
     "প্রস্রাবে জ্বালা": "painful urination",
+    "প্রস্রাবে জ্বালা": "painful urination",
     "প্রস্রাব করতে ব্যথা": "painful urination",
 
     # Urinary retention
@@ -94,7 +96,7 @@ SYMPTOMS = {
 
     # Blood in urine
     "প্রস্রাবে রক্ত": "blood in urine",
-    "প্রস্রাবে রক্ত": "blood in urine",
+    "প্রসাবে রক্ত": "blood in urine",
     "লাল প্রস্রাব": "blood in urine",
 
     # Involuntary urination
@@ -237,6 +239,7 @@ SYMPTOMS = {
     # Slurred speech
     "জড়িয়ে কথা বলা": "slurring words",
     "কথা জড়িয়ে যাচ্ছে": "slurring words",
+    "হঠাৎ কথা জড়িয়ে যাচ্ছে": "slurring words",
 
     # Eyelid swelling
     "চোখের পাতা ফুলে গেছে": "eyelid swelling",
@@ -342,22 +345,51 @@ SYMPTOMS = {
     "কফ হচ্ছে": "coughing up sputum",
     "বুকে কফ": "coughing up sputum",
 
-    # Breathing
-    "শ্বাসকষ্ট": "shortness of breath",
-    "শ্বাস কষ্ট": "shortness of breath",
-    "দম নিতে কষ্ট": "shortness of breath",
-    "দম বন্ধ": "shortness of breath",
-    "নিঃশ্বাস নিতে কষ্ট": "shortness of breath",
-    "শ্বাস নিতে কষ্ট": "shortness of breath",
-    "হাপাচ্ছি": "shortness of breath",
-    "হাঁপানি উঠেছে": "shortness of breath",
-    "শ্বাসকষ্ট": "shortness of breath",
-"shash kosto": "shortness of breath",
-"saas kosto": "shortness of breath",
-"shash nite kosto": "shortness of breath",
-"breathing problem": "shortness of breath",
-"breath problem": "shortness of breath",
-"hapacchi": "shortness of breath",
+# ---------- Difficulty Breathing (Respiratory) ----------
+"শ্বাসকষ্ট": "difficulty breathing",
+"শ্বাস কষ্ট": "difficulty breathing",
+"শ্বাস নিতে কষ্ট": "difficulty breathing",
+"নিঃশ্বাস নিতে কষ্ট": "difficulty breathing",
+"শ্বাস নিতে পারছি না": "difficulty breathing",
+"নিঃশ্বাস নিতে পারছি না": "difficulty breathing",
+"গভীর শ্বাস নিতে কষ্ট": "difficulty breathing",
+"কাশির সাথে শ্বাসকষ্ট": "difficulty breathing",
+"জ্বরের সাথে শ্বাসকষ্ট": "difficulty breathing",
+"হাঁপাচ্ছি": "difficulty breathing",
+"হাপাচ্ছি": "difficulty breathing",
+"হাঁপানি উঠেছে": "difficulty breathing",
+"শ্বাসে বাঁশির শব্দ": "difficulty breathing",
+"দম নিতে পারছি না": "difficulty breathing",
+"দম বন্ধ হয়ে আসছে": "difficulty breathing",
+"breathing problem": "difficulty breathing",
+"breath problem": "difficulty breathing",
+"difficulty breathing": "difficulty breathing",
+"cannot breathe properly": "difficulty breathing",
+"can't breathe": "difficulty breathing",
+"hard to breathe": "difficulty breathing",
+"shash nite kosto": "difficulty breathing",
+"nihshash nite kosto": "difficulty breathing",
+"hapacchi": "difficulty breathing",
+
+# ---------- Shortness of Breath (Cardiac / Exertional) ----------
+"বুকে ব্যথার সাথে শ্বাসকষ্ট": "shortness of breath",
+"বুকে চাপের সাথে শ্বাসকষ্ট": "shortness of breath",
+"বুকে চাপ লাগে": "shortness of breath",
+"হাঁটলেই শ্বাসকষ্ট": "shortness of breath",
+"সিঁড়ি উঠলে শ্বাসকষ্ট": "shortness of breath",
+"হাঁটতে গেলেই শ্বাসকষ্ট": "shortness of breath",
+"কাজ করলে শ্বাসকষ্ট": "shortness of breath",
+"অল্প হাঁটলেই শ্বাসকষ্ট": "shortness of breath",
+"দম ফুরিয়ে যায়": "shortness of breath",
+"শ্বাস ছোট হয়ে যায়": "shortness of breath",
+"দম নিতে কষ্ট": "shortness of breath",
+"শুয়ে থাকলে শ্বাসকষ্ট": "shortness of breath",
+"শুয়ে থাকলে দম বন্ধ লাগে": "shortness of breath",
+"shortness of breath": "shortness of breath",
+"sob": "shortness of breath",
+"out of breath": "shortness of breath",
+"shash kosto while walking": "shortness of breath",
+"dom nite kosto while walking": "shortness of breath",
 
     # Sore throat
     "গলা ব্যথা": "sore throat",
@@ -372,6 +404,7 @@ SYMPTOMS = {
     "বুকে ব্যথা": "sharp chest pain",
     "বুক ব্যথা": "sharp chest pain",
     "বুকে তীব্র ব্যথা": "sharp chest pain",
+    "আমার বুকে প্রচণ্ড ব্যথা": "sharp chest pain",
     "বুকে চিনচিন ব্যথা": "sharp chest pain",
     "বুকে ব্যথা": "sharp chest pain",
 "buke betha": "sharp chest pain",
@@ -394,6 +427,7 @@ SYMPTOMS = {
     "পেটের ব্যথা": "sharp abdominal pain",
     "পেটে অনেক ব্যথা": "sharp abdominal pain",
     "পেটে খুব ব্যথা": "sharp abdominal pain",
+    "পেটে প্রচণ্ড ব্যথা": "sharp abdominal pain",
     "পেট কামড়াচ্ছে": "sharp abdominal pain",
     "পেট কামড়াচ্ছে": "sharp abdominal pain",
     "পেট মোচড়াচ্ছে": "sharp abdominal pain",
@@ -495,7 +529,21 @@ SYMPTOMS = {
 
     # Back pain
     "পিঠ ব্যথা": "back pain",
+    "কোমরের পাশে ব্যথা": "back pain",
+    "কোমরে ব্যথা": "back pain",
+    "কোমর ব্যথা": "back pain",
+    "কমর ব্যথা": "back pain",
     "পিঠে ব্যথা": "back pain",
+    "কোমরের ব্যথা": "back pain",
+"কোমরের পাশে ব্যথা": "back pain",
+"বাম কোমরের ব্যথা": "back pain",
+"ডান কোমরের ব্যথা": "back pain",
+"বাম কোমরের পাশে ব্যথা": "back pain",
+"ডান কোমরের পাশে ব্যথা": "back pain",
+"কোমরের বাম পাশে ব্যথা": "back pain",
+"কোমরের ডান পাশে ব্যথা": "back pain",
+"বাম পাশের কোমরে ব্যথা": "back pain",
+"ডান পাশের কোমরে ব্যথা": "back pain",
 
     # Knee pain
     "হাঁটু ব্যথা": "knee pain",
@@ -518,6 +566,8 @@ SYMPTOMS = {
     "ফুসকুড়ি": "skin rash",
     "চামড়ায় ফুসকুড়ি": "skin rash",
     "গায়ে ফুসকুড়ি": "skin rash",
+    " লাল লাল দাগ": "skin rash",
+    " লাল লাল বিচি": "skin rash",
 
     # Itching
     "চুলকানি": "itching of skin",

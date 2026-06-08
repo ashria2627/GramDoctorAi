@@ -201,7 +201,55 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
     if radiates or (sob and worsens):
         return {"color": "orange", "source": "Probable - ***Cardiac Risk***" if lang=='English' else "***হৃদরোগের ঝুঁকি***",
                 "message": ("Possible ***cardiac issue***. Go to hospital within ***1-2 hours***, do not exert.")if lang=='English' else "সম্ভবত হৃদযন্ত্রের সমস্যা। ***১-২ ঘণ্টার মধ্যে হাসপাতালে যান***, কোনো রকম পরিশ্রম করবেন না।"}
+    # VOMITING
+    try:
+        times = int(get("vomiting", 0).split()[0])
+    except:
+        times = 0
+    
+    #times          = int(get("vomiting", 1))   # Vomited many times
+    cannot_keep    = yes(get("vomiting", 2))   # Cannot keep water/ORS down
+    blood          = yes(get("vomiting", 3))   # Blood/coffee-ground vomit
+    abd_pain       = yes(get("vomiting", 4))   # Severe abdominal pain
+    diarrhea       = yes(get("vomiting", 5))   # Diarrhea
+    dizzy          = yes(get("vomiting", 6))   # Dizzy/very weak
 
+# Emergency
+    if blood or times >= 10 or cannot_keep or (cannot_keep and dizzy):
+      return {
+        "color": "red",
+        "source": "Probable - ***Severe Vomiting / Gastrointestinal Emergency***" if lang == "English" else "***তীব্র বমি / পরিপাকতন্ত্রের জরুরি অবস্থা***",
+        "message": (
+            "Possible severe dehydration or gastrointestinal bleeding. Go to the nearest emergency department immediately."
+            if lang == "English"
+            else "তীব্র পানিশূন্যতা বা পরিপাকতন্ত্রে রক্তক্ষরণের সম্ভাবনা। ***অবিলম্বে নিকটস্থ জরুরি বিভাগে যান।***"
+        )
+    }
+
+# Urgent
+    if times >= 5 or cannot_keep or abd_pain or (times >= 3 and diarrhea) or dizzy:
+      return {
+        "color": "orange",
+        "source": "Probable - ***Moderate to Severe Vomiting***" if lang == "English" else "***মাঝারি থেকে তীব্র বমি***",
+        "message": (
+            "You may be dehydrated or have a condition requiring medical evaluation. Visit a hospital or clinic within 1–2 hours."
+            if lang == "English"
+            else "পানিশূন্যতা বা অন্য কোনো গুরুতর সমস্যার সম্ভাবনা রয়েছে। ***১–২ ঘণ্টার মধ্যে হাসপাতালে বা চিকিৎসাকেন্দ্রে যান।***"
+        )
+    }
+    
+
+# Mild
+    if 1 <= times < 5:
+      return {
+        "color": "yellow",
+        "source": "Probable - ***Mild Vomiting***" if lang == "English" else "***হালকা বমি***",
+        "message": (
+            "Drink small amounts of water or ORS frequently and monitor your symptoms."
+            if lang == "English"
+            else "অল্প অল্প করে বারবার পানি বা ওআরএস পান করুন এবং উপসর্গ পর্যবেক্ষণ করুন।"
+        )
+    }
  # STROKE 
     sudden_weakness  = yes(get("stroke", 1))
     one_side         = yes(get("stroke", 2))

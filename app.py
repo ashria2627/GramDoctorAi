@@ -4,7 +4,6 @@ import json
 import re
 from io import BytesIO
 import streamlit as st
-import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from modules.FIRSTAID import get_first_aid
@@ -189,7 +188,6 @@ div[data-testid="stMultiSelect"] label {
 </style>
 """, unsafe_allow_html=True)
 
-df = pd.read_csv("assets/hospitals_geocoded.csv")
 
 TEXTS = {
     "English": {
@@ -228,7 +226,6 @@ chest pain, sweating, shortness of breath
 today the weather is good
 """,
         "patient_form": "Patient Form",
-        'worker_form':'Clinical Worker Form',
         "tab_result": "Result",
         "patient_info": "Patient Information",
         "age": "Age",
@@ -314,7 +311,6 @@ today the weather is good
 আজ আবহাওয়া ভালো
 """,
         "patient_form": "রোগীর ফর্ম",
-        "worker_form": "ক্লিনিক্যাল মূল্যায়ন ফর্ম",
         "tab_result": "ফলাফল",
         "patient_info": "রোগীর তথ্য",
         "age": "বয়স",
@@ -675,7 +671,7 @@ def format_prediction_driver(item, triage_color=None):
     return f"{feature} {direction} confidence in{target}."
 
 
-def create_structured_referral_pdf(ai_response, triage_result, symptoms, referral=None, first_aid=None, hospitals=None):
+def create_structured_referral_pdf(ai_response, triage_result, symptoms, referral=None, first_aid=None):
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -763,19 +759,7 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, referra
     else:
         write_lines("No first aid steps available.")
 
-    section("Nearest Hospitals")
-    if hospitals:
-        hospital_lines = []
-        for hospital in hospitals[:7]:
-            line = hospital.get("Name", "Unknown hospital")
-            if hospital.get("Priority"):
-                line += " [Govt/Upazila]"
-            if "Distance_km" in hospital:
-                line += f" - {hospital['Distance_km']:.2f} km"
-            hospital_lines.append(f"- {line}")
-        write_lines(hospital_lines)
-    else:
-        write_lines("No hospital list available.")
+    
 
     section("Follow-up Advice")
     write_lines(extract_english_referral_note(ai_response))
@@ -792,102 +776,6 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, referra
     buffer.seek(0)
     return buffer
 
-def calculate_distance_km(lat1, lon1, lat2, lon2):
-    """
-    Haversine distance between two latitude/longitude points.
-    Returns distance in kilometers.
-    """
-    try:
-        lat1 = float(lat1)
-        lon1 = float(lon1)
-        lat2 = float(lat2)
-        lon2 = float(lon2)
-    except Exception:
-        return None
-
-    radius_km = 6371.0
-
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1))
-        * math.cos(math.radians(lat2))
-        * math.sin(dlon / 2) ** 2
-    )
-
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return radius_km * c
-
-
-def is_priority_hospital(name):
-    name = str(name).lower()
-    priority_terms = [
-        "upazila health complex",
-        "district hospital",
-        "medical college",
-        "sadar hospital",
-        "government",
-        "govt",
-        "uhc",
-    ]
-    return any(term in name for term in priority_terms)
-
-
-def haversine_filter(hospitals_df, user_location, radius_km=15):
-    if (
-        not user_location
-        or "Latitude" not in hospitals_df.columns
-        or "Longitude" not in hospitals_df.columns
-    ):
-        return hospitals_df
-
-    user_lat = user_location.get("latitude")
-    user_lon = user_location.get("longitude")
-
-    hospitals_df = hospitals_df.copy()
-    hospitals_df["Distance_km"] = hospitals_df.apply(
-        lambda row: calculate_distance_km(
-            user_lat,
-            user_lon,
-            row["Latitude"],
-            row["Longitude"]
-        ),
-        axis=1
-    )
-
-    hospitals_df = hospitals_df.dropna(subset=["Distance_km"])
-    nearby = hospitals_df[hospitals_df["Distance_km"] <= radius_km]
-
-    return nearby if not nearby.empty else hospitals_df
-
-
-def rank_hospitals(hospitals_df):
-    sort_columns = ["Priority"]
-    ascending = [False]
-
-    if "Distance_km" in hospitals_df.columns:
-        sort_columns.append("Distance_km")
-        ascending.append(True)
-
-    return hospitals_df.sort_values(by=sort_columns, ascending=ascending)
-
-
-def get_recommended_hospitals(filtered_final, n=5, user_location=None, radius_km=15):
-    hospitals_df = filtered_final.copy()
-
-    hospitals_df = hospitals_df.drop_duplicates(subset=["Name"])
-    hospitals_df["Priority"] = hospitals_df["Name"].apply(is_priority_hospital)
-
-    hospitals_df = haversine_filter(hospitals_df, user_location, radius_km)
-    hospitals_df = rank_hospitals(hospitals_df)
-
-    columns = ["Name", "Name (Bangla)", "Priority"]
-    if "Distance_km" in hospitals_df.columns:
-        columns.append("Distance_km")
-
-    return hospitals_df.head(n)[columns].to_dict("records")
 
 def normalize_color(color):
     if not color:
@@ -1149,33 +1037,6 @@ def create_tts_audio(text):
     return buffer
 
 
-def worker_referral_decision(triage_result, symptom_count, consciousness, language="English"):
-    color = normalize_color(triage_result.get("color", "gray"))
-    source = str(triage_result.get("source", "")).lower()
-    impaired_consciousness = consciousness in ["Drowsy", "Unconscious"]
-
-    if color == "red" or impaired_consciousness or "safety" in source:
-        return {
-            "refer": True,
-            "urgency": "Refer NOW" if language == "English" else "এখনই রেফার করুন",
-            "reason": "Emergency triage, impaired consciousness, or safety-rule trigger." if language == "English" else "জরুরি ট্রায়াজ, চেতনার সমস্যা, অথবা সেফটি রুল ট্রিগার হয়েছে।",
-            "style": "error",
-        }
-
-    if color == "orange" or symptom_count >= 3:
-        return {
-            "refer": True,
-            "urgency": "Refer within 24h" if language == "English" else "২৪ ঘণ্টার মধ্যে রেফার করুন",
-            "reason": "Warning-level symptoms need clinic or Upazila review." if language == "English" else "সতর্কতামূলক লক্ষণের জন্য ক্লিনিক বা উপজেলা পর্যায়ের মূল্যায়ন দরকার।",
-            "style": "warning",
-        }
-
-    return {
-        "refer": False,
-        "urgency": "Home management + return if worsens" if language == "English" else "বাড়িতে যত্ন + খারাপ হলে ফিরে আসুন",
-        "reason": "No immediate Upazila referral trigger found." if language == "English" else "তাৎক্ষণিক উপজেলা রেফারের কারণ পাওয়া যায়নি।",
-        "style": "success",
-    }
 
 @st.cache_resource
 def load_resources():
@@ -1219,10 +1080,8 @@ if "ai_response" not in st.session_state:
 
 if "voice_text" not in st.session_state:
     st.session_state.voice_text = ""
-if "filtered_final" not in st.session_state:
-    st.session_state.filtered_final = None
-if "user_location" not in st.session_state:
-    st.session_state.user_location = None
+
+
 if "referral" not in st.session_state:
     st.session_state.referral = None
 
@@ -1238,7 +1097,7 @@ if "detected_special" not in st.session_state:
 if "extra_symptoms" not in st.session_state:
     st.session_state.extra_symptoms = []
 
-tab1, tab2,tab3,tab4 = st.tabs([t["patient_form"],t['follow-up'], t["worker_form"],t['tab_result']])
+tab1, tab2,tab3 = st.tabs([t["patient_form"],t['follow-up'],t['tab_result']])
 
 
 with tab1:
@@ -1260,63 +1119,20 @@ with tab1:
         [t["male"], t["female"]]
     )
     with col3:
-     pregnancy_display = st.selectbox(
-        t["pregnancy"],
-        [t["not_applicable"], t["no"], t["yes"]]
-    )
-    divisions = sorted(df["Division"].dropna().unique())
-    division = col1.selectbox(t["division"], divisions)
+      if sex_display == t["male"]:
+        pregnancy_display = t["not_applicable"]
 
-    filtered_division = df[df["Division"] == division]
-
-# District
-    districts = sorted(filtered_division["District"].dropna().unique())
-    district = col2.selectbox(t["district"], districts)
-
-    filtered_district = filtered_division[filtered_division["District"] == district]
-
-# Upazila
-    upazilas = sorted(filtered_district["Upazila"].dropna().unique())
-    upazila = col3.selectbox(t["upazila"], upazilas)
-
-    filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
-
-    st.info(t["use_device_location"])
-
-    if get_geolocation is not None:
-        location = get_geolocation()
-
-        if location and "coords" in location:
-            coords = location["coords"]
-            st.session_state.user_location = {
-                "latitude": coords.get("latitude"),
-                "longitude": coords.get("longitude")
-            }
-            st.success(t["location_found"])
-        else:
-            st.caption(t["location_unavailable"])
-    else:
-        st.caption(t["location_unavailable"])
-
-    st.subheader(t["hospitals"])
-
-    preview_hospitals = get_recommended_hospitals(
-        filtered_final,
-        n=5,
-        user_location=st.session_state.get("user_location")
-    )
-
-    for hospital in preview_hospitals:
-        hospital_name = (
-            hospital["Name"]
-            if language != "বাংলা"
-            else hospital["Name (Bangla)"]
+        st.selectbox(
+            t["pregnancy"],
+            [t["not_applicable"]],
+            disabled=True
+        )
+      else:
+        pregnancy_display = st.selectbox(
+            t["pregnancy"],
+            [t["no"], t["yes"]]
         )
 
-        if "Distance_km" in hospital:
-            st.write(f"🏥 {hospital_name} ” {t['distance']}: {hospital['Distance_km']:.2f} km")
-        else:
-            st.write(f"🏥 {hospital_name}")
   
     st.header(t['write'])
     st.subheader(t['subwrite'])
@@ -1393,19 +1209,17 @@ with tab1:
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
       with st.spinner("Analyzing symptoms..." if language=="English" else "লক্ষণ বিশ্লেষণ হচ্ছে..."):
-        st.session_state.filtered_final = filtered_final
+        
         symptoms = {}
 
         symptoms["age"] = int(age)
         symptoms["sex-no"] = 1 if sex_display == t["female"] else 0
 
-        if pregnancy_display == t["yes"]:
-            symptoms["ispregnant"] = 1
-        elif pregnancy_display == t["no"]:
-            symptoms["ispregnant"] = 0
+        if sex_display == t["male"]:
+             symptoms["ispregnant"] = 2   # Not Applicable
         else:
-            symptoms["ispregnant"] = 2
-
+             symptoms["ispregnant"] = 1 if pregnancy_display == t["yes"] else 0
+ 
         for symptom_name, value in selected_symptoms.items():
             symptoms[symptom_name] = value
 
@@ -1543,102 +1357,8 @@ with tab2:
             st.session_state.tts_audio = None
             st.success("Updated! Check Result tab." if language=="English" else "আপডেট হয়েছে! Result ট্যাব দেখুন।")
 
+
 with tab3:
-    st.header("Clinical Worker Intake" if language == "English" else "ক্লিনিকাল ওয়ার্কার ইনটেক")
-
-    worker_col1, worker_col2, worker_col3 = st.columns(3)
-    worker_age = worker_col1.number_input("Patient Age" if language == "English" else "রোগীর বয়স", 0, 120, 30, key="worker_age")
-    worker_sex = worker_col2.selectbox("Patient Sex" if language == "English" else "রোগীর লিঙ্গ", [t["male"], t["female"]], key="worker_sex")
-    worker_pregnancy = worker_col3.selectbox("Pregnancy" if language == "English" else "গর্ভাবস্থা", [t["not_applicable"], t["no"], t["yes"]], key="worker_pregnancy")
-
-    worker_duration = st.selectbox(
-        "Symptom Duration" if language == "English" else "লক্ষণ কতদিন",
-        ["< 6 hours", "6-24 hours", "1-2 days", "3+ days"],
-        key="worker_duration"
-    )
-    worker_consciousness = st.selectbox(
-        "Consciousness Level" if language == "English" else "চেতনার অবস্থা",
-        ["Alert", "Drowsy", "Unconscious"],
-        key="worker_consciousness"
-    )
-
-    worker_symptom_features = [
-        col for col in feature_cols
-        if col not in ["age", "sex-no", "ispregnant"]
-    ]
-    worker_symptom_options = {
-        (
-            BANGLA_FEATURES.get(symptom, symptom.title())
-            if language == "বাংলা"
-            else symptom.title()
-        ): symptom
-        for symptom in sorted(worker_symptom_features)
-    }
-    worker_selected_labels = st.multiselect(
-        "Visible Symptoms" if language == "English" else "দৃশ্যমান লক্ষণ",
-        options=worker_symptom_options.keys(),
-        key="worker_visible_symptoms"
-    )
-
-    if st.button("Run Worker Triage" if language == "English" else "ওয়ার্কার ট্রায়াজ চালান", type="primary", key="worker_triage_button"):
-        worker_symptoms = {
-            "age": int(worker_age),
-            "sex-no": 1 if worker_sex == t["female"] else 0,
-            "ispregnant": 1 if worker_pregnancy == t["yes"] else (0 if worker_pregnancy == t["no"] else 2),
-        }
-
-        for symptom in worker_symptom_features:
-            worker_symptoms[symptom] = 0
-
-        for label in worker_selected_labels:
-            worker_symptoms[worker_symptom_options[label]] = 1
-
-        if worker_consciousness == "Unconscious":
-            worker_symptoms["fainting"] = 1
-        elif worker_consciousness == "Drowsy":
-            worker_symptoms["sleepiness"] = 1
-
-        result = predict_triage(worker_symptoms, model, feature_cols)
-        st.session_state.symptoms = worker_symptoms
-        st.session_state.triage_result = result
-        st.session_state.original_triage_color = result["color"]
-        st.session_state.original_triage_message = result["message"]
-        st.session_state.original_triage_source = result["source"]
-        st.session_state.ai_response = None
-        st.session_state.first_aid = None
-        st.session_state.tts_audio = None
-        st.session_state.followup_categories = detect_followup_categories(worker_symptoms, FOLLOWUP_GROUPS, language, None)
-        active_worker_symptom_count = sum(
-            value for key, value in worker_symptoms.items()
-            if key not in ["age", "sex-no", "ispregnant"] and value == 1
-        )
-        worker_decision = worker_referral_decision(
-            result,
-            active_worker_symptom_count,
-            worker_consciousness,
-            language
-        )
-        decision_title = (
-            "YES — Refer to Upazila Hospital"
-            if worker_decision["refer"] and language == "English"
-            else "হ্যাঁ — উপজেলা হাসপাতালে রেফার করুন"
-            if worker_decision["refer"]
-            else "NO — Upazila referral not needed now"
-            if language == "English"
-            else "না — এখনই উপজেলা রেফার দরকার নেই"
-        )
-        decision_text = f"**{decision_title}**\n\n{worker_decision['urgency']}\n\n{worker_decision['reason']}"
-        if worker_decision["style"] == "error":
-            st.error(decision_text)
-        elif worker_decision["style"] == "warning":
-            st.warning(decision_text)
-        else:
-            st.success(decision_text)
-        st.success("Worker intake triage complete. Open Result tab." if language == "English" else "ওয়ার্কার ইনটেক ট্রায়াজ সম্পন্ন। Result ট্যাব দেখুন।")
-
-
-
-with tab4:
     st.header(t["triage_result"])
 
     if st.session_state.triage_result is None:
@@ -1739,29 +1459,7 @@ with tab4:
                 st.write(f"- {line}")
 
         
-        if result["color"] in ["red", "orange"]:
-         if st.session_state.filtered_final is not None:
-
-          hospitals = get_recommended_hospitals(
-              st.session_state.filtered_final,
-              n=5,
-              user_location=st.session_state.get("user_location")
-          )
-          st.session_state.recommended_hospitals = hospitals
-
-          st.subheader(t["recommended_hospitals"])
-
-          for hospital in hospitals:
-              hospital_name = (
-                  hospital["Name"]
-                  if language != "বাংলা"
-                  else hospital["Name (Bangla)"]
-              )
-
-              if "Distance_km" in hospital:
-                  st.write(f" {hospital_name} ” {t['distance']}: {hospital['Distance_km']:.2f} km")
-              else:
-                  st.write(f"ðŸ¥ {hospital_name}")
+      
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
     if language == "বাংলা"
@@ -1812,7 +1510,7 @@ with tab4:
                     st.session_state.symptoms,
                     referral=referral,
                     first_aid=first_aid,
-                    hospitals=st.session_state.get("recommended_hospitals")
+                    
                 )
 
                 st.download_button(
