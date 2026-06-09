@@ -44,16 +44,14 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(90deg, #3DD68C, #58A6FF);
+    background: linear-gradient(90deg, #b81919,#D9705B, #CC998F);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0 !important;
 }
 
-/* Subtitle */
-h2 { 
-    margin: 0.5rem 0 !important;
-}
+
+
 /*Sidebar*/
 .css-1d391kg, [data-testid="stSidebar"] {
     background-color: #161B22 !important;
@@ -72,10 +70,9 @@ h2 {
 
 /* Tabs */
 .stTabs [data-baseweb="tab-list"] {
-    background-color: #161B22;
     border-radius: 10px;
     padding: 4px;
-    gap: 5px;
+    gap: 10px;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px;
@@ -84,46 +81,48 @@ h2 {
     padding: 8px 20px;
 }
 .stTabs [aria-selected="true"] {
-    background-color: #21262D !important;
+    background-color: #C20202 !important;
     color: #E6EDF3 !important;
 }
 
 /* Inputs */
 .stSelectbox > div, .stNumberInput > div, .stTextArea > div {
-    font-size: 1rem !important;
+
     background-color: #161B22 !important;
-    border: 1px solid #30363D !important;
+    border: 2px solid #821717 !important;
     border-radius: 8px !important;
-    color: #E6EDF3 !important;
 }
 
 /* Section headers */
 h2 {
-    color:   #2D94B3 !important;
+    color:   #b81919 !important;
     font-size: 1.6rem !important;
     font-weight: 600 !important;
-    margin: 24px 0 !important;
+    margin: 16px 0 !important;
     padding-bottom: 8px !important;
-    border-bottom: 1px solid #21262D !important;
+    border-bottom: 1px solid #8A271E !important;
 }
 h3 {
     color:   #b81919 !important;
     font-size: 1.2rem !important;
     font-weight: 600 !important;
-    margin: 24px 0 !important;
+    margin: 10px 0 !important;
     padding-bottom: 8px !important;
-    border-bottom: 1px solid #21262D !important;
+    
+}
+p {
+    font-weight: 500 !important;    
 }
 
 /* Multiselect */
 .stMultiSelect > div {
     background-color: #161B22 !important;
-    border: 1px solid #30363D !important;
+    border: 2px solid #821717 !important;
     border-radius: 8px !important;
 }
 .stMultiSelect span {
-    background-color: #1F6FEB22 !important;
-    color: #58A6FF !important;
+    background-color: #821717 !important;
+    color: #EBA4A4 !important;
     border-radius: 4px !important;
 }
 
@@ -148,8 +147,29 @@ h3 {
 }
 
 
+div[data-testid="stSelectbox"] label,
+div[data-testid="stMultiSelect"] label {
+    margin: 12px 0 !important;
+    display: block !important;
+}
+/* Normal button */
+.stButton > button {
+    background-color: #AD0505 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+}
 
+/* Hover */
+.stButton > button:hover {
+    background-color: #570303 !important;
+}
 
+/* Clicked */
+.stButton > button:active {
+    background-color: #570303 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -226,8 +246,11 @@ today the weather is good
         "pdf_filename": "gramdoctor_referral_note.pdf","division": "Select Division",
         "district": "Select District",
         "upazila": "Select Upazila",
-        "hospitals": "Hospitals",
-        "beds": "Beds"
+        "hospitals": "Hospitals Found near you",
+        "beds": "Beds",
+        'search':'Search and click',
+        'subwrite':'write your symptoms',
+        'write':'Write / record / select / upload your symptoms'
     },
     "বাংলা": {
         "title": "GramDoctor AI",
@@ -299,8 +322,11 @@ today the weather is good
         "pdf_filename": "gramdoctor_referral_note.pdf", "division": "বিভাগ নির্বাচন করুন",
         "district": "জেলা নির্বাচন করুন",
         "upazila": "উপজেলা নির্বাচন করুন",
-        "hospitals": "হাসপাতালসমূহ",
-        "beds": "শয্যা"
+        "hospitals": "আপনার নিকটবর্তী হাসপাতালসমূহ",
+        "beds": "শয্যা",
+        'search':'অনুসন্ধান করে ক্লিক করুন',
+        "subwrite":'আপনার উপসর্গ লিখুন',
+        "write":'আপনার উপসর্গ লিখুন, রেকর্ড করুন, নির্বাচন করুন অথবা আপলোড করুন'
     }
 }
 
@@ -808,7 +834,8 @@ with tab1:
     for _, row in filtered_final.iterrows():
       st.write(f"🏥 {row['Organization Name']} | {t['beds']}: {row['No. of Bed']}")
   
-    
+    st.header(t['write'])
+    st.subheader(t['subwrite'])
     bangla_text = st.text_area(
         t["text_input"],
         placeholder=t["text_placeholder"]
@@ -839,7 +866,7 @@ with tab1:
     else:
         st.info(t["voice_unavailable"])
 
-    st.header(t["symptoms"])
+    st.subheader(t["symptoms"])
 
     manual_fields = ["age", "sex-no", "ispregnant"]
 
@@ -860,7 +887,7 @@ with tab1:
      }
 
     selected_labels = st.multiselect(
-     "Select Symptoms",
+     t['search'],
      options=symptom_options.keys()
     )
 
