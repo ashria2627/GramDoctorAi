@@ -620,38 +620,31 @@ tab1, tab2 = st.tabs([t["tab_form"], t["tab_result"]])
 with tab1:
     st.header(t["patient_info"])
 
-    age = st.number_input(
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+     age = st.number_input(
         t["age"],
         min_value=0,
         max_value=120,
         value=30
     )
 
-    sex_display = st.selectbox(
+    with col2:
+     sex_display = st.selectbox(
         t["sex"],
         [t["male"], t["female"]]
     )
 
-    pregnancy_display = st.selectbox(
+    with col3:
+     pregnancy_display = st.selectbox(
         t["pregnancy"],
         [t["not_applicable"], t["no"], t["yes"]]
     )
-
     bangla_text = st.text_area(
         t["text_input"],
         placeholder=t["text_placeholder"]
     )
-
-    uploaded_file = st.file_uploader(
-        t["upload_note"],
-        type=["txt"]
-    )
-
-    uploaded_text = ""
-
-    if uploaded_file is not None:
-        uploaded_text = uploaded_file.read().decode("utf-8")
-        st.text_area(t["uploaded_preview"], uploaded_text, height=150)
 
     st.subheader(t["voice_input"])
     st.caption(t["voice_help"])
@@ -682,36 +675,41 @@ with tab1:
     manual_fields = ["age", "sex-no", "ispregnant"]
 
     symptom_features = [
-        col for col in feature_cols
-        if col not in manual_fields
-    ]
+    col for col in feature_cols
+    if col not in manual_fields
+     ]
 
-    selected_symptoms = {}
-    if language == "বাংলা":
-      sorted_symptoms = sorted(
-        symptom_features,
-        key=lambda x: BANGLA_FEATURES.get(x, x)
-       )
-    else:
-      sorted_symptoms = sorted(symptom_features)
-    
+    sorted_symptoms = sorted(symptom_features)
 
-    cols = st.columns(4, gap="large")
-    items_per_col = (len(sorted_symptoms) + 3) // 4
+    symptom_options = {
+    (
+        BANGLA_FEATURES.get(symptom, symptom.title())
+        if language == "বাংলা"
+        else symptom.title()
+    ): symptom
+    for symptom in sorted_symptoms
+     }
 
-    for i, col in enumerate(cols):
-      start = i * items_per_col
-      end = start + items_per_col
+    selected_labels = st.multiselect(
+     "Select Symptoms",
+     options=symptom_options.keys()
+    )
 
-      with col:
-        for symptom in sorted_symptoms[start:end]:
-           label = (
-                  BANGLA_FEATURES.get(symptom, symptom.title())
-                  if language == "বাংলা"
-                  else symptom.title()
-                  )
-           selected_symptoms[symptom] = st.checkbox(label)
-    
+    selected_symptoms = {
+    symptom: symptom in [symptom_options[label] for label in selected_labels]
+    for symptom in sorted_symptoms
+     }
+
+    uploaded_file = st.file_uploader(
+        t["upload_note"],
+        type=["txt"]
+    )
+
+    uploaded_text = ""
+
+    if uploaded_file is not None:
+        uploaded_text = uploaded_file.read().decode("utf-8")
+        st.text_area(t["uploaded_preview"], uploaded_text, height=150)
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
         symptoms = {}
