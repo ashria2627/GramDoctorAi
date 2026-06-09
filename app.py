@@ -309,6 +309,107 @@ def extract_english_symptoms(text, feature_cols):
     return extracted
 
 
+BANGLA_FEATURES = {
+    "sharp abdominal pain": "তীব্র পেট ব্যথা",
+    "vomiting": "বমি",
+    "headache": "মাথা ব্যথা",
+    "cough": "কাশি",
+    "sharp chest pain": "তীব্র বুক ব্যথা",
+    "nausea": "বমি বমি ভাব",
+    "back pain": "পিঠ ব্যথা",
+    "shortness of breath": "শ্বাসকষ্ট",
+    "fever": "জ্বর",
+    "dizziness": "মাথা ঘোরা",
+    "nasal congestion": "নাক বন্ধ",
+    "leg pain": "পায়ে ব্যথা",
+    "skin swelling": "শরীর ফুলে যাওয়া",
+    "depressive or psychotic symptoms": "মানসিক বিভ্রান্তি",
+    "lower abdominal pain": "তলপেট ব্যথা",
+    "sore throat": "গলা ব্যথা",
+    "burning abdominal pain": "পেটে জ্বালাপোড়া",
+    "skin rash": "ফুসকুড়ি",
+    "arm pain": "হাতে ব্যথা",
+    "weakness": "দুর্বলতা",
+    "ear pain": "কানে ব্যথা",
+    "diarrhea": "ডায়রিয়া",
+    "loss of sensation": "অনুভূতি হারানো",
+    "itching of skin": "চুলকানি",
+    "abnormal involuntary movements": "অনিয়ন্ত্রিত শরীর নড়াচড়া",
+    "pelvic pain": "শ্রোণী ব্যথা",
+    "pain in eye": "চোখে ব্যথা",
+    "chest tightness": "বুকে চাপ",
+    "problems with movement": "নড়াচড়ায় সমস্যা",
+    "diminished vision": "দৃষ্টিশক্তি কমে যাওয়া",
+    "painful urination": "প্রস্রাবে ব্যথা",
+    "retention of urine": "প্রস্রাব আটকে যাওয়া",
+    "difficulty breathing": "শ্বাস নিতে কষ্ট",
+    "knee pain": "হাঁটু ব্যথা",
+    "blood in stool": "মলে রক্ত",
+    "frequent urination": "ঘন ঘন প্রস্রাব",
+    "delusions or hallucinations": "হ্যালুসিনেশন",
+    "foot or toe pain": "পায়ের পাতা বা আঙুলে ব্যথা",
+    "fainting": "অজ্ঞান হওয়া",
+    "decreased appetite": "ক্ষুধামন্দা",
+    "heartburn": "অম্বল",
+    "itchiness of eye": "চোখ চুলকানো",
+    "vaginal discharge": "যোনিপথে স্রাব",
+    "blood in urine": "প্রস্রাবে রক্ত",
+    "involuntary urination": "প্রস্রাব ধরে রাখতে না পারা",
+    "chills": "কাঁপুনি",
+    "irregular heartbeat": "অনিয়মিত হৃদস্পন্দন",
+    "difficulty speaking": "কথা বলতে কষ্ট",
+    "palpitations": "হৃদকম্পন",
+    "eye redness": "চোখ লাল হওয়া",
+    "leg swelling": "পা ফুলে যাওয়া",
+    "allergic reaction": "অ্যালার্জি",
+    "lip swelling": "ঠোঁট ফুলে যাওয়া",
+    "difficulty in swallowing": "গিলতে কষ্ট",
+    "foreign body sensation in eye": "চোখে কিছু আছে মনে হওয়া",
+    "diminished hearing": "কম শুনতে পাওয়া",
+    "cramps and spasms": "খিঁচুনি বা পেশির টান",
+    "vaginal itching": "যোনিতে চুলকানি",
+    "spots or clouds in vision": "চোখে ঝাপসা বা দাগ দেখা",
+    "wheezing": "শ্বাসে সাঁ সাঁ শব্দ",
+    "hand or finger swelling": "হাত বা আঙুল ফুলে যাওয়া",
+    "swollen eye": "চোখ ফুলে যাওয়া",
+    "double vision": "দুইটা দেখা",
+    "rectal bleeding": "মলদ্বার দিয়ে রক্ত পড়া",
+    "problems during pregnancy": "গর্ভাবস্থার সমস্যা",
+    "seizures": "খিঁচুনি",
+    "constipation": "কোষ্ঠকাঠিন্য",
+    "sweating": "অতিরিক্ত ঘাম",
+    "heavy menstrual flow": "অতিরিক্ত মাসিক রক্তপাত",
+    "hoarse voice": "কণ্ঠস্বর বসে যাওয়া",
+    "vomiting blood": "রক্তবমি",
+    "pain of the anus": "মলদ্বারে ব্যথা",
+    "white discharge from eye": "চোখ থেকে সাদা স্রাব",
+    "eye burns or stings": "চোখে জ্বালা",
+    "mouth ulcer": "মুখে ঘা",
+    "vaginal pain": "যোনিতে ব্যথা",
+    "sleepiness": "ঘুম ঘুম ভাব",
+    "ringing in ear": "কানে ভোঁ ভোঁ শব্দ",
+    "spotting or bleeding during pregnancy": "গর্ভাবস্থায় রক্তপাত",
+    "coughing up sputum": "কফ ওঠা",
+    "toothache": "দাঁত ব্যথা",
+    "mouth pain": "মুখে ব্যথা",
+    "hurts to breath": "শ্বাস নিলে ব্যথা",
+    "pain in testicles": "অণ্ডকোষে ব্যথা",
+    "throat feels tight": "গলা চেপে আসা",
+    "painful sinuses": "সাইনাসে ব্যথা",
+    "sinus congestion": "সাইনাস বন্ধ",
+    "stomach bloating": "পেট ফাঁপা",
+    "hemoptysis": "কাশির সাথে রক্ত",
+    "painful menstruation": "মাসিকে ব্যথা",
+    "blindness": "অন্ধত্ব",
+    "swelling of scrotum": "অণ্ডথলি ফুলে যাওয়া",
+    "itchy scalp": "মাথার ত্বকে চুলকানি",
+    "throat swelling": "গলা ফুলে যাওয়া",
+    "slurring words": "জড়িয়ে কথা বলা",
+    "eyelid swelling": "চোখের পাতা ফুলে যাওয়া",
+    "jaundice": "জন্ডিস",
+    "nosebleed": "নাক দিয়ে রক্ত পড়া"
+}
+
 def create_gray_result(language):
     if language == "বাংলা":
         message = "ইনপুট থেকে কোনো পরিচিত লক্ষণ পাওয়া যায়নি। ব্যবহারকারী সম্ভবত অন্য কিছু বোঝাতে চেয়েছেন।"
@@ -402,9 +503,12 @@ def create_referral_pdf(ai_response, triage_result, symptoms):
     y -= 15
 
     active_symptoms = [
-        symptom for symptom, value in symptoms.items()
-        if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-    ]
+    BANGLA_FEATURES.get(symptom, symptom)
+    if language == "বাংলা"
+    else symptom
+    for symptom, value in symptoms.items()
+    if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+]
 
     pdf.setFont("Helvetica-Bold", 12)
     pdf.drawString(50, y, "Detected Symptoms:")
@@ -583,8 +687,14 @@ with tab1:
     ]
 
     selected_symptoms = {}
-
-    sorted_symptoms = sorted(symptom_features)
+    if language == "বাংলা":
+      sorted_symptoms = sorted(
+        symptom_features,
+        key=lambda x: BANGLA_FEATURES.get(x, x)
+       )
+    else:
+      sorted_symptoms = sorted(symptom_features)
+    
 
     cols = st.columns(4, gap="large")
     items_per_col = (len(sorted_symptoms) + 3) // 4
@@ -595,7 +705,13 @@ with tab1:
 
       with col:
         for symptom in sorted_symptoms[start:end]:
-            selected_symptoms[symptom] = st.checkbox(symptom.title())
+           label = (
+                  BANGLA_FEATURES.get(symptom, symptom.title())
+                  if language == "বাংলা"
+                  else symptom.title()
+                  )
+           selected_symptoms[symptom] = st.checkbox(label)
+    
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
         symptoms = {}
@@ -657,14 +773,18 @@ with tab2:
         st.write(t["reason"], result["message"])
 
         active_symptoms = [
-            symptom for symptom, value in st.session_state.symptoms.items()
-            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-        ]
+    BANGLA_FEATURES.get(symptom, symptom)
+    if language == "বাংলা"
+    else symptom
+    for symptom, value in selected_symptoms.items()
+    if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+]
 
         if active_symptoms:
             st.subheader(t["detected_symptoms"])
             for symptom in active_symptoms:
-                st.write(f"- {symptom}")
+                 display_name = ( BANGLA_FEATURES.get(symptom, symptom)if language == "বাংলা" else symptom.title())
+                 st.write(f"- {symptom}")
         else:
             st.info(t["no_symptoms"])
 

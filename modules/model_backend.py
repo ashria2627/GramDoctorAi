@@ -114,8 +114,8 @@ def predict_triage(symptoms, model, feature_cols):
     if any(symptoms.get(s, 0) == 1 for s in SERIOUS_SINGLE_SYMPTOMS):
         return {
             "color": "red",
-            "source": "Safety rule",
-            "message": "Emergency symptoms detected. Seek immediate medical care."
+            "source": "Safety rules",
+            "message": "Emergency symptoms detected. Seek medical care."
         }
     active_symptoms = [
         k for k, v in symptoms.items()
@@ -134,7 +134,7 @@ def predict_triage(symptoms, model, feature_cols):
     if red_result == "red":
         return {
             "color": "red",
-            "source": "Safety rule",
+            "source": "Safety rules",
             "message": "Emergency red-flag symptoms detected. Immediately visit a doctor . YOu might be showing silent symptoms of something serious"
         }
 
@@ -143,7 +143,7 @@ def predict_triage(symptoms, model, feature_cols):
     if orange_result == "orange":
         return {
             "color": "orange",
-            "source": "Warning rule",
+            "source": "Warning rules",
             "message": "Observe your condition. If worsen in the next 1-2days then Visit a doctor."
         }
         
@@ -172,17 +172,17 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "orange",
             "source": "Machine Learning Model",
-            "message": f"Observe your condition. If worsen then visit a doctor within 24–48 hours."
+            "message": f"Observe your condition. If worsen then visit a doctor within 24–48 hours. Model Confidence: {confidence}%"
         }
     if color=='red':
         return {
             "color": "red",
             "source": "Machine Learning Model",
-            "message": f"Emergency symptoms detected . Please consult a doctor within few hours."
+            "message": f"Emergency symptoms detected . Please consult a doctor within few hours.Model Confidence: {confidence}%"
         }
     if color=='green':
         return {
             "color": "green",
             "source": "Machine Learning Model",
-            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse, Confidence: {confidence}%"
+            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse. Model Confidence: {confidence}%"
         }
