@@ -1,0 +1,552 @@
+Sl. No.,Organization Name,Division,District,Upazila,No. of Bed
+1,Kukua Hospital,Barisal,Barguna,Amtali,10
+2,Chhakhar Hospital,Barisal,Barishal,Banaripara,10
+3,Kirtipasha Hospital (RHC),Barisal,Jhalokati,Jhalokati Sadar,10
+4,Guinak Hospital (RHC),Chattogram,Brahmanbaria,Nasirnagar,10
+5,Sandwip Hospital (RHC),Chattogram,Chattogram,Sandwip,10
+6,St. Martin Hospital,Chattogram,Cox's Bazar,Teknaf,10
+7,Kalikapur Hospital (RHC),Chattogram,Cumilla,Chauddagram,10
+8,Talbalchhari Hospital (RHC),Chattogram,Khagrachhari,Matiranga,10
+9,Kaptai Hospital,Chattogram,Rangamati,Kaptai,10
+10,Hajratpur Hospital,Dhaka,Dhaka,Keraniganj,10
+11,Kunda Hospital,Dhaka,Dhaka,Keraniganj,10
+12,Gopinathpur Hospital (RHC),Dhaka,Gopalganj,Gopalganj Sadar,10
+14,Khokshabari Hospital (RHC),Rajshahi,Sirajganj,Sirajganj Sadar,10
+15,Ramchandrapur Hospital (RHC),Rangpur,Gaibandha,Gaibandha Sadar,10
+16,Raiganj Hospital (RHC),Rangpur,Kurigram,Nageshwari,10
+17,Dahagram Hospital,Rangpur,Lalmonirhat,Patgram,10
+18,Taltali Hospital,Barisal,Barguna,Amtali,20
+19,Walankathi Hospital,Barisal,Barishal,Babuganj,20
+20,South Char Aicha Hospital,Barisal,Bhola,Charfession,20
+21,Kuakata Hospital,Barisal,Patuakhali,Kalapara,20
+22,Kathaltoli Hospital,Barisal,Patuakhali,Mirzaganj,20
+23,Bibirhat Hospital,Chattogram,Chattogram,Fatikchhari,20
+24,Haramia Hospital,Chattogram,Chattogram,Sandwip,20
+25,Sonaimuri Hospital,Chattogram,Cumilla,Barura,20
+26,Mohichail Hospital,Chattogram,Cumilla,Chandina,20
+27,Bagmara Hospital,Chattogram,Cumilla,Comilla Sadar Dakshin,20
+28,Donarchar Hospital,Chattogram,Cumilla,Daudkandi,20
+29,Jodda Hospital,Chattogram,Cumilla,Nangalkot,20
+30,Char Alexander Hospital,Chattogram,Lakshmipur,Ramgati,20
+31,Char Algi Hospital,Chattogram,Noakhali,Kabirhat,20
+32,Kreshnanagar Hospital,Dhaka,Dhaka,Dhamrai,20
+33,Jinjira Hospital,Dhaka,Dhaka,Keraniganj,20
+34,Aminbazar Hospital,Dhaka,Dhaka,Savar,20
+35,Baspur Hospital,Dhaka,Gopalganj,Kasiani,20
+36,Kabirajpur Hospital,Dhaka,Madaripur,Rajoir,20
+37,Monohargram Hospital,Dhaka,Narayanganj,Araihazar,20
+38,Fatullah Hospital,Dhaka,Narayanganj,Narayanganj Sadar,20
+39,Siddirganj Hospital,Dhaka,Narayanganj,Narayanganj Sadar,20
+40,Tarabunia Hospital,Dhaka,Shariatpur,Bhedarganj,20
+41,Kodalpur Hospital,Dhaka,Shariatpur,Gosairhat,20
+42,Birolpolita Hospital,Khulna,Magura,Magura Sadar,20
+43,Binadpur Hospital,Khulna,Magura,Mohammadpur,20
+44,Charanchal Hospital,Mymensingh,Mymensingh,Mymensingh Sadar,20
+45,Santahar Hospital,Rajshahi,Bogura,Adamdighi,20
+46,Nandigram Hospital,Rajshahi,Bogura,Nandigram,20
+47,Aliahat Hospital,Rajshahi,Bogura,Shibganj,20
+48,Kaitak Hospital,Sylhet,Sunamganj,Chhatak,20
+49,Maddyanagar Hospital,Sylhet,Sunamganj,Dharampasha,20
+50,"Bamna Upazila Health Complex, Barguna",Barisal,Barguna,Bamna,31
+51,"Babuganj Upazila Health Complex, Barishal",Barisal,Barishal,Babuganj,31
+52,"Bakerganj Upazila Health Complex, Barishal",Barisal,Barishal,Bakerganj,31
+53,"Banaripara Upazila Health Complex, Barishal",Barisal,Barishal,Banaripara,31
+54,"Hijla Upazila Health Complex, Barishal",Barisal,Barishal,Hizla,31
+55,"Mehendiganj Upazila Health Complex, Barishal",Barisal,Barishal,Mehendiganj,31
+56,"Wazirpur Upazila Health Complex, Barishal",Barisal,Barishal,Wazirpur,31
+57,"Manpura Upazila Health Complex, Bhola",Barisal,Bhola,Manpura,31
+58,"Tajumuddin Upazila Health Complex, Bhola",Barisal,Bhola,Tazumuddin,31
+59,"Kathalia Upazila Health Complex, Jhalokati",Barisal,Jhalokati,Kanthalia,31
+60,"Rajapur Upazila Health Complex, Jhalokati",Barisal,Jhalokati,Rajapur,31
+61,"Bauphal Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Bauphal,31
+62,"Dashmina Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Dashmina,31
+63,"Dumki Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Dumki,31
+64,"Mirzaganj Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Mirzaganj,31
+65,"Rangabali Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Rangabali,31
+66,"Bhandaria Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Bhandaria,31
+67,"Indurkani Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Indurkani,31
+68,"Kawkhali Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Kawkhali,31
+69,"Nazirpur Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Nazirpur,31
+70,"Alikadam Upazila Health Complex, Bandarban",Chittagong,Bandarban,Alikadam,31
+71,"Lama Upazila Health Complex, Bandarban",Chittagong,Bandarban,Lama,31
+72,"Naikhongchari Upazila Health Complex, Bandarban",Chittagong,Bandarban,Naikhongchhari,31
+73,"Rowangchari Upazila Health Complex, Bandarban",Chittagong,Bandarban,Rowangchhari,31
+74,"Ruma Upazila Health Complex, Bandarban",Chittagong,Bandarban,Ruma,31
+75,"Thanchi Upazila Health Complex, Bandarban",Chittagong,Bandarban,Thanchi,31
+76,"Akhaura Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Akhaura,31
+77,"Ashugonj Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Ashuganj,31
+78,"Bijoynagar Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Bijoynagar,31
+79,"Bancharampur Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Banchharampur,31
+80,"Kashba Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Kasba,31
+81,"Nabinagar Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Nabinagar,31
+82,"Faridganj Upazila Health Complex, Chandpur",Chittagong,Chandpur,Faridganj,31
+83,"Haimchar Upazila Health Complex, Chandpur",Chittagong,Chandpur,Haimchar,31
+84,"Matlab(uttar) Upazila Health Complex, Chandpur",Chittagong,Chandpur,Matlab Uttar,31
+85,"Saharasthi Upazila Health Complex, Chandpur",Chittagong,Chandpur,Shahrasti,31
+86,"Fatikchari Upazila Health Complex, Chattogram",Chittagong,Chattogram,Fatikchhari,31
+87,"Roujan Upazila Health Complex, Chattogram",Chittagong,Chattogram,Raozan,31
+88,"Sandwip Upazila Health Complex, Chattogram",Chittagong,Chattogram,Sandwip,31
+89,"Satkania Upazila Health Complex, Chattogram",Chittagong,Chattogram,Satkania,31
+90,"Pekua Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Pekua,31
+91,"Ramu Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Ramu,31
+92,"Teknaf Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Teknaf,31
+93,"Ukhia Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Ukhia,31
+94,"Barura Upazila Health Complex, Cumilla",Chittagong,Cumilla,Barura,31
+95,"Brahmmanpara Upazila Health Complex, Cumilla",Chittagong,Cumilla,Brahmanpara,31
+96,"Burichong Upazila Health Complex, Cumilla",Chittagong,Cumilla,Burichang,31
+97,"Chandina Upazila Health Complex, Cumilla",Chittagong,Cumilla,Chandina,31
+98,"Comilla Sadar Daxin Upazila Health Complex, Cumilla",Chittagong,Cumilla,Comilla Sadar Dakshin,31
+99,"Daudkandi Upazila Health Complex, Cumilla",Chittagong,Cumilla,Daudkandi,31
+100,"Laksham Upazila Health Complex, Cumilla",Chittagong,Cumilla,Laksam,31
+101,"Monoharganj Upazila Health Complex, Cumilla",Chittagong,Cumilla,Manoharganj,31
+102,"Meghna Upazila Health Complex, Cumilla",Chittagong,Cumilla,Meghna,31
+103,"Titas Upazila Health Complex, Cumilla",Chittagong,Cumilla,Titas,31
+104,"Daganbhuiya Upazila Health Complex, Feni",Chittagong,Feni,Daganbhuiyan,31
+105,"Fulgazi Upazila Health Complex, Feni",Chittagong,Feni,Fulgazi,31
+106,"Sonagazi Upazila Health Complex, Feni",Chittagong,Feni,Sonagazi,31
+107,"Dighinala Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Dighinala,31
+108,"Lakshmichari Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Lakshmichhari,31
+109,"Mohalchari Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Mahalchhari,31
+110,"Manikchari Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Manikchhari,31
+111,"Matiranga Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Matiranga,31
+112,"Panchari Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Panchhari,31
+113,"Ramgarh Upazila Health Complex, Khagrachhari",Chittagong,Khagrachhari,Ramgarh,31
+114,"Kamolnagar Upazila Health Complex, Lakshmipur",Chittagong,Lakshmipur,Kamalnagar,31
+115,"Ramganj Upazila Health Complex, Lakshmipur",Chittagong,Lakshmipur,Ramganj,31
+116,"Ramgati Upazila Health Complex, Lakshmipur",Chittagong,Lakshmipur,Ramgati,31
+117,"Kabirhat Upazila Health Complex, Noakhali",Chittagong,Noakhali,Kabirhat,31
+118,"Sonaimuri Upazila Health Complex, Noakhali",Chittagong,Noakhali,Sonaimuri,31
+119,"Baghaichari Upazila Health Complex, Rangamati",Chittagong,Rangamati,Baghaichhari,31
+120,"Barkal Upazila Health Complex, Rangamati",Chittagong,Rangamati,Barkal,31
+121,"Belaichari Upazila Health Complex, Rangamati",Chittagong,Rangamati,Belaichhari,31
+122,"Juraichari Upazila Health Complex, Rangamati",Chittagong,Rangamati,Juraichhari,31
+123,"Kaptai Upazila Health Complex, Rangamati",Chittagong,Rangamati,Kaptai,31
+124,"Kawkhali Upazila Health Complex, Rangamati",Chittagong,Rangamati,Kawkhali (betbunia),31
+125,"Langadu Upazila Health Complex, Rangamati",Chittagong,Rangamati,Langadu,31
+126,"Naniarchar Upazila Health Complex, Rangamati",Chittagong,Rangamati,Naniarchar,31
+127,"Rajasthali Upazila Health Complex, Rangamati",Chittagong,Rangamati,Rajasthali,31
+128,"Keraniganj Upazila Health Complex, Dhaka",Dhaka,Dhaka,Keraniganj,31
+129,"Alfadanga Upazila Health Complex, Faridpur",Dhaka,Faridpur,Alfadanga,31
+130,"Charbhadrason Upazila Health Complex, Faridpur",Dhaka,Faridpur,Charbhadrasan,31
+131,"Modhukhali Upazila Health Complex, Faridpur",Dhaka,Faridpur,Madhukhali,31
+132,"Sadarpur Upazila Health Complex, Faridpur",Dhaka,Faridpur,Sadarpur,31
+133,"Saltha Upazila Health Complex, Faridpur",Dhaka,Faridpur,Saltha,50
+134,"Kaliakair Upazila Health Complex, Gazipur",Dhaka,Gazipur,Kaliakair,31
+135,"Sreepur Upazila Health Complex, Gazipur",Dhaka,Gazipur,Sreepur,31
+136,"Kotwalipara Upazila Health Complex, Gopalganj",Dhaka,Gopalganj,Kotalipara,31
+137,"Mukshedpur Upazila Health Complex, Gopalganj",Dhaka,Gopalganj,Muksudpur,31
+138,"Tungipara Upazila Health Complex, Gopalganj",Dhaka,Gopalganj,Tungipara,31
+139,"Austagram Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Austagram,31
+140,"Bajitpur Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Bajitpur,31
+141,"Hossainpur Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Hossainpur,31
+142,"Itna Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Itna,31
+143,"Katiadi Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Katiadi,31
+144,"Kuliarchar Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Kuliarchar,31
+145,"Mithamoin Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Mithamain,31
+146,"Nikli Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Nikli,31
+147,"Pakundia Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Pakundia,31
+148,"Kalkini Upazila Health Complex, Madaripur",Dhaka,Madaripur,Kalkini,31
+149,"Rajoir Upazila Health Complex, Madaripur",Dhaka,Madaripur,Rajoir,31
+150,"Daulatpur Upazila Health Complex, Manikganj",Dhaka,Manikganj,Daulatpur,31
+151,"Ghior Upazila Health Complex, Manikganj",Dhaka,Manikganj,Ghior,31
+152,"Harirampur Upazila Health Complex, Manikganj",Dhaka,Manikganj,Harirampur,31
+153,"Saturia Upazila Health Complex, Manikganj",Dhaka,Manikganj,Saturia,31
+154,"Shibalaya Upazila Health Complex, Manikganj",Dhaka,Manikganj,Shibalaya,31
+155,"Singair Upazila Health Complex, Manikganj",Dhaka,Manikganj,Singair,31
+156,"Araihazar Upazila Health Complex, Narayanganj",Dhaka,Narayanganj,Araihazar,31
+157,"Bandar Upazila Health Complex, Narayanganj",Dhaka,Narayanganj,Bandar,31
+158,"Rupganj Upazila Health Complex, Narayanganj",Dhaka,Narayanganj,Rupganj,31
+159,"Sonargaon Upazila Health Complex, Narayanganj",Dhaka,Narayanganj,Sonargaon,31
+160,"Belabo Upazila Health Complex, Narsingdi",Dhaka,Narsingdi,Belabo,31
+161,"Palash Upazila Health Complex, Narsingdi",Dhaka,Narsingdi,Palash,31
+162,"Raipura Upazila Health Complex, Narsingdi",Dhaka,Narsingdi,Roypura,31
+163,"Shibpur Upazila Health Complex, Narsingdi",Dhaka,Narsingdi,Shibpur,31
+164,"Baliakandi Upazila Health Complex, Rajbari",Dhaka,Rajbari,Baliakandi,31
+165,"Kalukhali Upazila Health Complex, Rajbari",Dhaka,Rajbari,Kalukhali,31
+166,"Bhedarganj Upazila Health Complex, Shariatpur",Dhaka,Shariatpur,Bhedarganj,31
+167,"Damudya Upazila Health Complex, Shariatpur",Dhaka,Shariatpur,Damudya,31
+168,"Goshairhat Upazila Health Complex, Shariatpur",Dhaka,Shariatpur,Gosairhat,31
+169,"Naria Upazila Health Complex, Shariatpur",Dhaka,Shariatpur,Naria,31
+170,"Zanjira Upazila Health Complex, Shariatpur",Dhaka,Shariatpur,Zanjira,31
+171,"Bhuapur Upazila Health Complex, Tangail",Dhaka,Tangail,Bhuapur,31
+172,"Delduar Upazila Health Complex, Tangail",Dhaka,Tangail,Delduar,31
+173,"Gopalpur Upazila Health Complex, Tangail",Dhaka,Tangail,Gopalpur,31
+174,"Mirzapur Upazila Health Complex, Tangail",Dhaka,Tangail,Mirzapur,31
+175,"Nagarpur Upazila Health Complex, Tangail",Dhaka,Tangail,Nagarpur,31
+176,"Morrelganj Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Morrelganj,31
+177,"Sarankhola Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Sarankhola,31
+178,"Alamdanga Upazila Health Complex, Chuadanga",Khulna,Chuadanga,Alamdanga,31
+179,"Damurhuda Upazila Health Complex, Chuadanga",Khulna,Chuadanga,Damurhuda,31
+180,"Jibannagar Upazila Health Complex, Chuadanga",Khulna,Chuadanga,Jibannagar,31
+181,"Bagherpara Upazila Health Complex, Jashore",Khulna,Jashore,Bagherpara,31
+182,"Jhikargacha Upazila Health Complex, Jashore",Khulna,Jashore,Jhikargachha,31
+183,"Monirampur Upazila Health Complex, Jashore",Khulna,Jashore,Monirampur,31
+184,"Sarsa Upazila Health Complex, Jashore",Khulna,Jashore,Sharsha,31
+185,"Shailkupa Upazila Health Complex, Jhenaidah",Khulna,Jhenaidah,Shailkupa,31
+186,"Batiaghata Upazila Health Complex, Khulna",Khulna,Khulna,Batiaghata,31
+187,"Dighalia Upazila Health Complex, Khulna",Khulna,Khulna,Dighalia,31
+188,"Dumuria Upazila Health Complex, Khulna",Khulna,Khulna,Dumuria,31
+189,"Koyra Upazila Health Complex, Khulna",Khulna,Khulna,Koyra,31
+190,"Paikgacha Upazila Health Complex, Khulna",Khulna,Khulna,Paikgachha,31
+191,"Rupsha Upazila Health Complex, Khulna",Khulna,Khulna,Rupsa,31
+192,"Terokhada Upazila Health Complex, Khulna",Khulna,Khulna,Terokhada,31
+193,"Khoksha Upazila Health Complex, Kushtia",Khulna,Kushtia,Khoksa,31
+194,"Kumarkhali Upazila Health Complex, Kushtia",Khulna,Kushtia,Kumarkhali,31
+195,"Mohammadpur Upazila Health Complex, Magura",Khulna,Magura,Mohammadpur,31
+196,"Shalikha Upazila Health Complex, Magura",Khulna,Magura,Shalikha,31
+197,"Sreepur Upazila Health Complex, Magura",Khulna,Magura,Sreepur,31
+198,"Mujibnagar Upazila Health Complex, Meherpur",Khulna,Meherpur,Mujibnagar,31
+199,"Lohagara Upazila Health Complex, Narail",Khulna,Narail,Lohagara,31
+200,"Assasuni Upazila Health Complex, Satkhira",Khulna,Satkhira,Assasuni,31
+201,"Debhata Upazila Health Complex, Satkhira",Khulna,Satkhira,Debhata,31
+202,"Kaliganj Upazila Health Complex, Satkhira",Khulna,Satkhira,Kaliganj,31
+203,"Bakshiganj Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Bakshiganj,31
+204,"Dewanganj Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Dewanganj,31
+205,"Madarganj Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Madarganj,31
+206,"Bhaluka Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Bhaluka,31
+207,"Dhubaura Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Dhobaura,31
+208,"Fulbaria Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Fulbaria,31
+209,"Gouripur Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Gauripur,31
+210,"Haluaghat Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Haluaghat,31
+211,"Muktagacha Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Muktagachha,31
+212,"Atpara Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Atpara,31
+213,"Barhatta Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Barhatta,31
+214,"Durgapur Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Durgapur,31
+215,"Khaliajuri Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Khaliajuri,31
+216,"Jhenaigati Upazila Health Complex, Sherpur",Mymensingh,Sherpur,Jhenaigati,31
+217,"Nakhla Upazila Health Complex, Sherpur",Mymensingh,Sherpur,Nakla,31
+218,"Nalitabari Upazila Health Complex, Sherpur",Mymensingh,Sherpur,Nalitabari,31
+219,"Sribordi Upazila health Complex, Sherpur",Mymensingh,Sherpur,Sreebardi,31
+220,"Dhupchachia Upazila Health Complex, Bogura",Rajshahi,Bogura,Dhupchanchia,31
+221,"Nandigram Upazila Health Complex, Bogura",Rajshahi,Bogura,Nandigram,31
+222,"Shajahanpur Upazila Health Complex, Bogura",Rajshahi,Bogura,Shajahanpur,31
+223,"Sherpur Upazila Health Complex, Bogura",Rajshahi,Bogura,Sherpur,31
+224,"Bholahat Upazila Health Complex, Chapai Nawabganj",Rajshahi,Chapai Nawabgan,Bholahat,31
+225,"Gomastapur Upazila Health Complex, Chapai Nawabganj",Rajshahi,Chapai Nawabgan,Gomastapur,31
+226,"Nachol Upazila Health Complex, Chapai Nawabganj",Rajshahi,Chapai Nawabgan,Nachole,31
+227,"Khetlal Upazila Health Complex, Joypurhat",Rajshahi,Joypurhat,Khetlal,31
+228,"Panchbibi Upazila Health Complex, Joypurhat",Rajshahi,Joypurhat,Panchbibi,31
+229,"Atrai Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Atrai,31
+230,"Niamatpur Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Niamatpur,31
+231,"Porsha Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Porsha,31
+232,"Raninagar Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Raninagar,31
+233,"Bagatipara Upazila Health Complex, Natore",Rajshahi,Natore,Bagatipara,31
+234,"Baraigram Upazila Health Complex, Natore",Rajshahi,Natore,Baraigram,31
+235,"Gurudashpur Upazila Health Complex, Natore",Rajshahi,Natore,Gurudaspur,31
+236,"Singra Upazila Health Complex, Natore",Rajshahi,Natore,Singra,31
+237,"Atgharia Upazila Health Complex, Pabna",Rajshahi,Pabna,Atgharia,31
+238,"Bera Upazila Health Complex, Pabna",Rajshahi,Pabna,Bera,31
+239,"Bhangura Upazila Health Complex, Pabna",Rajshahi,Pabna,Bhangura,31
+240,"Iswardi Upazila Health Complex, Pabna",Rajshahi,Pabna,Ishwardi,31
+241,"Santhia Upazila Health Complex, Pabna",Rajshahi,Pabna,Santhia,31
+242,"Bagha Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Bagha,31
+243,"Bagmara Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Baghmara,31
+244,"Godagari Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Godagari,31
+245,"Mohanpur Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Mohanpur,31
+246,"Paba Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Paba,31
+247,"Belkuchi Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Belkuchi,31
+248,"Chowhali Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Chauhali,31
+249,"Kamarkhanda Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Kamarkhanda,31
+250,"Kazipur Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Kazipur,31
+251,"Raiganj Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Royganj,31
+252,"Shahzadpur Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Shahjadpur,31
+253,"Tarash Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Tarash,31
+254,"Ullapara Upazila Health Complex, Sirajganj",Rajshahi,Sirajganj,Ullahpara,31
+255,"Birol Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Biral,31
+256,"Birampur Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Birampur,31
+257,"Birganj Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Birganj,31
+258,"Chirirbandar Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Chirirbandar,31
+259,"Fulbari Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Fulbari,31
+260,"Ghoraghat Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Ghoraghat,31
+261,"Hakimpur Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Hakimpur,31
+262,"Kaharol Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Kaharole,31
+263,"Khansama Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Khansama,31
+264,"Nawabganj Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Nawabganj,31
+265,"Fulchari Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Fulchhari,31
+266,"Palashbari Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Palashbari,31
+267,"Sadullapur Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Sadullapur,31
+268,"Shaghatta Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Saghata,31
+269,"Sundarganj Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Sundarganj,31
+270,"Bhurungamari Upazila Health Complex, Kurigram",Rangpur,Kurigram,Bhurungamari,31
+271,"Nageswari Upazila Health Complex, Kurigram",Rangpur,Kurigram,Nageshwari,31
+272,"Fulbari Upazila Health Complex, Kurigram",Rangpur,Kurigram,Phulbari,31
+273,"Rajarhat Upazila Health Complex, Kurigram",Rangpur,Kurigram,Rajarhat,31
+274,"Rajibpur Upazila Health Complex, Kurigram",Rangpur,Kurigram,Rajibpur,31
+275,"Rowmari Upazila Health Complex, Kurigram",Rangpur,Kurigram,Raumari,31
+276,"Aditmari Upazila Health Complex, Lalmonirhat",Rangpur,Lalmonirhat,Aditmari,31
+277,"Hatibandha Upazila Health Complex, Lalmonirhat",Rangpur,Lalmonirhat,Hatibandha,31
+278,"Patgram Upazila Health Complex, Lalmonirhat",Rangpur,Lalmonirhat,Patgram,31
+279,"Jaldhaka Upazila Health Complex, Nilphamari",Rangpur,Nilphamari,Jaldhaka,31
+280,"Kishoreganj Upazila Health Complex, Nilphamari",Rangpur,Nilphamari,Kishoreganj,31
+281,"Saidpur Upazila Health Complex, Nilphamari",Rangpur,Nilphamari,Saidpur,31
+282,"Atwari Upazila Health Complex, Panchagarh",Rangpur,Panchagarh,Atwari,31
+283,"Badarganj Upazila Health Complex, Rangpur",Rangpur,Rangpur,Badarganj,31
+284,"Kownia Upazila Health Complex, Rangpur",Rangpur,Rangpur,Kaunia,31
+285,"Pirgacha Upazila Health Complex, Rangpur",Rangpur,Rangpur,Pirgachha,31
+286,"Taraganj Upazila Health Complex, Rangpur",Rangpur,Rangpur,Taraganj,31
+287,"Pirganj Upazila Health Complex, Thakurgaon",Rangpur,Thakurgaon,Pirganj,31
+288,"Ajmiriganj Upazila Health Complex, Habiganj",Sylhet,Habiganj,Ajmiriganj,31
+289,"Bahubal Upazila Health Complex, Habiganj",Sylhet,Habiganj,Bahubal,31
+290,"Baniachong Upazila Health Complex, Habiganj",Sylhet,Habiganj,Baniachong,31
+291,"Chunarughat Upazila Health Complex, Hobigonj., Habiganj",Sylhet,Habiganj,Chunarughat,31
+292,"Lakhai Upazila Health Complex, Habiganj",Sylhet,Habiganj,Lakhai,31
+293,"Nabiganj Upazila Health Complex, Habiganj",Sylhet,Habiganj,Nabiganj,31
+294,"Barlekha Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Barlekha,31
+295,"Juri Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Juri,31
+296,"Kamalganj Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Kamalganj,31
+297,"Rajnagar Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Rajnagar,31
+298,"Sreemangal Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Sreemangal,31
+299,"Biswambarpur Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Bishwambarpur,31
+300,"Chhatak Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Chhatak,31
+301,"Dakshin Sunamganj Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Dakshin Sunamganj,31
+302,"Derai Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Derai,31
+303,"Dharmapasha Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Dharampasha,31
+304,"Doarabazar Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Dowarabazar,31
+305,"Jamalganj Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Jamalganj,31
+306,"Sulla Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Sulla,31
+307,"Taherpur Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Tahirpur,31
+308,"Balaganj Upazila Health Complex, Sylhet",Sylhet,Sylhet,Balaganj,31
+309,"Bishwanath Upazila Health Complex, Sylhet",Sylhet,Sylhet,Bishwanath,31
+310,"Companyganj Upazila Health Complex, Sylhet",Sylhet,Sylhet,Companiganj,31
+311,"Dakhin Surma Upazila Health Complex, Sylhet",Sylhet,Sylhet,Dakshin Surma,31
+312,"Fenchuganj Upazila Health Complex, Sylhet",Sylhet,Sylhet,Fenchuganj,31
+313,"Jaintapur Upazila Health Complex, Sylhet",Sylhet,Sylhet,Jaintiapur,31
+314,"Kanaighat Upazila Health Complex, Sylhet",Sylhet,Sylhet,Kanaighat,31
+315,"Zokiganj Upazila Health Complex, Sylhet",Sylhet,Sylhet,Zakiganj,31
+316,"Amtali Upazila Health Complex, Barguna",Barisal,Barguna,Amtali,50
+317,"Betagi Upazila Health Complex, Barguna",Barisal,Barguna,Betagi,50
+318,"Patharghata Upazila Health Complex, Barguna",Barisal,Barguna,Patharghata,50
+319,"Agailjhara Upazila Health Complex, Barishal",Barisal,Barishal,Agailjhara,50
+320,"Gournadi Upazila Health Complex, Barishal",Barisal,Barishal,Gaurnadi,50
+321,"Muladi Upazila Health Complex, Barishal",Barisal,Barishal,Muladi,50
+322,"Borhanuddin Upazila Health Complex, Bhola",Barisal,Bhola,Burhanuddin,50
+323,"Charfession Upazila Health Complex, Bhola",Barisal,Bhola,Charfession,50
+324,"Daulatkhan Upazila Health Complex, Bhola",Barisal,Bhola,Daulatkhan,50
+325,"Lalmohan Upazila Health Complex, Bhola",Barisal,Bhola,Lalmohan,50
+326,"Nalchithi Upazila Health Complex, Jhalokati",Barisal,Jhalokati,Nalchity,50
+327,"Galachipa Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Galachipa,50
+328,"Kalapara Upazila Health Complex, Patuakhali",Barisal,Patuakhali,Kalapara,50
+329,"Mathbaria Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Mathbaria,50
+330,"Nesarabad Upazila Health Complex, Pirojpur",Barisal,Pirojpur,Nesarabad,50
+331,"Nasirnagar Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Nasirnagar,50
+332,"Sarail Upazila Health Complex, Brahmanbaria",Chittagong,Brahmanbaria,Sarail,50
+333,"Haziganj Upazila Health Complex, Chandpur",Chittagong,Chandpur,Hajiganj,50
+334,"Kachua Upazila Health Complex, Chandpur",Chittagong,Chandpur,Kachua,50
+335,"Matlab(daxin) Upazila Health Complex, Chandpur",Chittagong,Chandpur,Matlab Dakshin,50
+336,"Anwara Upazila Health Complex, Chattogram",Chittagong,Chattogram,Anowara,50
+337,"Banshkhali Upazila Health Complex, Chattogram",Chittagong,Chattogram,Banshkhali,50
+338,"Boalkhali Upazila Health Complex, Chattogram",Chittagong,Chattogram,Boalkhali,50
+339,"Chandanaish Upazila Health Complex, Chattogram",Chittagong,Chattogram,Chandanaish,50
+340,"Hathazari Upazila Health Complex, Chattogram",Chittagong,Chattogram,Hathazari,50
+341,"Lohagara Upazila Health Complex, Chattogram",Chittagong,Chattogram,Lohagara,50
+342,"Mirarsarai Upazila Health Complex, Chattogram",Chittagong,Chattogram,Mirsharai,50
+343,"Patiya Upazila Health Complex, Chattogram",Chittagong,Chattogram,Patiya,50
+344,"Rangunia Upazila Health Complex, Chattogram",Chittagong,Chattogram,Rangunia,50
+345,"Sitakunda Upazila Health Complex, Chattogram",Chittagong,Chattogram,Sitakunda,50
+346,"Chakaria Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Chakaria,50
+347,"Kutubdia Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Kutubdia,50
+348,"Moheshkhali Upazila Health Complex, Cox's Bazar",Chittagong,Cox's Bazar,Maheshkhali,50
+349,"Chaddagram Upazila Health Complex, Cumilla",Chittagong,Cumilla,Chauddagram,50
+350,"Debidwar Upazila Health Complex, Cumilla",Chittagong,Cumilla,Debidwar,50
+351,"Homna Upazila Health Complex, Cumilla",Chittagong,Cumilla,Homna,50
+352,"Langolkot Upazila Health Complex, Cumilla",Chittagong,Cumilla,Langalkot,50
+353,"Muradnagar Upazila Health Complex, Cumilla",Chittagong,Cumilla,Muradnagar,50
+354,"Chhagalnaya Upazila Health Complex, Feni",Chittagong,Feni,Chhagalnaiya,50
+355,"Parsuram Upazila Health Complex, Feni",Chittagong,Feni,Parshuram,50
+356,"Raipur Upazila Health Complex, Lakshmipur",Chittagong,Lakshmipur,Roypur,50
+357,"Begumganj Upazila Health Complex, Noakhali",Chittagong,Noakhali,Begumganj,50
+358,"Chatkhil Upazila Health Complex, Noakhali",Chittagong,Noakhali,Chatkhil,50
+359,"Companiganj Upazila Health Complex, Noakhali",Chittagong,Noakhali,Companiganj,50
+360,"Hatiya Upazila Health Complex, Noakhali",Chittagong,Noakhali,Hatiya,50
+361,"Senbag Upazila Health Complex, Noakhali",Chittagong,Noakhali,Senbagh,50
+362,"Subarnachar Upazila Health Complex, Noakhali",Chittagong,Noakhali,Subarnachar,50
+363,"Dhamrai Upazila Health Complex, Dhaka",Dhaka,Dhaka,Dhamrai,50
+364,"Dohar Upazila Health Complex, Dhaka",Dhaka,Dhaka,Dohar,50
+365,"Nawabganj Upazila Health Complex, Dhaka",Dhaka,Dhaka,Nawabganj,50
+366,"Savar Upazila Health Complex, Dhaka",Dhaka,Dhaka,Savar,50
+367,"Bhanga Upazila Health Complex, Faridpur",Dhaka,Faridpur,Bhanga,50
+368,"Boalmari Upazila Health Complex, Faridpur",Dhaka,Faridpur,Boalmari,50
+369,"Nagarkanda Upazila Health Complex, Faridpur",Dhaka,Faridpur,Nagarkanda,50
+370,"Kaliganj Upazila Health Complex, Gazipur",Dhaka,Gazipur,Kaliganj,50
+371,"Kapasia Upazila Health Complex, Gazipur",Dhaka,Gazipur,Kapasia,50
+372,"Kashiani Upazila Health Complex, Gopalganj",Dhaka,Gopalganj,Kashiani,50
+373,"Bhairab Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Bhairab,50
+374,"Karimganj Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Karimganj,50
+375,"Tarail Upazila Health Complex, Kishorgonj",Dhaka,Kishorgonj,Tarail,50
+376,"Shibchar Upazila Health Complex, Madaripur",Dhaka,Madaripur,Shibchar,50
+377,"Gazaria Upazila Health Complex, Munshiganj",Dhaka,Munshiganj,Gazaria,50
+378,"Louhajang Upazila Health Complex, Munshiganj",Dhaka,Munshiganj,Lohajang,50
+379,"Serajdikhan Upazila Health Complex, Munshiganj",Dhaka,Munshiganj,Serajdikhan,50
+380,"Sreenagar Upazila Health Complex, Munshiganj",Dhaka,Munshiganj,Sreenagar,50
+381,"Tungibari Upazila Health Complex, Munshiganj",Dhaka,Munshiganj,Tongibari,50
+382,"Monohardi Upazila Health Complex, Narsingdi",Dhaka,Narsingdi,Manohardi,50
+383,"Goalanda Upazila Health Complex, Rajbari",Dhaka,Rajbari,Goalanda,50
+384,"Pangsha Upazila Health Complex, Rajbari",Dhaka,Rajbari,Pangsha,50
+385,"Basail Upazila Health Complex, Tangail",Dhaka,Tangail,Basail,50
+386,"Dhanbari Upazila Health Complex, Tangail",Dhaka,Tangail,Dhanbari,50
+387,"Ghatail Upazila Health Complex, Tangail",Dhaka,Tangail,Ghatail,50
+388,"Kalihati Upazila Health Complex, Tangail",Dhaka,Tangail,Kalihati,50
+389,"Modhupur Upazila Health Complex, Tangail",Dhaka,Tangail,Madhupur,50
+390,"Sakhipur Upazila Health Complex, Tangail",Dhaka,Tangail,Sakhipur,50
+391,"Chitalmari Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Chitalmari,50
+392,"Fakirhat Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Fakirhat,50
+393,"Kachua Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Kachua,50
+394,"Mollahat Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Mollahat,50
+395,"Mongla Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Mongla,50
+396,"Rampal Upazila Health Complex, Bagerhat",Khulna,Bagerhat,Rampal,50
+397,"Abhoynagar Upazila Health Complex, Jashore",Khulna,Jashore,Abhaynagar,50
+398,"Chowgacha Upazila Health Complex, Jashore",Khulna,Jashore,Chaugachha,50
+399,"Keshabpur Upazila Health Complex, Jashore",Khulna,Jashore,Keshabpur,50
+400,"Harinakunda Upazila Health Complex, Jhenaidah",Khulna,Jhenaidah,Harinakunda,50
+401,"Kaliganj Upazila Health Complex, Jhenaidah",Khulna,Jhenaidah,Kaliganj,50
+402,"Kotchandpur Upazila Health Complex, Jhenaidah",Khulna,Jhenaidah,Kotchandpur,50
+403,"Moheshpur Upazila Health Complex, Jhenaidah",Khulna,Jhenaidah,Maheshpur,50
+404,"Dacope Upazila Health Complex, Khulna",Khulna,Khulna,Dacope,50
+405,"Fultala Upazila Health Complex, Khulna",Khulna,Khulna,Phultala,50
+406,"Bheramara Upazila Health Complex, Kushtia",Khulna,Kushtia,Bheramara,50
+407,"Daulatpur Upazila Health Complex, Kushtia",Khulna,Kushtia,Daulatpur,50
+408,"Mirpur Upazila Health Complex, Kushtia",Khulna,Kushtia,Mirpur,50
+409,"Gangni Upazila Health Complex, Meherpur",Khulna,Meherpur,Gangni,50
+410,"Kalia Upazila Health Complex, Narail",Khulna,Narail,Kalia,50
+411,"Kalaroa Upazila Health Complex, Satkhira",Khulna,Satkhira,Kalaroa,50
+412,"Shyamnagar Upazila Health Complex, Satkhira",Khulna,Satkhira,Shyamnagar,50
+413,"Tala Upazila Health Complex, Satkhira",Khulna,Satkhira,Tala,50
+414,"Islampur Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Islampur,50
+415,"Melandaha Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Melandaha,50
+416,"Sarishabari Upazila Health Complex, Jamalpur",Mymensingh,Jamalpur,Sarishabari,50
+417,"Gofargaon Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Gaffargaon,50
+418,"Iswarganj Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Ishwarganj,50
+419,"Nandail Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Nandail,50
+420,"Phulpur Upazila Health Complex, Mymensingh, Mymensingh",Mymensingh,Mymensingh,Phulpur,50
+421,"Trisal Upazila Health Complex, Mymensingh",Mymensingh,Mymensingh,Trishal,50
+422,"Kalmakanda Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Kalmakanda,50
+423,"Kendua Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Kendua,50
+424,"Madan Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Madan,50
+425,"Mohanganj Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Mohanganj,50
+426,"Purbadhala Upazila Health Complex, Netrakona",Mymensingh,Netrakona,Purbadhala,50
+427,"Adamdighi Upazila Health Complex, Bogura",Rajshahi,Bogura,Adamdighi,50
+428,"Dhunat Upazila Health Complex, Bogura",Rajshahi,Bogura,Dhunat,50
+429,"Gabtali Upazila Health Complex, Bogura",Rajshahi,Bogura,Gabtali,50
+430,"Kahaloo Upazila Health Complex, Bogura",Rajshahi,Bogura,Kahaloo,50
+431,"Sariakandi Upazila Health Complex, Bogura",Rajshahi,Bogura,Sariakandi,50
+432,"Shibganj Upazila Health Complex, Bogra., Bogura",Rajshahi,Bogura,Shibganj,50
+433,"Sonatala Upazila Health Complex, Bogura",Rajshahi,Bogura,Sonatola,50
+434,"Shibganj Upazila Health Complex, Chapai Nawabganj",Rajshahi,Chapai Nawabganj,Shibganj,50
+435,"Akkelpur Upazila Health Complex, Joypurhat",Rajshahi,Joypurhat,Akkelpur,50
+436,"Kalai Upazila Health Complex, Joypurhat",Rajshahi,Joypurhat,Kalai,50
+437,"Badalgachi Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Badalgachhi,50
+438,"Dhamairhat Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Dhamoirhat,50
+439,"Mohadevpur Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Mahadebpur,50
+440,"Manda Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Manda,50
+441,"Patnitala Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Patnitala,50
+442,"Sapahar Upazila Health Complex, Naogaon",Rajshahi,Naogaon,Sapahar,50
+443,"Lalpur Upazila Health Complex, Natore",Rajshahi,Natore,Lalpur,50
+444,"Chatmohar Upazila Health Complex, Pabna",Rajshahi,Pabna,Chatmohar,50
+445,"Faridpur Upazila Health Complex, Pabna",Rajshahi,Pabna,Faridpur,50
+446,"Sujanagar Upazila Health Complex, Pabna",Rajshahi,Pabna,Sujanagar,50
+447,"Charghat Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Charghat,50
+448,"Durgapur Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Durgapur,50
+449,"Puthia Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Puthia,50
+450,"Tanore Upazila Health Complex, Rajshahi",Rajshahi,Rajshahi,Tanore,50
+451,"Bochaganj Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Bochaganj,50
+452,"Parbatipur Upazila Health Complex, Dinajpur",Rangpur,Dinajpur,Parbatipur,50
+453,"Gobindaganj Upazila Health Complex, Gaibandha",Rangpur,Gaibandha,Gobindaganj,50
+454,"Chilmari Upazila Health Complex, Kurigram",Rangpur,Kurigram,Chilmari,50
+455,"Ulipur Upazila Health Complex, Kurigram",Rangpur,Kurigram,Ulipur,50
+456,"Kaliganj Upazila Health Complex, Lalmonirhat",Rangpur,Lalmonirhat,Kaliganj,50
+457,"Dimla Upazila Health Complex, Nilphamari",Rangpur,Nilphamari,Dimla,50
+458,"Domar Upazila Health Complex, Nilphamari",Rangpur,Nilphamari,Domar,50
+459,"Boda Upazila Health Complex, Panchagarh",Rangpur,Panchagarh,Boda,50
+460,"Debiganj Upazila Health Complex, Panchagarh",Rangpur,Panchagarh,Debiganj,50
+461,"Tetulia Upazila Health Complex, Panchagarh",Rangpur,Panchagarh,Tentulia,50
+462,"Gangachara Upazila Health Complex, Rangpur",Rangpur,Rangpur,Gangachara,50
+463,"Mithapukur Upazila Health Complex, Rangpur",Rangpur,Rangpur,Mithapukur,50
+464,"Pirganj Upazila Health Complex, Rangpur",Rangpur,Rangpur,Pirganj,50
+465,"Baliadangi Upazila Health Complex, Thakurgaon",Rangpur,Thakurgaon,Baliadangi,50
+466,"Haripur Upazila Health Complex, Thakurgaon",Rangpur,Thakurgaon,Haripur,50
+467,"Ranisankhail Upazila Health Complex, Thakurgaon",Rangpur,Thakurgaon,Ranisankail,50
+468,"Madhabpur Upazila Health Complex, Habiganj",Sylhet,Habiganj,Madhabpur,50
+469,"Kulaura Upazila Health Complex, Maulvibazar",Sylhet,Maulvibazar,Kulaura,50
+470,"Jagannathpur Upazila Health Complex, Sunamganj",Sylhet,Sunamganj,Jagannathpur,50
+471,"Beanibazar Upazila Health Complex, Sylhet",Sylhet,Sylhet,Beanibazar,50
+472,"Golapganj Upazila Health Complex, Sylhet",Sylhet,Sylhet,Golapganj,50
+473,"Gowainghat Upazila Health Complex, Sylhet",Sylhet,Sylhet,Gowainghat,50
+474,Barguna District Hospital,Barisal,Barguna,Barguna Sadar,100
+475,Barisal General Hospital,Barisal,Barishal,Barisal Sadar (kotwali),100
+476,Bhola District Hospital,Barisal,Bhola,Bhola Sadar,100
+477,Jhalokathi District Hospital,Barisal,Jhalokati,Jhalokati Sadar,100
+478,Pirojpur District Hospital,Barisal,Pirojpur,Pirojpur Sadar,100
+479,Bandarban District Hospital,Chittagong,Bandarban,Bandarban Sadar,100
+480,Comilla General Hospital,Chittagong,Cumilla,Comilla Adarsha Sadar,100
+481,Khagrachari District Hospital,Chittagong,Khagrachhari,Khagrachhari Sadar,100
+482,Lakshmipur District Hospital,Chittagong,Lakshmipur,Lakshmipur Sadar,100
+483,Rangamati General Hospital,Chittagong,Rangamati,Rangamati Sadar Up,100
+484,Faridpur General Hospital,Dhaka,Faridpur,Faridpur Sadar,100
+485,Madaripur District Hospital,Dhaka,Madaripur,Madaripur Sadar,100
+486,Narayanganj General (Victoria) Hospital,Dhaka,Narayanganj,Narayanganj Sadar,100
+487,Narsingdi District Hospital,Dhaka,Narsingdi,Narsingdi Sadar,100
+488,Rajbari District Hospital,Dhaka,Rajbari,Rajbari Sadar,100
+489,Shariatpur District Hospital,Dhaka,Shariatpur,Shariatpur Sadar,100
+490,Bagerhat District Hospital,Khulna,Bagerhat,Bagerhat Sadar,100
+491,Chuadanga District Hospital,Khulna,Chuadanga,Chuadanga Sadar,100
+492,Jhenaidah District Hospital,Khulna,Jhenaidah,Jhenaidah Sadar,100
+493,Narail District Hospital,Khulna,Narail,Narail Sadar,100
+494,Satkhira District Hospital,Khulna,Satkhira,Satkhira Sadar,100
+495,Netrokona District Hospital,Mymensingh,Netrakona,Netrokona Sadar,100
+496,Sherpur District Hospital,Mymensingh,Sherpur,Sherpur Sadar,100
+497,Chapai Nababganj District Hospital,Rajshahi,Chapai Nawabganj,Chapai Nababganj Sadar,100
+498,Naogaon District Hospital,Rajshahi,Naogaon,Naogaon Sadar,100
+499,Natore District Hospital,Rajshahi,Natore,Natore Sadar,100
+500,Lalmonirhat District Hospital,Rangpur,Lalmonirhat,Lalmonirhat Sadar,100
+501,Nilphamari District Hospital,Rangpur,Nilphamari,Nilphamari Sadar,100
+502,Panchagarh District Hospital,Rangpur,Panchagarh,Panchagarh Sadar,100
+503,Thakurgaon District Hospital,Rangpur,Thakurgaon,Thakurgaon Sadar,100
+504,Sylhet Shahid Shamsuddin Ahmed District Hospital,Sylhet,Sylhet,Sylhet Sadar,100
+505,Joypurhat District Hospital,Rajshahi,Joypurhat,Joypurhat Sadar,150
+506,Gaibandha 200 bed Hospital,Rangpur,Gaibandha,Gaibandha Sadar,200
+507,Patuakhali Sadar Hospital,Barisal,Patuakhali,Patuakhali Sadar,250
+508,Brahmanbaria District Sadar Hospital,Chittagong,Brahmanbaria,Brahmanbaria Sadar,250
+509,Chandpur General Hospital,Chittagong,Chandpur,Chandpur Sadar,250
+510,Chittagong General Hospital,Chittagong,Chattogram,Kotwali,250
+511,Cox's Bazar District Sadar Hospital,Chittagong,Cox's Bazar,Cox's Bazar Sadar,250
+512,Feni District Sadar Hospital,Chittagong,Feni,Feni Sadar,250
+513,Noakhali General Hospital,Chittagong,Noakhali,Noakhali Sadar,250
+514,Gopalganj General Hospital,Dhaka,Gopalganj,Gopalganj Sadar,250
+515,Kishoreganj District Sadar Hospital,Dhaka,Kishorgonj,Kishoreganj Sadar,250
+516,Manikganj District Hospital,Dhaka,Manikganj,Manikganj Sadar,250
+517,Munshiganj District Hospital,Dhaka,Munshiganj,Munshiganj Sadar,250
+518,Tangail District Hospital,Dhaka,Tangail,Tangail Sadar,250
+519,Jessore General Hospital,Khulna,Jashore,Jessore Sadar,250
+520,"Khulna General Hospital, Khulna",Khulna,Khulna,Khulna Sadar,250
+521,Kushtia General Hospital,Khulna,Kushtia,Kushtia Sadar,250
+522,Magura District Hospital,Khulna,Magura,Magura Sadar,250
+523,Meherpur District Hospital,Khulna,Meherpur,Meherpur Sadar,250
+524,Jamalpured General Hospital,Mymensingh,Jamalpur,Jamalpur Sadar,250
+525,Bogra Mohammad Ali District Hospital,Rajshahi,Bogura,Bogra Sadar,250
+526,Pabna General Hospital,Rajshahi,Pabna,Pabna Sadar,250
+527,Sirajganj General Hospital,Rajshahi,Sirajganj,Sirajganj Sadar,250
+528,Dinajpur General Hospital,Rangpur,Dinajpur,Dinajpur Sadar,250
+529,Kurigram District Hospital,Rangpur,Kurigram,Kurigram Sadar,250
+530,Habiganj District Hospital,Sylhet,Habiganj,Habiganj Sadar,250
+531,Moulvibazar District Sadar Hospital,Sylhet,Maulvibazar,Maulvibazar Sadar,250
+532,Sunamganj District Sadar Hospital,Sylhet,Sunamganj,Sunamganj Sadar,250
+533,Kurmitola 500 Bed General Hospital,Dhaka,Dhaka,Cantonment,500
+534,"Mugda 500 Bed General Hospital, Dhaka",Dhaka,Dhaka,Mugda Para,500
+535,Cox's Bazar Medical College Hospital,Chittagong,Cox's Bazar,Cox's Bazar Sadar,500
+536,Cumilla Medical College Hospital,Chittagong,Cumilla,Comilla Adarsha Sadar,500
+537,"Mugda Medical College Hospital, Dhaka",Dhaka,Dhaka,Mugda Para,500
+538,Faridpur Medical College Hospital,Dhaka,Faridpur,Faridpur Sadar,500
+539,"Shaheed Tajuddin Ahmad Medical College Hospital, Gazipur",Dhaka,Gazipur,Gazipur Sadar,500
+540,Shahid Syed Nazrul Islam Medical College Hospital,Dhaka,Kishorgonj,Kishoreganj Sadar,500
+541,"Sheikh Hasina Medical College Hospital, Tangail",Dhaka,Tangail,Tangail Sadar,500
+542,Khulna Medical College Hospital,Khulna,Khulna,Sonadanga,500
+543,Satkhira Medical College Hospital,Khulna,Satkhira,Satkhira Sadar,500
+544,"Shaheed Ziaur Rahman Medical College Hospital, Bogra",Rajshahi,Bogura,Bogra Sadar,500
+545,M Abdur Rahim Medical College Hospital,Rangpur,Dinajpur,Dinajpur Sadar,500
+546,Sher-e-bangla Medical College Hospital,Barisal,Barishal,Barisal Sadar (kotwali),1500
+547,Chittagong Medical College Hospital,Chittagong,Chattogram,Panchlaish,1500
+548,Sir Salimullah Medical College Hospital,Dhaka,Dhaka,Kotwali,1500
+549,Mymensingh Medical College Hospital,Mymensingh,Mymensingh,Mymensingh Sadar,1500
+550,Rajshahi Medical College Hospital,Rajshahi,Rajshahi,Rajpara,1500
+551,Rangpur Medical College Hospital,Rangpur,Rangpur,Rangpur Sadar,1500
+552,Sylhet MAG Osmani Medical College Hospital,Sylhet,Sylhet,Sylhet Sadar,1500

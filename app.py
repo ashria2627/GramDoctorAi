@@ -2,6 +2,7 @@ import os
 from io import BytesIO
 
 import streamlit as st
+import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
@@ -20,7 +21,139 @@ st.set_page_config(
     page_icon="🩺",
     layout="centered"
 )
+st.markdown("""
+<style>
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+
+/* Base */
+html, body, p, span, div, label,
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+}
+# * {
+#     font-family: 'Montserrat', sans-serif !important;
+# }
+
+.bangla, [lang="bn"] {
+    font-family: 'Anek Bangla', sans-serif !important;
+}
+
+/* Title */
+h1 { 
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(90deg, #3DD68C, #58A6FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0 !important;
+}
+
+/* Subtitle */
+h2 { 
+    margin: 0.5rem 0 !important;
+}
+/*Sidebar*/
+.css-1d391kg, [data-testid="stSidebar"] {
+    background-color: #161B22 !important;
+    border-right: 1px solid #21262D !important;
+}
+/* Warning box — replace ugly yellow */
+.stAlert {
+    background-color: #161B22 !important;
+    border: 1px solid #30363D !important;
+    border-left: 4px solid #F0883E !important;
+    border-radius: 8px !important;
+    color: #8B949E !important;
+    font-size: 0.85rem !important;
+    margin : 0.8rem 0;
+}
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: #161B22;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 5px;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 8px;
+    color: #8B949E;
+    font-weight: 500;
+    padding: 8px 20px;
+}
+.stTabs [aria-selected="true"] {
+    background-color: #21262D !important;
+    color: #E6EDF3 !important;
+}
+
+/* Inputs */
+.stSelectbox > div, .stNumberInput > div, .stTextArea > div {
+    font-size: 1rem !important;
+    background-color: #161B22 !important;
+    border: 1px solid #30363D !important;
+    border-radius: 8px !important;
+    color: #E6EDF3 !important;
+}
+
+/* Section headers */
+h2 {
+    color:   #2D94B3 !important;
+    font-size: 1.6rem !important;
+    font-weight: 600 !important;
+    margin: 24px 0 !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid #21262D !important;
+}
+h3 {
+    color:   #b81919 !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin: 24px 0 !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid #21262D !important;
+}
+
+/* Multiselect */
+.stMultiSelect > div {
+    background-color: #161B22 !important;
+    border: 1px solid #30363D !important;
+    border-radius: 8px !important;
+}
+.stMultiSelect span {
+    background-color: #1F6FEB22 !important;
+    color: #58A6FF !important;
+    border-radius: 4px !important;
+}
+
+/* Success/Warning/Error cards */
+.stSuccess {
+    background-color: #0D1117 !important;
+    border: 1px solid #238636 !important;
+    border-left: 4px solid #3DD68C !important;
+    border-radius: 8px !important;
+}
+.stWarning {
+    background-color: #0D1117 !important;
+    border: 1px solid #9E6A03 !important;
+    border-left: 4px solid #F0883E !important;
+    border-radius: 8px !important;
+}
+.stError {
+    background-color: #0D1117 !important;
+    border: 1px solid #DA3633 !important;
+    border-left: 4px solid #F85149 !important;
+    border-radius: 8px !important;
+}
+
+
+
+
+</style>
+""", unsafe_allow_html=True)
+
+df = pd.read_csv("assets/Hospitals_count_Upazilawise.csv")
 
 TEXTS = {
     "English": {
@@ -90,7 +223,11 @@ today the weather is good
         "generating": "Generating AI explanation...",
         "ai_title": "AI Explanation and Referral Note",
         "download_pdf": "Download Referral Note PDF",
-        "pdf_filename": "gramdoctor_referral_note.pdf",
+        "pdf_filename": "gramdoctor_referral_note.pdf","division": "Select Division",
+        "district": "Select District",
+        "upazila": "Select Upazila",
+        "hospitals": "Hospitals",
+        "beds": "Beds"
     },
     "বাংলা": {
         "title": "GramDoctor AI",
@@ -159,7 +296,11 @@ today the weather is good
         "generating": "AI ব্যাখ্যা তৈরি হচ্ছে...",
         "ai_title": "AI ব্যাখ্যা ও রেফারেল নোট",
         "download_pdf": "Referral Note PDF ডাউনলোড করুন",
-        "pdf_filename": "gramdoctor_referral_note.pdf",
+        "pdf_filename": "gramdoctor_referral_note.pdf", "division": "বিভাগ নির্বাচন করুন",
+        "district": "জেলা নির্বাচন করুন",
+        "upazila": "উপজেলা নির্বাচন করুন",
+        "hospitals": "হাসপাতালসমূহ",
+        "beds": "শয্যা"
     }
 }
 
@@ -569,7 +710,13 @@ def create_referral_pdf(ai_response, triage_result, symptoms):
     buffer.seek(0)
     return buffer
 
-
+def get_recommended_hospitals(filtered_final, n=5):
+    return (
+        filtered_final
+        .sort_values("No. of Bed", ascending=False)
+        .head(n)[["Organization Name", "No. of Bed"]]
+        .to_dict("records")
+    )
 @st.cache_resource
 def load_resources():
     return load_model_and_features()
@@ -612,7 +759,8 @@ if "ai_response" not in st.session_state:
 
 if "voice_text" not in st.session_state:
     st.session_state.voice_text = ""
-
+if "filtered_final" not in st.session_state:
+    st.session_state.filtered_final = None
 
 tab1, tab2 = st.tabs([t["tab_form"], t["tab_result"]])
 
@@ -635,16 +783,37 @@ with tab1:
         t["sex"],
         [t["male"], t["female"]]
     )
-
     with col3:
      pregnancy_display = st.selectbox(
         t["pregnancy"],
         [t["not_applicable"], t["no"], t["yes"]]
     )
+    divisions = sorted(df["Division"].dropna().unique())
+    division = col1.selectbox(t["division"], divisions)
+
+    filtered_division = df[df["Division"] == division]
+
+# District
+    districts = sorted(filtered_division["District"].dropna().unique())
+    district = col2.selectbox(t["district"], districts)
+
+    filtered_district = filtered_division[filtered_division["District"] == district]
+
+# Upazila
+    upazilas = sorted(filtered_district["Upazila"].dropna().unique())
+    upazila = col3.selectbox(t["upazila"], upazilas)
+
+    filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
+    st.subheader(t["hospitals"])
+    for _, row in filtered_final.iterrows():
+      st.write(f"🏥 {row['Organization Name']} | {t['beds']}: {row['No. of Bed']}")
+  
+    
     bangla_text = st.text_area(
         t["text_input"],
         placeholder=t["text_placeholder"]
     )
+    
 
     st.subheader(t["voice_input"])
     st.caption(t["voice_help"])
@@ -712,6 +881,7 @@ with tab1:
         st.text_area(t["uploaded_preview"], uploaded_text, height=150)
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
+        st.session_state.filtered_final = filtered_final
         symptoms = {}
 
         symptoms["age"] = int(age)
@@ -769,7 +939,16 @@ with tab2:
 
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
+        if result["color"] in ["red", "orange"]:
+         if st.session_state.filtered_final is not None:
 
+          hospitals = get_recommended_hospitals( st.session_state.filtered_final )
+          st.subheader("Recommended Hospitals")
+
+          for hospital in hospitals:
+           st.write(
+            f"🏥 {hospital['Organization Name']} | Beds: {hospital['No. of Bed']}"
+        )
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
     if language == "বাংলা"

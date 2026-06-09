@@ -123,11 +123,17 @@ def predict_triage(symptoms, model, feature_cols):
     ]
 
     
-    if len(active_symptoms) < 2:
+    if len(active_symptoms) < 1:
         return {
             "color": "grey",
             "source": "Minimum symptom threshold",
             "message": "Too few symptoms. Monitor or visit clinic if persists."
+        }
+    if len(active_symptoms) < 2:
+        return {
+            "color": "green",
+            "source": "Symptom threshold",
+            "message": "You are fine. Drink water and take rest !"
         }
     
     red_result = check_red_flags(symptoms)
