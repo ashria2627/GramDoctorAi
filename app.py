@@ -217,6 +217,7 @@ today the weather is good
         "detected_symptoms": "Detected Symptoms",
         "no_symptoms": "No specific symptom detected from the current input.",
         "refer_to": "Refer to:",
+        "alternate_referral": "If not available, see:",
         "generate_ai": "Generate AI Explanation",
         "generating": "Generating AI explanation...",
         "ai_title": "AI Explanation and Referral Note",
@@ -296,6 +297,7 @@ today the weather is good
         "detected_symptoms": "সনাক্ত হওয়া লক্ষণ",
         "no_symptoms": "বর্তমান ইনপুট থেকে নির্দিষ্ট কোনো লক্ষণ পাওয়া যায়নি।",
         "refer_to": "রেফার করুন:",
+        "alternate_referral": "না পেলে বিকল্প হিসেবে দেখান:",
         "generate_ai": "AI ব্যাখ্যা তৈরি করুন",
         "generating": "AI ব্যাখ্যা তৈরি হচ্ছে...",
         "ai_title": "AI ব্যাখ্যা ও রেফারেল নোট",
@@ -502,35 +504,220 @@ def create_gray_result(language):
     }
 
 
-def get_specialist_referral(triage_result, symptoms):
+def get_specialist_referral(triage_result, symptoms, language):
     color = normalize_color(triage_result.get("color", "gray"))
     active = set(get_active_symptom_keys(symptoms))
 
-    cardiac_symptoms = {
-        "sharp chest pain",
-        "chest tightness",
-        "palpitations",
-        "irregular heartbeat",
-        "sweating",
-        "arm pain",
+    if color == "green":
+        return None, None
+
+    specialists = {
+        "Emergency": {
+            "English": "Emergency Department",
+            "বাংলা": "জরুরি বিভাগ"
+        },
+        "General Physician": {
+            "English": "General Physician",
+            "বাংলা": "জেনারেল ফিজিশিয়ান"
+        },
+        "Cardiologist": {
+            "English": "Cardiologist",
+            "বাংলা": "হৃদরোগ বিশেষজ্ঞ"
+        },
+        "Neurologist": {
+            "English": "Neurologist",
+            "বাংলা": "স্নায়ুরোগ বিশেষজ্ঞ"
+        },
+        "Pulmonologist": {
+            "English": "Pulmonologist",
+            "বাংলা": "বক্ষব্যাধি বিশেষজ্ঞ"
+        },
+        "Gastroenterologist": {
+            "English": "Gastroenterologist",
+            "বাংলা": "পরিপাকতন্ত্র বিশেষজ্ঞ"
+        },
+        "Nephrologist": {
+            "English": "Nephrologist",
+            "বাংলা": "কিডনি বিশেষজ্ঞ"
+        },
+        "Urologist": {
+            "English": "Urologist",
+            "বাংলা": "মূত্ররোগ বিশেষজ্ঞ"
+        },
+        "Endocrinologist": {
+            "English": "Endocrinologist",
+            "বাংলা": "হরমোন ও ডায়াবেটিস বিশেষজ্ঞ"
+        },
+        "Dermatologist": {
+            "English": "Dermatologist",
+            "বাংলা": "চর্মরোগ বিশেষজ্ঞ"
+        },
+        "ENT Specialist": {
+            "English": "ENT Specialist",
+            "বাংলা": "নাক-কান-গলা বিশেষজ্ঞ"
+        },
+        "Ophthalmologist": {
+            "English": "Ophthalmologist",
+            "বাংলা": "চক্ষু বিশেষজ্ঞ"
+        },
+        "Dentist": {
+            "English": "Dentist",
+            "বাংলা": "দন্ত চিকিৎসক"
+        },
+        "Gynecologist": {
+            "English": "Gynecologist / Obstetrician",
+            "বাংলা": "প্রসূতি ও স্ত্রীরোগ বিশেষজ্ঞ"
+        },
+        "Pediatrician": {
+            "English": "Pediatrician",
+            "বাংলা": "শিশু বিশেষজ্ঞ"
+        },
+        "Orthopedic Specialist": {
+            "English": "Orthopedic Specialist",
+            "বাংলা": "হাড়-জোড়া বিশেষজ্ঞ"
+        },
+        "Psychiatrist": {
+            "English": "Psychiatrist",
+            "বাংলা": "মানসিক রোগ বিশেষজ্ঞ"
+        },
+        "General Surgeon": {
+            "English": "General Surgeon",
+            "বাংলা": "জেনারেল সার্জন"
+        },
     }
 
-    if color == "green":
-        return None
+    def doctor(name):
+        return specialists[name][language]
+
+    general_physician = doctor("General Physician")
 
     if color == "red":
-        return "Emergency"
+        return doctor("Emergency"), general_physician
+
+    cardiac_symptoms = {
+        "sharp chest pain", "chest pain", "chest tightness",
+        "palpitations", "irregular heartbeat", "sweating", "arm pain"
+    }
+
+    neuro_symptoms = {
+        "headache", "seizures", "fainting", "slurring words",
+        "blindness", "diminished vision", "weakness", "loss of sensation"
+    }
+
+    respiratory_symptoms = {
+        "cough", "shortness of breath", "wheezing",
+        "coughing up sputum", "hemoptysis"
+    }
+
+    gi_symptoms = {
+        "sharp abdominal pain", "lower abdominal pain", "vomiting",
+        "nausea", "diarrhea", "burning abdominal pain", "blood in stool"
+    }
+
+    urinary_symptoms = {
+        "painful urination", "frequent urination",
+        "blood in urine", "involuntary urination"
+    }
+
+    kidney_symptoms = {
+        "leg swelling", "facial swelling", "decreased urination"
+    }
+
+    endocrine_symptoms = {
+        "increased thirst", "frequent urination", "weight gain",
+        "weight loss", "fatigue", "excessive appetite"
+    }
+
+    skin_symptoms = {
+        "skin rash", "itching of skin", "skin swelling",
+        "acne", "skin lesion", "changes in skin color"
+    }
+
+    ent_symptoms = {
+        "sore throat", "ear pain", "hearing loss",
+        "nasal congestion", "runny nose", "hoarse voice"
+    }
+
+    eye_symptoms = {
+        "eye pain", "redness in eye", "diminished vision", "blindness"
+    }
+
+    dental_symptoms = {
+        "tooth pain", "gum pain", "mouth ulcer", "jaw pain"
+    }
+
+    gynae_symptoms = {
+        "pelvic pain", "lower abdominal pain", "heavy menstrual flow",
+        "irregular periods", "spotting or bleeding during pregnancy"
+    }
+
+    ortho_symptoms = {
+        "back pain", "leg pain", "arm pain", "knee pain",
+        "joint pain", "neck pain", "hip pain"
+    }
+
+    psych_symptoms = {
+        "depressive or psychotic symptoms", "anxiety and nervousness",
+        "insomnia", "low mood"
+    }
+
+    surgical_symptoms = {
+        "sharp abdominal pain", "pain in testicles",
+        "rectal bleeding", "vomiting blood"
+    }
 
     if active.intersection(cardiac_symptoms):
-        return "Cardiologist"
+        return doctor("Cardiologist"), general_physician
 
-    if color == "gray":
-        return "Clarify symptoms"
+    if active.intersection(neuro_symptoms):
+        return doctor("Neurologist"), general_physician
 
-    return "General Physician"
+    if active.intersection(respiratory_symptoms):
+        return doctor("Pulmonologist"), general_physician
+
+    if active.intersection(gi_symptoms):
+        return doctor("Gastroenterologist"), general_physician
+
+    if active.intersection(urinary_symptoms):
+        return doctor("Urologist"), general_physician
+
+    if active.intersection(kidney_symptoms):
+        return doctor("Nephrologist"), general_physician
+
+    if active.intersection(endocrine_symptoms):
+        return doctor("Endocrinologist"), general_physician
+
+    if active.intersection(skin_symptoms):
+        return doctor("Dermatologist"), general_physician
+
+    if active.intersection(ent_symptoms):
+        return doctor("ENT Specialist"), general_physician
+
+    if active.intersection(eye_symptoms):
+        return doctor("Ophthalmologist"), general_physician
+
+    if active.intersection(dental_symptoms):
+        return doctor("Dentist"), general_physician
+
+    if symptoms.get("ispregnant", 2) == 1 or active.intersection(gynae_symptoms):
+        return doctor("Gynecologist"), general_physician
+
+    if symptoms.get("age", 30) < 13:
+        return doctor("Pediatrician"), general_physician
+
+    if active.intersection(ortho_symptoms):
+        return doctor("Orthopedic Specialist"), general_physician
+
+    if active.intersection(psych_symptoms):
+        return doctor("Psychiatrist"), general_physician
+
+    if active.intersection(surgical_symptoms):
+        return doctor("General Surgeon"), general_physician
+
+    return general_physician, None
 
 
-def get_tts_summary_bangla(triage_result, symptoms, referral):
+def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral=None):
     color = normalize_color(triage_result.get("color", "gray"))
     active = get_active_symptom_keys(symptoms)
 
@@ -548,13 +735,6 @@ def get_tts_summary_bangla(triage_result, symptoms, referral):
         "gray": "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।",
     }.get(color, "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।")
 
-    bangla_referral = {
-        "Emergency": "ইমার্জেন্সি",
-        "Cardiologist": "কার্ডিওলজিস্ট",
-        "General Physician": "জেনারেল ফিজিশিয়ান",
-        "Clarify symptoms": "লক্ষণ স্পষ্ট করুন",
-    }.get(referral, referral)
-
     if active:
         symptom_text = ", ".join([BANGLA_FEATURES.get(s, s) for s in active[:6]])
     else:
@@ -566,7 +746,10 @@ def get_tts_summary_bangla(triage_result, symptoms, referral):
     )
 
     if referral:
-        summary += f"রেফার করুন: {bangla_referral}. "
+        summary += f"রেফার করুন: {referral}. "
+
+    if alternate_referral:
+        summary += f"না পেলে বিকল্প হিসেবে দেখান: {alternate_referral}. "
 
     summary += bangla_action
 
@@ -637,7 +820,7 @@ def extract_english_referral_note(ai_response):
     return ai_response
 
 
-def create_referral_pdf(ai_response, triage_result, symptoms, referral):
+def create_referral_pdf(ai_response, triage_result, symptoms, referral, alternate_referral=None):
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -654,6 +837,10 @@ def create_referral_pdf(ai_response, triage_result, symptoms, referral):
 
     if referral:
         pdf.drawString(50, y, f"Refer to: {referral}")
+        y -= 18
+
+    if alternate_referral:
+        pdf.drawString(50, y, f"If not available, see: {alternate_referral}")
         y -= 18
 
     pdf.drawString(50, y, f"Decision Source: {triage_result.get('source', 'unknown')}")
@@ -791,6 +978,9 @@ if "filtered_final" not in st.session_state:
 
 if "referral" not in st.session_state:
     st.session_state.referral = None
+
+if "alternate_referral" not in st.session_state:
+    st.session_state.alternate_referral = None
 
 
 if st.session_state.go_to_result:
@@ -967,11 +1157,12 @@ if page == "form":
 
         result["color"] = normalize_color(result.get("color", "gray"))
 
-        referral = get_specialist_referral(result, symptoms)
+        referral, alternate_referral = get_specialist_referral(result, symptoms, language)
 
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
         st.session_state.referral = referral
+        st.session_state.alternate_referral = alternate_referral
         st.session_state.ai_response = None
         st.session_state.go_to_result = True
 
@@ -987,7 +1178,16 @@ if page == "result":
     else:
         result = st.session_state.triage_result
         color = normalize_color(result["color"])
-        referral = st.session_state.referral or get_specialist_referral(result, st.session_state.symptoms)
+
+        if st.session_state.referral:
+            referral = st.session_state.referral
+            alternate_referral = st.session_state.alternate_referral
+        else:
+            referral, alternate_referral = get_specialist_referral(
+                result,
+                st.session_state.symptoms,
+                language
+            )
 
         show_triage_card(color, language)
 
@@ -996,6 +1196,9 @@ if page == "result":
 
         if referral:
             st.markdown(f"**{t['refer_to']} {referral}**")
+
+        if alternate_referral:
+            st.markdown(f"**{t['alternate_referral']} {alternate_referral}**")
 
         active_symptoms = get_active_symptom_keys(st.session_state.symptoms)
 
@@ -1020,7 +1223,12 @@ if page == "result":
 
         if st.button(t["listen_result"], key="listen_result_button"):
             try:
-                summary_text = get_tts_summary_bangla(result, st.session_state.symptoms, referral)
+                summary_text = get_tts_summary_bangla(
+                    result,
+                    st.session_state.symptoms,
+                    referral,
+                    alternate_referral
+                )
                 audio_buffer = create_tts_audio(summary_text)
                 st.audio(audio_buffer, format="audio/mp3")
             except Exception:
@@ -1052,7 +1260,8 @@ if page == "result":
                     st.session_state.ai_response,
                     st.session_state.triage_result,
                     st.session_state.symptoms,
-                    referral
+                    referral,
+                    alternate_referral
                 )
 
                 st.download_button(
