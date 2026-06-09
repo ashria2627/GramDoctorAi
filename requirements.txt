@@ -1,9 +1,10 @@
 streamlit
 pandas
 scikit-learn
+xgboost
+plotly
 google-genai
 python-dotenv
 streamlit-mic-recorder
 reportlab
-xgboost
-joblib
+gTTS
