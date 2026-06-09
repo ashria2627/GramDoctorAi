@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(90deg, #b81919,#D9705B, #CC998F);
+    background: linear-gradient(90deg, #1E63FF, #4DA3FF, #A7D8FF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0 !important;
@@ -49,7 +49,7 @@ h1 {
 .stAlert {
     background-color: #161B22 !important;
     border: 1px solid #30363D !important;
-    border-left: 4px solid #F0883E !important;
+    border-left: 4px solid #4DA3FF !important;
     border-radius: 8px !important;
     color: #8B949E !important;
     font-size: 0.85rem !important;
@@ -69,21 +69,21 @@ h1 {
 
 .stSelectbox > div, .stNumberInput > div, .stTextArea > div {
     background-color: #161B22 !important;
-    border: 2px solid #821717 !important;
+    border: 2px solid #1E5AA8 !important;
     border-radius: 8px !important;
 }
 
 h2 {
-    color: #b81919 !important;
+    color: #2F80ED !important;
     font-size: 1.6rem !important;
     font-weight: 600 !important;
     margin: 16px 0 !important;
     padding-bottom: 8px !important;
-    border-bottom: 1px solid #8A271E !important;
+    border-bottom: 1px solid #2F80ED !important;
 }
 
 h3 {
-    color: #b81919 !important;
+    color: #2F80ED !important;
     font-size: 1.2rem !important;
     font-weight: 600 !important;
     margin: 10px 0 !important;
@@ -96,13 +96,13 @@ p {
 
 .stMultiSelect > div {
     background-color: #161B22 !important;
-    border: 2px solid #821717 !important;
+    border: 2px solid #1E5AA8 !important;
     border-radius: 8px !important;
 }
 
 .stMultiSelect span {
-    background-color: #821717 !important;
-    color: #EBA4A4 !important;
+    background-color: #1E5AA8 !important;
+    color: #D6E9FF !important;
     border-radius: 4px !important;
 }
 
@@ -128,7 +128,7 @@ p {
 }
 
 .stButton > button {
-    background-color: #AD0505 !important;
+    background-color: #1E63FF !important;
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
@@ -136,11 +136,11 @@ p {
 }
 
 .stButton > button:hover {
-    background-color: #570303 !important;
+    background-color: #003E91 !important;
 }
 
 .stButton > button:active {
-    background-color: #570303 !important;
+    background-color: #003E91 !important;
 }
 </style>
 """, unsafe_allow_html=True)
