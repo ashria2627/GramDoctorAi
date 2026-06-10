@@ -6,4 +6,5 @@ python-dotenv
 streamlit-mic-recorder
 reportlab
 xgboost
-joblib
+plotly
+gTTS
