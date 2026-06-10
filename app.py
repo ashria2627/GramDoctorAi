@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
 }
 # * {
-#     font-family: 'Montserrat','Anek Bangla', sans-serif !important;
+#     font-family: 'Montserrat', sans-serif !important;
 # }
 
 .bangla, [lang="bn"] {
@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(90deg, #26717D,#5FBFCE, #EBF7F9);
+    background: linear-gradient(90deg, #b81919,#D9705B, #CC998F);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0 !important;
@@ -59,10 +59,11 @@ h1 {
 }
 /* Warning box — replace ugly yellow */
 .stAlert {
-    # background-color: #161B22 !important;
-    border: 1px solid #FFF273 !important;
-    border-left: 6px solid #F0883E !important;
-    border-radius: 12px !important;
+    background-color: #161B22 !important;
+    border: 1px solid #30363D !important;
+    border-left: 4px solid #F0883E !important;
+    border-radius: 8px !important;
+    color: #8B949E !important;
     font-size: 0.85rem !important;
     margin : 0.8rem 0;
 }
@@ -75,60 +76,63 @@ h1 {
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px;
-    color: #51D0DB;
+    color: #8B949E;
     font-weight: 500;
     padding: 8px 20px;
 }
 .stTabs [aria-selected="true"] {
-    background-color: #24A2AE !important;
-    color: #EAF9FB !important;
+    background-color: #C20202 !important;
+    color: #E6EDF3 !important;
 }
 
 /* Inputs */
 .stSelectbox > div, .stNumberInput > div, .stTextArea > div {
-    font-size: 1rem !important;
+
     background-color: #161B22 !important;
-    border: 2px solid #82CDD9 !important;
+    border: 2px solid #821717 !important;
     border-radius: 8px !important;
-    margin: auto 10px !important;
 }
 
 /* Section headers */
 h2 {
-    color: #39A7B8 !important;
+    color:   #b81919 !important;
     font-size: 1.6rem !important;
     font-weight: 600 !important;
     margin: 16px 0 !important;
     padding-bottom: 8px !important;
-    border-bottom: 1px solid #71B2BC !important;
+    border-bottom: 1px solid #8A271E !important;
 }
 h3 {
-    color:   #39A7B8 !important;
+    color:   #b81919 !important;
     font-size: 1.2rem !important;
     font-weight: 600 !important;
     margin: 10px 0 !important;
     padding-bottom: 8px !important;
     
 }
-p { 
-    font-size: .96rem !important;
+p {
     font-weight: 500 !important;    
 }
 
 /* Multiselect */
 .stMultiSelect > div {
     background-color: #161B22 !important;
-    border: 2px solid #23B7CF !important;
+    border: 2px solid #821717 !important;
     border-radius: 8px !important;
 }
 .stMultiSelect span {
-    background-color:#23B7CF !important;
-    color: #E9F9FB !important;
+    background-color: #821717 !important;
+    color: #EBA4A4 !important;
     border-radius: 4px !important;
 }
 
 /* Success/Warning/Error cards */
-
+.stSuccess {
+    background-color: #0D1117 !important;
+    border: 1px solid #238636 !important;
+    border-left: 4px solid #3DD68C !important;
+    border-radius: 8px !important;
+}
 .stWarning {
     background-color: #0D1117 !important;
     border: 1px solid #9E6A03 !important;
@@ -150,8 +154,8 @@ div[data-testid="stMultiSelect"] label {
 }
 /* Normal button */
 .stButton > button {
-    background-color:#23B7CF!important;
-    color: #E9F9FB !important;
+    background-color: #AD0505 !important;
+    color: white !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 0.5rem 1rem !important;
@@ -159,12 +163,12 @@ div[data-testid="stMultiSelect"] label {
 
 /* Hover */
 .stButton > button:hover {
-    background-color: #187C8C !important;
+    background-color: #570303 !important;
 }
 
 /* Clicked */
 .stButton > button:active {
-    background-color: #187C8C !important;
+    background-color: #570303 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -246,12 +250,7 @@ today the weather is good
         "beds": "Beds",
         'search':'Search and click',
         'subwrite':'write your symptoms',
-        'write':'Write / record / select / upload your symptoms',
-        "recommended_hospitals": "Recommended Hospitals",
-         "refer_to": "Refer to:",
-          "no_symptoms": "No specific symptom detected from the current input.",
-        "alternate_referral": "If not available, see:",
-          
+        'write':'Write / record / select / upload your symptoms'
     },
     "বাংলা": {
         "title": "GramDoctor AI",
@@ -327,11 +326,7 @@ today the weather is good
         "beds": "শয্যা",
         'search':'অনুসন্ধান করে ক্লিক করুন',
         "subwrite":'আপনার উপসর্গ লিখুন',
-        "write":'আপনার উপসর্গ লিখুন, রেকর্ড করুন, নির্বাচন করুন অথবা আপলোড করুন',
-        "refer_to": "রেফার করুন:",
-        "alternate_referral": "না পেলে বিকল্প হিসেবে দেখান:",
-        "recommended_hospitals": "প্রস্তাবিত হাসপাতাল",
-         "no_symptoms": "বর্তমান ইনপুট থেকে নির্দিষ্ট কোনো লক্ষণ পাওয়া যায়নি।",
+        "write":'আপনার উপসর্গ লিখুন, রেকর্ড করুন, নির্বাচন করুন অথবা আপলোড করুন'
     }
 }
 
@@ -748,249 +743,6 @@ def get_recommended_hospitals(filtered_final, n=5):
         .head(n)[["Organization Name", "No. of Bed"]]
         .to_dict("records")
     )
-def normalize_color(color):
-    if not color:
-        return "gray"
-
-    color = str(color).lower().strip()
-
-    if color == "grey":
-        return "gray"
-
-    return color
-
-
-def get_symptom_display(symptom, language):
-    if language == "বাংলা":
-        return BANGLA_FEATURES.get(symptom, symptom)
-    return symptom.title()
-
-
-def get_active_symptom_keys(symptoms):
-    if not symptoms:
-        return []
-
-    return [
-        symptom for symptom, value in symptoms.items()
-        if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-    ]
-    
-def get_specialist_referral(triage_result, symptoms, language):
-    color = normalize_color(triage_result.get("color", "gray"))
-    active = set(get_active_symptom_keys(symptoms))
-
-    if color == "green":
-        return None, None
-
-    specialists = {
-        "Emergency": {
-            "English": "Emergency Department",
-            "বাংলা": "জরুরি বিভাগ"
-        },
-        "General Physician": {
-            "English": "General Physician",
-            "বাংলা": "জেনারেল ফিজিশিয়ান"
-        },
-        "Cardiologist": {
-            "English": "Cardiologist",
-            "বাংলা": "কার্ডিওলজিস্ট / হৃদরোগ বিশেষজ্ঞ"
-        },
-        "Neurologist": {
-            "English": "Neurologist",
-            "বাংলা": "নিউরোলজিস্ট / স্নায়ুরোগ বিশেষজ্ঞ"
-        },
-        "Pulmonologist": {
-            "English": "Pulmonologist",
-            "বাংলা": "পালমোনোলজিস্ট / বক্ষব্যাধি বিশেষজ্ঞ"
-        },
-        "Gastroenterologist": {
-            "English": "Gastroenterologist",
-            "বাংলা": "পরিপাকতন্ত্র বিশেষজ্ঞ"
-        },
-        "Hepatologist":{
-            "English":"Hepatologist",
-            'বাংলা':'হেপাটোলজিস্ট / লিভার বিশেষজ্ঞ'
-        },
-        "Urologist": {
-            "English": "Urologist",
-            "বাংলা": "ইউরোলজিস্ট / মূত্ররোগ বিশেষজ্ঞ"
-        },
-        "Endocrinologist": {
-            "English": "Endocrinologist",
-            "বাংলা": "এন্ডোক্রাইনোলজিস্ট / হরমোন ও ডায়াবেটিস বিশেষজ্ঞ"
-        },
-        "Dermatologist": {
-            "English": "Dermatologist",
-            "বাংলা": "ডার্মাটোলজিস্ট / চর্মরোগ বিশেষজ্ঞ"
-        },
-        "ENT Specialist": {
-            "English": "ENT Specialist",
-            "বাংলা": "নাক-কান-গলা বিশেষজ্ঞ"
-        },
-        "Ophthalmologist": {
-            "English": "Ophthalmologist",
-            "বাংলা": "অফথালমোলজিস্ট / চক্ষু বিশেষজ্ঞ"
-        },
-        "Dentist": {
-            "English": "Dentist",
-            "বাংলা": "দন্ত চিকিৎসক"
-        },
-        "Gynecologist": {
-            "English": "Gynecologist / Obstetrician",
-            "বাংলা": "প্রসূতি ও স্ত্রীরোগ বিশেষজ্ঞ"
-        },
-        "Pediatrician": {
-            "English": "Pediatrician",
-            "বাংলা": "শিশু বিশেষজ্ঞ"
-        },
-        "Orthopedic Specialist": {
-            "English": "Orthopedic Specialist",
-            "বাংলা": "হাড়-জোড়া বিশেষজ্ঞ"
-        },
-        "Psychiatrist": {
-            "English": "Psychiatrist",
-            "বাংলা": "মানসিক রোগ বিশেষজ্ঞ"
-        },
-        "Nephrologist": {
-            "English": "Nephrologist",
-            "বাংলা": "নেফ্রোলজিস্ট / কিডনি বিশেষজ্ঞ"
-        },
-        "General Surgeon": {
-            "English": "General Surgeon",
-            "বাংলা": "জেনারেল সার্জন"
-        },
-    }
-
-    def doctor(name):
-        return specialists[name][language]
-
-    general_physician = doctor("General Physician")
-
-    if color == "red":
-        return doctor("Emergency"), general_physician
-
-    cardiac_symptoms = {
-        "sharp chest pain", "chest pain", "chest tightness",
-        "palpitations", "irregular heartbeat", "sweating", "arm pain"
-    }
-
-    neuro_symptoms = {
-        "headache", "seizures", "fainting", "slurring words",
-        "blindness", "diminished vision", "weakness", "loss of sensation"
-    }
-
-    respiratory_symptoms = {
-        "cough", "shortness of breath", "wheezing",
-        "coughing up sputum", "hemoptysis"
-    }
-
-    gi_symptoms = {
-        "sharp abdominal pain", "lower abdominal pain", "vomiting",
-        "nausea", "diarrhea", "burning abdominal pain", "blood in stool"
-    }
-
-    urinary_symptoms = {
-        "painful urination", "frequent urination",
-        "blood in urine", "involuntary urination"
-    }
-
-    kidney_symptoms = {
-        "leg swelling", "facial swelling", "decreased urination"
-    }
-
-    endocrine_symptoms = {
-        "increased thirst", "frequent urination", "weight gain",
-        "weight loss", "fatigue", "excessive appetite"
-    }
-
-    skin_symptoms = {
-        "skin rash", "itching of skin", "skin swelling",
-        "acne", "skin lesion", "changes in skin color"
-    }
-
-    ent_symptoms = {
-        "sore throat", "ear pain", "hearing loss",
-        "nasal congestion", "runny nose", "hoarse voice"
-    }
-
-    eye_symptoms = {
-        "eye pain", "redness in eye", "diminished vision", "blindness"
-    }
-
-    dental_symptoms = {
-        "tooth pain", "gum pain", "mouth ulcer", "jaw pain"
-    }
-
-    gynae_symptoms = {
-        "pelvic pain", "lower abdominal pain", "heavy menstrual flow",
-        "irregular periods", "spotting or bleeding during pregnancy"
-    }
-
-    ortho_symptoms = {
-        "back pain", "leg pain", "arm pain", "knee pain",
-        "joint pain", "neck pain", "hip pain"
-    }
-
-    psych_symptoms = {
-        "depressive or psychotic symptoms", "anxiety and nervousness",
-        "insomnia", "low mood"
-    }
-
-    surgical_symptoms = {
-        "sharp abdominal pain", "pain in testicles",
-        "rectal bleeding", "vomiting blood"
-    }
-
-    if active.intersection(cardiac_symptoms):
-        return doctor("Cardiologist"), general_physician
-
-    if active.intersection(neuro_symptoms):
-        return doctor("Neurologist"), general_physician
-
-    if active.intersection(respiratory_symptoms):
-        return doctor("Pulmonologist"), general_physician
-
-    if active.intersection(gi_symptoms):
-        return doctor("Gastroenterologist"), general_physician
-
-    if active.intersection(urinary_symptoms):
-        return doctor("Urologist"), general_physician
-
-    if active.intersection(kidney_symptoms):
-        return doctor("Nephrologist"), general_physician
-
-    if active.intersection(endocrine_symptoms):
-        return doctor("Endocrinologist"), general_physician
-
-    if active.intersection(skin_symptoms):
-        return doctor("Dermatologist"), general_physician
-
-    if active.intersection(ent_symptoms):
-        return doctor("ENT Specialist"), general_physician
-
-    if active.intersection(eye_symptoms):
-        return doctor("Ophthalmologist"), general_physician
-
-    if active.intersection(dental_symptoms):
-        return doctor("Dentist"), general_physician
-
-    if symptoms.get("ispregnant", 2) == 1 or active.intersection(gynae_symptoms):
-        return doctor("Gynecologist"), general_physician
-
-    if symptoms.get("age", 30) < 13:
-        return doctor("Pediatrician"), general_physician
-
-    if active.intersection(ortho_symptoms):
-        return doctor("Orthopedic Specialist"), general_physician
-
-    if active.intersection(psych_symptoms):
-        return doctor("Psychiatrist"), general_physician
-
-    if active.intersection(surgical_symptoms):
-        return doctor("General Surgeon"), general_physician
-
-    return general_physician, None
-
 @st.cache_resource
 def load_resources():
     return load_model_and_features()
@@ -1035,14 +787,6 @@ if "voice_text" not in st.session_state:
     st.session_state.voice_text = ""
 if "filtered_final" not in st.session_state:
     st.session_state.filtered_final = None
-if "referral" not in st.session_state:
-    st.session_state.referral = None
-
-if "alternate_referral" not in st.session_state:
-    st.session_state.alternate_referral = None
-
-
-
 
 tab1, tab2 = st.tabs([t["tab_form"], t["tab_result"]])
 
@@ -1217,45 +961,20 @@ with tab2:
     else:
         result = st.session_state.triage_result
         color = result["color"]
-        if st.session_state.referral:
-            referral = st.session_state.referral
-            alternate_referral = st.session_state.alternate_referral
-        else:
-            referral, alternate_referral = get_specialist_referral(
-                result,
-                st.session_state.symptoms,
-                language
-            )
+
         show_triage_card(color, language)
 
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
-        
-        if referral:
-            st.markdown(f"**{t['refer_to']} {referral}**")
-
-        if alternate_referral:
-            st.markdown(f"**{t['alternate_referral']} {alternate_referral}**")
-
-        active_symptoms = get_active_symptom_keys(st.session_state.symptoms)
-
-        if active_symptoms:
-            st.subheader(t["detected_symptoms"])
-
-            for symptom in active_symptoms:
-                st.write(f"- {get_symptom_display(symptom, language)}")
-        else:
-            st.info(t["no_symptoms"])
-        st.divider()
         if result["color"] in ["red", "orange"]:
          if st.session_state.filtered_final is not None:
 
           hospitals = get_recommended_hospitals( st.session_state.filtered_final )
-          st.subheader(t["recommended_hospitals"])
+          st.subheader("Recommended Hospitals")
 
           for hospital in hospitals:
            st.write(
-            f"🏥 {hospital['Organization Name']}"
+            f"🏥 {hospital['Organization Name']} | Beds: {hospital['No. of Bed']}"
         )
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
