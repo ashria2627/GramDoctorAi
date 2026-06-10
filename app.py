@@ -1087,7 +1087,7 @@ with tab1:
     filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
     st.subheader(t["hospitals"])
     for _, row in filtered_final.iterrows():
-      st.write(f"🏥 {row['Organization Name']} | {t['beds']}: {row['No. of Bed']}")
+      st.write(f"🏥 {row['Organization Name']} | {t['beds']}")
   
     st.header(t['write'])
     st.subheader(t['subwrite'])
@@ -1236,21 +1236,12 @@ with tab2:
         if alternate_referral:
             st.markdown(f"**{t['alternate_referral']} {alternate_referral}**")
 
-        active_symptoms = get_active_symptom_keys(st.session_state.symptoms)
-
-        if active_symptoms:
-            st.subheader(t["detected_symptoms"])
-
-            for symptom in active_symptoms:
-                st.write(f"- {get_symptom_display(symptom, language)}")
-        else:
-            st.info(t["no_symptoms"])
         st.divider()
         if result["color"] in ["red", "orange"]:
          if st.session_state.filtered_final is not None:
 
           hospitals = get_recommended_hospitals( st.session_state.filtered_final )
-          st.subheader("Recommended Hospitals")
+          st.subheader(t["recommended_hospitals"])
 
           for hospital in hospitals:
            st.write(
