@@ -30,11 +30,9 @@ st.markdown("""
 /* Base */
 html, body, p, span, div, label,
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat','Anek Bangla', sans-serif;
 }
-# * {
-#     font-family: 'Montserrat','Anek Bangla',  sans-serif !important;
-# }
+
 
 .bangla, [lang="bn"] {
     font-family: 'Anek Bangla', sans-serif !important;
@@ -44,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
     font-size: 2.5rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(90deg, #b81919,#D9705B, #CC998F);
+    background: linear-gradient(45deg, #0F97A6,#B755D8, #F5F9FA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0 !important;
@@ -59,11 +57,11 @@ h1 {
 }
 /* Warning box — replace ugly yellow */
 .stAlert {
-    background-color: #161B22 !important;
-    border: 1px solid #30363D !important;
-    border-left: 4px solid #F0883E !important;
+   
+    border: 1px solid #FFFD8A !important;
+    border-left: 6px solid #F0883E !important;
     border-radius: 8px !important;
-    color: #8B949E !important;
+    
     font-size: 0.85rem !important;
     margin : 0.8rem 0;
 }
@@ -76,34 +74,34 @@ h1 {
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 8px;
-    color: #8B949E;
+    color: #77A9B6;
     font-weight: 500;
     padding: 8px 20px;
 }
 .stTabs [aria-selected="true"] {
-    background-color: #C20202 !important;
-    color: #E6EDF3 !important;
+    background-color: #18768C !important;
+    color: #E9F8FB !important;
 }
 
 /* Inputs */
 .stSelectbox > div, .stNumberInput > div, .stTextArea > div {
 
     background-color: #161B22 !important;
-    border: 2px solid #821717 !important;
+    border: 2px solid #28B7D7 !important;
     border-radius: 8px !important;
 }
 
 /* Section headers */
 h2 {
-    color:   #b81919 !important;
+    color:   #51D0DB !important;
     font-size: 1.6rem !important;
     font-weight: 600 !important;
     margin: 16px 0 !important;
     padding-bottom: 8px !important;
-    border-bottom: 1px solid #8A271E !important;
+    border-bottom: 1px solid #9EE5EB !important;
 }
 h3 {
-    color:   #b81919 !important;
+    color:  #26CBE0 !important;
     font-size: 1.2rem !important;
     font-weight: 600 !important;
     margin: 10px 0 !important;
