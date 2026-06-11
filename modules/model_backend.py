@@ -83,15 +83,15 @@ def check_orange_flags(symptoms):
         return "orange"
 
     # # Pain symptoms that may need clinical evaluation
-    # if (
-    #     symptoms.get("back pain", 0) == 1
-    #     or symptoms.get("leg pain", 0) == 1
-    #     or symptoms.get("knee pain", 0) == 1
-    #     or symptoms.get("arm pain", 0) == 1
-    #     or symptoms.get("lower abdominal pain", 0) == 1
-    #     or symptoms.get("pelvic pain", 0) == 1
-    # ):
-    #     return "orange"
+    if (
+        symptoms.get("back pain", 0) == 1
+        or symptoms.get("leg pain", 0) == 1
+        or symptoms.get("knee pain", 0) == 1
+        or symptoms.get("arm pain", 0) == 1
+        or symptoms.get("lower abdominal pain", 0) == 1
+        or symptoms.get("pelvic pain", 0) == 1
+    ):
+        return "orange"
 
     return None
 

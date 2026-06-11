@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-
+from modules.FIRSTAID import get_first_aid
 from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
@@ -87,7 +87,7 @@ h1 {
 .stSelectbox > div, .stNumberInput > div, .stTextArea > div {
 
     background-color: #161B22 !important;
-    border: 2px solid #28B7D7 !important;
+    border: 2px solid #A3E4E6 !important;
     border-radius: 8px !important;
 }
 
@@ -109,18 +109,18 @@ h3 {
     
 }
 p {
-    font-weight: 500 !important;    
+    font-weight: 400 !important;    
 }
 
 /* Multiselect */
 .stMultiSelect > div {
     background-color: #161B22 !important;
-    border: 2px solid #821717 !important;
+    border: 2px solid #A3E4E6 !important;
     border-radius: 8px !important;
 }
 .stMultiSelect span {
-    background-color: #821717 !important;
-    color: #EBA4A4 !important;
+    background-color: #33B9BD !important;
+    color: #EBF9FA !important;
     border-radius: 4px !important;
 }
 
@@ -152,7 +152,7 @@ div[data-testid="stMultiSelect"] label {
 }
 /* Normal button */
 .stButton > button {
-    background-color: #AD0505 !important;
+    background-color: #33B9BD !important;
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
@@ -161,12 +161,12 @@ div[data-testid="stMultiSelect"] label {
 
 /* Hover */
 .stButton > button:hover {
-    background-color: #570303 !important;
+    background-color: #195A5C !important;
 }
 
 /* Clicked */
 .stButton > button:active {
-    background-color: #570303 !important;
+    background-color: #195A5C !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -582,6 +582,8 @@ BANGLA_FEATURES = {
     "nosebleed": "নাক দিয়ে রক্ত পড়া"
 }
 
+
+
 def create_gray_result(language):
     if language == "বাংলা":
         message = "ইনপুট থেকে কোনো পরিচিত লক্ষণ পাওয়া যায়নি। ব্যবহারকারী সম্ভবত অন্য কিছু বোঝাতে চেয়েছেন।"
@@ -776,6 +778,7 @@ def get_active_symptom_keys(symptoms):
         if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
     ]
 
+
 def get_specialist_referral(triage_result, symptoms, language):
     color = normalize_color(triage_result.get("color", "gray"))
     active = set(get_active_symptom_keys(symptoms))
@@ -867,8 +870,15 @@ def get_specialist_referral(triage_result, symptoms, language):
 
     general_physician = doctor("General Physician")
 
+    emergency_note = ""
+
     if color == "red":
-        return doctor("Emergency"), general_physician
+      emergency_note = (
+        "⚠️ Emergency "
+        if language == "English"
+        else
+        "⚠️ জরুরি অবস্থা "
+    )
 
     cardiac_symptoms = {
         "sharp chest pain", "chest pain", "chest tightness",
@@ -943,52 +953,52 @@ def get_specialist_referral(triage_result, symptoms, language):
     }
 
     if active.intersection(cardiac_symptoms):
-        return doctor("Cardiologist"), general_physician
+        return emergency_note + doctor("Cardiologist"), general_physician
 
     if active.intersection(neuro_symptoms):
-        return doctor("Neurologist"), general_physician
+        return emergency_note + doctor("Neurologist"), general_physician
 
     if active.intersection(respiratory_symptoms):
-        return doctor("Pulmonologist"), general_physician
+        return emergency_note + doctor("Pulmonologist"), general_physician
 
     if active.intersection(gi_symptoms):
-        return doctor("Gastroenterologist"), general_physician
+        return emergency_note + doctor("Gastroenterologist"), general_physician
 
     if active.intersection(urinary_symptoms):
-        return doctor("Urologist"), general_physician
+        return emergency_note + doctor("Urologist"), general_physician
 
     if active.intersection(kidney_symptoms):
-        return doctor("Nephrologist"), general_physician
+        return emergency_note + doctor("Nephrologist"), general_physician
 
     if active.intersection(endocrine_symptoms):
-        return doctor("Endocrinologist"), general_physician
+        return emergency_note + doctor("Endocrinologist"), general_physician
 
     if active.intersection(skin_symptoms):
-        return doctor("Dermatologist"), general_physician
+        return emergency_note + doctor("Dermatologist"), general_physician
 
     if active.intersection(ent_symptoms):
-        return doctor("ENT Specialist"), general_physician
+        return emergency_note + doctor("ENT Specialist"), general_physician
 
     if active.intersection(eye_symptoms):
-        return doctor("Ophthalmologist"), general_physician
+        return emergency_note + doctor("Ophthalmologist"), general_physician
 
     if active.intersection(dental_symptoms):
-        return doctor("Dentist"), general_physician
+        return emergency_note + doctor("Dentist"), general_physician
 
     if symptoms.get("ispregnant", 2) == 1 or active.intersection(gynae_symptoms):
-        return doctor("Gynecologist"), general_physician
+        return emergency_note + doctor("Gynecologist"), general_physician
 
     if symptoms.get("age", 30) < 13:
-        return doctor("Pediatrician"), general_physician
+        return emergency_note + doctor("Pediatrician"), general_physician
 
     if active.intersection(ortho_symptoms):
-        return doctor("Orthopedic Specialist"), general_physician
+        return emergency_note + doctor("Orthopedic Specialist"), general_physician
 
     if active.intersection(psych_symptoms):
-        return doctor("Psychiatrist"), general_physician
+        return emergency_note + doctor("Psychiatrist"), general_physician
 
     if active.intersection(surgical_symptoms):
-        return doctor("General Surgeon"), general_physician
+        return emergency_note + doctor("General Surgeon"), general_physician
 
     return general_physician, None
 
@@ -1043,6 +1053,9 @@ if "referral" not in st.session_state:
 if "alternate_referral" not in st.session_state:
     st.session_state.alternate_referral = None
     
+if "first_aid" not in st.session_state:
+    st.session_state.first_aid = None
+    
 tab1, tab2 = st.tabs([t["tab_form"], t["tab_result"]])
 
 
@@ -1087,7 +1100,7 @@ with tab1:
     filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
     st.subheader(t["hospitals"])
     for _, row in filtered_final.iterrows():
-      st.write(f"🏥 {row['Organization Name']} | {t['beds']}")
+      st.write(f"🏥 {row['Organization Name']}")
   
     st.header(t['write'])
     st.subheader(t['subwrite'])
@@ -1202,8 +1215,11 @@ with tab1:
 
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
+        st.session_state.first_aid = get_first_aid(symptoms,language)
         st.session_state.ai_response = None
-
+        st.session_state.first_aid = None
+        st.session_state.referral = None
+        st.session_state.alternate_referral = None
         st.success(t["triage_done"])
 
 
@@ -1216,6 +1232,8 @@ with tab2:
     else:
         result = st.session_state.triage_result
         color = normalize_color(result["color"])
+        
+        
         if st.session_state.referral:
             referral = st.session_state.referral
             alternate_referral = st.session_state.alternate_referral
@@ -1226,7 +1244,12 @@ with tab2:
                 language
             )
         show_triage_card(color, language)
-
+        first_aid = get_first_aid(st.session_state.symptoms, language)
+        label = f"🩹 First Aid: {first_aid['condition']}" if language == "English" else f"🩹 প্রাথমিক চিকিৎসা: {first_aid['condition']}"
+        with st.expander(label, expanded=color == "red"):
+             for i, step in enumerate(first_aid["steps"], 1):
+                 st.markdown(f"**{i}.** {step}")
+        
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
         st.divider()
@@ -1236,7 +1259,7 @@ with tab2:
         if alternate_referral:
             st.markdown(f"**{t['alternate_referral']} {alternate_referral}**")
 
-        st.divider()
+        
         if result["color"] in ["red", "orange"]:
          if st.session_state.filtered_final is not None:
 
