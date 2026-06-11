@@ -9,6 +9,7 @@ from modules.FIRSTAID import get_first_aid,SPECIAL_FIRST_AID
 from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
+from gtts import gTTS
 
 try:
     from streamlit_mic_recorder import speech_to_text
@@ -1002,6 +1003,52 @@ def get_specialist_referral(triage_result, symptoms, language):
 
     return general_physician, None
 
+def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral=None):
+    color = normalize_color(triage_result.get("color", "gray"))
+    active = get_active_symptom_keys(symptoms)
+
+    bangla_color = {
+        "green": "গ্রিন",
+        "orange": "অরেঞ্জ",
+        "red": "রেড",
+        "gray": "গ্রে",
+    }.get(color, "গ্রে")
+
+    bangla_action = {
+        "green": "বাসায় বিশ্রাম নিন এবং লক্ষণ পর্যবেক্ষণ করুন।",
+        "orange": "এক থেকে দুই দিনের মধ্যে ডাক্তার দেখান।",
+        "red": "এখনই জরুরি বিভাগে যান।",
+        "gray": "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।",
+    }.get(color, "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।")
+
+    if active:
+        symptom_text = ", ".join([BANGLA_FEATURES.get(s, s) for s in active[:6]])
+    else:
+        symptom_text = "কোনো নির্দিষ্ট লক্ষণ পাওয়া যায়নি"
+
+    summary = (
+        f"আপনার ট্রায়াজ ফলাফল {bangla_color}. "
+        f"সনাক্ত হওয়া লক্ষণ: {symptom_text}. "
+    )
+
+    if referral:
+        summary += f"রেফার করুন: {referral}. "
+
+    if alternate_referral:
+        summary += f"না পেলে বিকল্প হিসেবে দেখান: {alternate_referral}. "
+
+    summary += bangla_action
+
+    return summary
+
+
+def create_tts_audio(text):
+    buffer = BytesIO()
+    tts = gTTS(text=text, lang="bn")
+    tts.write_to_fp(buffer)
+    buffer.seek(0)
+    return buffer
+
 
 @st.cache_resource
 def load_resources():
@@ -1275,6 +1322,19 @@ with tab2:
          
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
+        st.divider()
+        if st.button('listen result', key="listen_result_button"):
+            try:
+                summary_text = get_tts_summary_bangla(
+                    result,
+                    st.session_state.symptoms,
+                    referral,
+                    alternate_referral
+                )
+                audio_buffer = create_tts_audio(summary_text)
+                st.audio(audio_buffer, format="audio/mp3")
+            except Exception:
+                st.error('error')
         st.divider()
         if referral:
             st.markdown(f"**{t['refer_to']} {referral}**")
