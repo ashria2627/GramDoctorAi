@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from modules.FIRSTAID import get_first_aid
+from modules.FIRSTAID import get_first_aid,SPECIAL_FIRST_AID
 from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
@@ -1209,13 +1209,26 @@ with tab1:
         )
 
         if active_symptom_count == 0:
-            result = create_gray_result(language)
+            from modules.gemini_helper import detect_special_emergency
+            detected = detect_special_emergency(combined_text)
+
+            if detected != "none":
+                 result = {
+            "color": "red",
+            "source": "Special emergency detection",
+            "message": f"Possible {detected.replace('_',' ')} detected"
+              }
+
+                 st.session_state.detected_special = detected
+
+            else:
+               result = create_gray_result(language)
+               st.session_state.detected_special = "none"
         else:
             result = predict_triage(symptoms, model, feature_cols)
 
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
-        st.session_state.first_aid = get_first_aid(symptoms,language)
         st.session_state.ai_response = None
         st.session_state.first_aid = None
         st.session_state.referral = None
@@ -1244,12 +1257,22 @@ with tab2:
                 language
             )
         show_triage_card(color, language)
-        first_aid = get_first_aid(st.session_state.symptoms, language)
+        detected = st.session_state.get("detected_special", "none")
+
+        if result["source"] == "Special emergency detection" and detected in SPECIAL_FIRST_AID:
+                 first_aid = SPECIAL_FIRST_AID[detected]
+        else:
+              first_aid = get_first_aid(st.session_state.symptoms, language)
         label = f"🩹 First Aid: {first_aid['condition']}" if language == "English" else f"🩹 প্রাথমিক চিকিৎসা: {first_aid['condition']}"
         with st.expander(label, expanded=color == "red"):
-             for i, step in enumerate(first_aid["steps"], 1):
-                 st.markdown(f"**{i}.** {step}")
-        
+            if "steps_en" in first_aid:
+                     steps = first_aid["steps_bn"] if language == "বাংলা" else first_aid["steps_en"]
+            else:
+                     steps = first_aid["steps"]
+
+            for i, step in enumerate(steps, 1):
+                       st.markdown(f"**{i}.** {step}")
+         
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
         st.divider()

@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from google import genai
 
+import json
+
 load_dotenv()
 
 
@@ -97,6 +99,15 @@ Rules:
 - Do not give a final diagnosis.
 - Do not prescribe medicine.
 - Do not claim patient is safe in emergency cases.
+
+- If triage signal is RED OR emergency injury/event is present (e.g. snake bite, dog bite, animal bite, burn, poison, drowning, chest pain, breathing difficulty,appendicitis):
+  → Generate possible diseases or differential diagnosis
+  → Speculate medical conditions
+  → Provide:
+     • immediate danger explanation
+     • simple first aid (if safe)
+     • urgent instruction to go to hospital immediately
+
 - Use simple Bangla for patient explanation.
 - Referral note must be in English and Bangla.
 - Keep response short and structured.
@@ -141,3 +152,28 @@ Referral Note English:
 
     except Exception as e:
         return get_fallback_response(triage_result, str(e))
+
+
+def detect_special_emergency(text):
+    if not text or not text.strip():
+        return "none"
+
+    client = get_gemini_client()
+    if client is None:
+        return "none"
+
+    prompt = f"""Patient text: "{text}"
+Does this describe one of: snake_bite, burn, poison, animal_bite, drowning?
+Reply with exactly one word from that list, or "none" if it doesn't match any."""
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+        result = response.text.strip().lower()
+        valid = ["snake_bite", "burn", "poison", "animal_bite", "drowning", "none"]
+        return result if result in valid else "none"
+    except Exception:
+        return "none"
+ 
