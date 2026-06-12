@@ -10,3 +10,4 @@ reportlab
 xgboost
 plotly
 gTTS
+kaleido
