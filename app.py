@@ -1023,8 +1023,16 @@ def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral
         "gray": "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।",
     }.get(color, "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।")
 
+    symptom_items = []
+
     if active:
-        symptom_text = ", ".join([BANGLA_FEATURES.get(s, s) for s in active[:6]])
+        symptom_items.extend([BANGLA_FEATURES.get(s, s) for s in active[:6]])
+
+    for extra_symptom in st.session_state.get("extra_symptoms", []):
+        symptom_items.append(extra_symptom.replace("_", " "))
+
+    if symptom_items:
+        symptom_text = ", ".join(symptom_items[:8])
     else:
         symptom_text = "কোনো নির্দিষ্ট লক্ষণ পাওয়া যায়নি"
 
@@ -1148,7 +1156,13 @@ if "alternate_referral" not in st.session_state:
     
 if "first_aid" not in st.session_state:
     st.session_state.first_aid = None
-    
+
+if "detected_special" not in st.session_state:
+    st.session_state.detected_special = "none"
+
+if "extra_symptoms" not in st.session_state:
+    st.session_state.extra_symptoms = []
+
 tab1, tab2,tab3 = st.tabs([t["patient_form"], t["worker_form"],t['tab_result']])
 
 
@@ -1301,22 +1315,30 @@ with tab1:
             if key not in ["age", "sex-no", "ispregnant"]
         )
 
-        if active_symptom_count == 0:
-            from modules.gemini_helper import detect_special_emergency
+        from modules.gemini_helper import detect_special_emergency
+
+        detected = "none"
+
+        if combined_text:
             detected = detect_special_emergency(combined_text)
 
-            if detected != "none":
-                 result = {
-            "color": "red",
-            "source": "Special emergency detection",
-            "message": f"Possible {detected.replace('_',' ')} detected"
-              }
+        st.session_state.detected_special = detected
+        st.session_state.extra_symptoms = []
 
-                 st.session_state.detected_special = detected
+        if detected != "none":
+            extra_symptom_name = detected.replace("_", " ")
 
-            else:
-               result = create_gray_result(language)
-               st.session_state.detected_special = "none"
+            st.session_state.extra_symptoms.append(extra_symptom_name)
+
+            result = {
+                "color": "red",
+                "source": "Special emergency detection",
+                "message": f"Possible {extra_symptom_name} detected along with other symptoms"
+            }
+
+        elif active_symptom_count == 0:
+            result = create_gray_result(language)
+
         else:
             result = predict_triage(symptoms, model, feature_cols)
 
@@ -1327,8 +1349,21 @@ with tab1:
         st.session_state.original_triage_source = result["source"]
         st.session_state.ai_response = None
         st.session_state.first_aid = None
-        st.session_state.referral = None
-        st.session_state.alternate_referral = None
+        if st.session_state.detected_special != "none":
+            st.session_state.referral = (
+                "Emergency Department"
+                if language == "English"
+                else "জরুরি বিভাগ"
+            )
+
+            st.session_state.alternate_referral = (
+                "General Physician"
+                if language == "English"
+                else "জেনারেল ফিজিশিয়ান"
+            )
+        else:
+            st.session_state.referral = None
+            st.session_state.alternate_referral = None
         st.success(t["triage_done"])
 
 
@@ -1504,17 +1539,28 @@ with tab3:
             f"🏥 {hospital['Organization Name']}"
         )
         active_symptoms = [
-    BANGLA_FEATURES.get(symptom, symptom)
-    if language == "বাংলা"
-    else symptom
-    for symptom, value in selected_symptoms.items()
-    if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-]
+            BANGLA_FEATURES.get(symptom, symptom)
+            if language == "বাংলা"
+            else symptom.title()
+            for symptom, value in st.session_state.symptoms.items()
+            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+        ]
+
+        for extra_symptom in st.session_state.get("extra_symptoms", []):
+            display_extra = (
+                extra_symptom.replace("_", " ")
+                if language == "English"
+                else extra_symptom.replace("_", " ")
+            )
+
+            if display_extra not in active_symptoms:
+                active_symptoms.append(display_extra)
+
 
         if active_symptoms:
             st.subheader(t["detected_symptoms"])
             for symptom in active_symptoms:
-                 display_name = ( BANGLA_FEATURES.get(symptom, symptom)if language == "বাংলা" else symptom.title())
+                 
                  st.write(f"- {symptom}")
         else:
             st.info(t["no_symptoms"])
