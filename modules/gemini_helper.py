@@ -155,25 +155,90 @@ Referral Note English:
 
 
 def detect_special_emergency(text):
+    """
+    Handles symptoms/events NOT in our dataset (animal bites, burns, falls,
+    insect stings, wounds, etc.) by asking Gemini to classify the situation.
+    Works for free-text input in Bangla or English (typed, voice-transcribed,
+    or extracted from an uploaded file).
+
+    Returns a dict:
+        {
+            "found": bool,
+            "condition": str,        # short condition name, e.g. "Dog Bite"
+            "color": "red"/"orange"/"green",
+            "advice_en": [list of first aid steps in English],
+            "advice_bn": [list of first aid steps in Bangla],
+        }
+    or {"found": False} if nothing relevant was detected (true gray case).
+    """
+
     if not text or not text.strip():
-        return "none"
+        return {"found": False}
 
     client = get_gemini_client()
     if client is None:
-        return "none"
+        return {"found": False}
 
-    prompt = f"""Patient text: "{text}"
-Does this describe one of: snake_bite, burn, poison, animal_bite, drowning?
-Reply with exactly one word from that list, or "none" if it doesn't match any."""
+    prompt = f"""You are a medical triage assistant for rural Bangladesh.
+
+Patient text (Bangla or English, possibly from voice or a note): "{text}"
+
+This text does NOT match any symptom in our structured dataset. It may describe
+an injury or event such as: animal/snake bite, insect/bee/wasp sting,
+burn, cut/wound, fall, drowning, poisoning, electric shock, or something similar.
+
+If the text describes a real medical event/injury, respond with ONLY a JSON object
+(no markdown, no extra text) in this exact format:
+{{
+  "found": true,
+  "condition": "Short condition name in English (e.g. Animal Bite, Insect Sting, Burn Injury, Fall Injury)",
+  "color": "red" or "orange" or "green",
+  "advice_en": ["step 1", "step 2", "step 3", "step 4"],
+  "advice_bn": ["বাংলায় ধাপ ১", "ধাপ ২", "ধাপ ৩", "ধাপ ৪"]
+}}
+
+Triage color rules:
+- "red": severe/venomous animal bite, deep wound with heavy bleeding, severe burn, drowning, poisoning, electric shock, suspected rabies exposure, fall with suspected fracture or head injury
+- "orange": moderate injury needing a doctor within 1-2 days (small animal bite needing rabies vaccine check, moderate burn, deep cut, insect sting with swelling)
+- "green": minor injury manageable at home (small scratch, minor bruise, small insect bite with no allergic reaction)
+
+advice_en and advice_bn must be practical first-aid steps a family member can do right now,
+and must end with guidance on whether/when to seek medical care.
+
+If the text does not describe any medical event or injury at all, respond with ONLY:
+{{"found": false}}
+"""
 
     try:
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt
         )
-        result = response.text.strip().lower()
-        valid = ["snake_bite", "burn", "poison", "animal_bite", "drowning", "none"]
-        return result if result in valid else "none"
+
+        raw = response.text.strip()
+
+        if raw.startswith("```"):
+            raw = raw.strip("`")
+            if raw.lower().startswith("json"):
+                raw = raw[4:]
+            raw = raw.strip()
+
+        data = json.loads(raw)
+
+        if not data.get("found"):
+            return {"found": False}
+
+        color = str(data.get("color", "orange")).strip().lower()
+        if color not in ("red", "orange", "green"):
+            color = "orange"
+
+        return {
+            "found": True,
+            "condition": data.get("condition", "Unidentified Injury"),
+            "color": color,
+            "advice_en": data.get("advice_en", []),
+            "advice_bn": data.get("advice_bn", []),
+        }
+
     except Exception:
-        return "none"
- 
+        return {"found": False}

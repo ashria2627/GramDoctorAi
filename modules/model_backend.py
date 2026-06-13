@@ -173,7 +173,7 @@ def predict_triage(symptoms, model, feature_cols):
         "vomiting blood", "rectal bleeding", "blood in stool",
         "involuntary urination", "loss of sensation", "slurring words",
         "irregular heartbeat", "spots or clouds in vision",
-        "difficulty breathing","sharp chest pain","sharp abdominal pain"
+        "difficulty breathing","sharp chest pain"
     ]
 
     SERIOUS_SINGLE_SYMPTOMS = [s.lower().strip() for s in SERIOUS_SINGLE_SYMPTOMS]
@@ -197,6 +197,13 @@ def predict_triage(symptoms, model, feature_cols):
             "source": "Minimum symptom threshold",
             "message": "Too few symptoms. Monitor or visit clinic if persists."
         }
+    orange_result = check_orange_flags(symptoms)
+    if orange_result == "orange":
+        return {
+            "color": "orange",
+            "source": "Warning rules",
+            "message": "Observe your condition. If worsen in the next 1-2days then Visit a doctor."
+        }
     if len(active_symptoms) < 2:
         return {
             "color": "green",
@@ -213,13 +220,7 @@ def predict_triage(symptoms, model, feature_cols):
         }
 
     
-    orange_result = check_orange_flags(symptoms)
-    if orange_result == "orange":
-        return {
-            "color": "orange",
-            "source": "Warning rules",
-            "message": "Observe your condition. If worsen in the next 1-2days then Visit a doctor."
-        }
+ 
         
     
     input_df = make_input_dataframe(symptoms, feature_cols)
@@ -246,17 +247,17 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "orange",
             "source": "Machine Learning Model",
-            "message": f"Observe your condition. If worsen then visit a doctor within 24–48 hours. Model Confidence: {confidence}%"
+            "message": f"Observe your condition. If worsen then visit a doctor within 24–48 hours."
         }
     if color=='red':
         return {
             "color": "red",
             "source": "Machine Learning Model",
-            "message": f"Emergency symptoms detected . Please consult a doctor within few hours.Model Confidence: {confidence}%"
+            "message": f"Emergency symptoms detected . Please consult a doctor within few hours."
         }
     if color=='green':
         return {
             "color": "green",
             "source": "Machine Learning Model",
-            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse. Model Confidence: {confidence}%"
+            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse."
         }

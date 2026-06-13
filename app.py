@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from modules.FIRSTAID import get_first_aid,SPECIAL_FIRST_AID
+from modules.FIRSTAID import get_first_aid
 from modules.model_backend import load_model_and_features, predict_triage,load_anomaly_model,predict_deterioration,get_deterioration_recommendations
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
@@ -41,8 +41,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Title */
 h1 { 
-    font-size: 2.5rem !important;
-    font-weight: 700 !important;
+    font-size: 3rem !important;
+    font-weight: 800 !important;
     background: linear-gradient(45deg, #0F97A6,#B755D8, #F5F9FA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -54,32 +54,33 @@ h1 {
 /*Sidebar*/
 .css-1d391kg, [data-testid="stSidebar"] {
     background-color: #161B22 !important;
-    border-right: 1px solid #21262D !important;
+    border-right: 2px solid #21262D !important;
 }
 /* Warning box — replace ugly yellow */
-.stAlert {
-   
-    border: 1px solid #FFFD8A !important;
+.stAlert {  
+    border: 2px solid #FFFD8A !important;
     border-left: 6px solid #F0883E !important;
     border-radius: 8px !important;
-    
-    font-size: 0.85rem !important;
-    margin : 0.8rem 0;
+    font-size: 0.9rem !important;
+    margin : 0.9rem 0;
 }
 
 /* Tabs */
 .stTabs [data-baseweb="tab-list"] {
     border-radius: 10px;
-    padding: 4px;
-    gap: 10px;
+    padding: 10px 5px;
+    gap: 15px;
+    margin: auto !important;
 }
 .stTabs [data-baseweb="tab"] {
+    font-size: 1rem !important;
     border-radius: 8px;
     color: #77A9B6;
-    font-weight: 500;
+    font-weight: 600;
     padding: 8px 20px;
 }
 .stTabs [aria-selected="true"] {
+    font-size: 1.5rem !important;
     background-color: #18768C !important;
     color: #E9F8FB !important;
 }
@@ -90,26 +91,28 @@ h1 {
     background-color: #161B22 !important;
     border: 2px solid #A3E4E6 !important;
     border-radius: 8px !important;
+    margin: auto !important;
 }
 
 /* Section headers */
 h2 {
     color:   #51D0DB !important;
-    font-size: 1.6rem !important;
-    font-weight: 600 !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
     margin: 16px 0 !important;
-    padding-bottom: 8px !important;
+    padding-bottom: 10px !important;
     border-bottom: 1px solid #9EE5EB !important;
 }
 h3 {
     color:  #26CBE0 !important;
-    font-size: 1.2rem !important;
+    font-size: 1.8rem !important;
     font-weight: 600 !important;
-    margin: 10px 0 !important;
-    padding-bottom: 8px !important;
+    margin: 5px 0 !important;
+    padding-bottom: 5px !important;
     
 }
 p {
+    font-size: 1.1rem !important;
     font-weight: 400 !important;    
 }
 
@@ -118,6 +121,7 @@ p {
     background-color: #161B22 !important;
     border: 2px solid #A3E4E6 !important;
     border-radius: 8px !important;
+    margin-bottom : 2rem  !important;
 }
 .stMultiSelect span {
     background-color: #33B9BD !important;
@@ -153,11 +157,14 @@ div[data-testid="stMultiSelect"] label {
 }
 /* Normal button */
 .stButton > button {
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
     background-color: #33B9BD !important;
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.5rem 2rem !important;
+    margin: 2rem 0 !important;
 }
 
 /* Hover */
@@ -172,7 +179,7 @@ div[data-testid="stMultiSelect"] label {
 </style>
 """, unsafe_allow_html=True)
 
-df = pd.read_csv("assets/Hospitals_count_Upazilawise.csv")
+df = pd.read_csv("assets/hospitals_geocoded.csv")
 
 TEXTS = {
     "English": {
@@ -362,7 +369,7 @@ def show_triage_card(color, language):
 
     elif color == "orange":
         if language == "বাংলা":
-            st.warning("পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।")
+            st.warning("ORANGE - পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।")
             st.markdown("""
             **অর্থ:** লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে।  
             
@@ -749,8 +756,8 @@ def create_referral_pdf(ai_response, triage_result, symptoms):
 def get_recommended_hospitals(filtered_final, n=5):
     return (
         filtered_final
-        .sort_values("No. of Bed", ascending=False)
-        .head(n)[["Organization Name", "No. of Bed"]]
+        .drop_duplicates(subset=["Name"])
+        .head(5)[["Name",'Name (Bangla)']]
         .to_dict("records")
     )
 
@@ -883,6 +890,11 @@ def get_specialist_referral(triage_result, symptoms, language):
         "⚠️ জরুরি অবস্থা "
     )
 
+    cardiac_core_symptoms = {
+        "sharp chest pain", "chest pain", "chest tightness",
+        "palpitations", "irregular heartbeat"
+    }
+
     cardiac_symptoms = {
         "sharp chest pain", "chest pain", "chest tightness",
         "palpitations", "irregular heartbeat", "sweating", "arm pain"
@@ -955,7 +967,9 @@ def get_specialist_referral(triage_result, symptoms, language):
         "rectal bleeding", "vomiting blood"
     }
 
-    if active.intersection(cardiac_symptoms):
+    if active.intersection(cardiac_core_symptoms) or (
+        {"sweating", "arm pain"}.issubset(active) and active.intersection(cardiac_symptoms)
+    ):
         return emergency_note + doctor("Cardiologist"), general_physician
 
     if active.intersection(neuro_symptoms):
@@ -1162,7 +1176,7 @@ with tab1:
         t["age"],
         min_value=0,
         max_value=120,
-        value=30
+        value=21
     )
 
     with col2:
@@ -1192,8 +1206,12 @@ with tab1:
 
     filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
     st.subheader(t["hospitals"])
-    for _, row in filtered_final.iterrows():
-      st.write(f"🏥 {row['Organization Name']}")
+    for _, row in filtered_final.head(5).iterrows():
+        st.write(
+        f"🏥 {row['Name']}"
+        if language != "বাংলা"
+        else f"🏥 {row['Name (Bangla)']}"
+    )
   
     st.header(t['write'])
     st.subheader(t['subwrite'])
@@ -1301,25 +1319,53 @@ with tab1:
             if key not in ["age", "sex-no", "ispregnant"]
         )
 
-        if active_symptom_count == 0:
-            from modules.gemini_helper import detect_special_emergency
-            detected = detect_special_emergency(combined_text)
+        # symptom detection
+        from modules.gemini_helper import detect_special_emergency
+        special = detect_special_emergency(combined_text)
 
-            if detected != "none":
-                 result = {
-            "color": "red",
-            "source": "Special emergency detection",
-            "message": f"Possible {detected.replace('_',' ')} detected"
-              }
-
-                 st.session_state.detected_special = detected
-
-            else:
-               result = create_gray_result(language)
-               st.session_state.detected_special = "none"
-        else:
+        if active_symptom_count > 0:
             result = predict_triage(symptoms, model, feature_cols)
+        else:
+            result = create_gray_result(language)
 
+        if special.get("found"):
+            color_messages = {
+                "red": "Possible {cond} detected. This needs urgent medical attention.",
+                "orange": "Possible {cond} detected. Please visit a doctor within 1-2 days.",
+                "green": "Possible {cond} detected. This can usually be managed at home, but watch for worsening.",
+            }
+            color_messages_bn = {
+                "red": "সম্ভাবনা: {cond}। এটি জরুরি চিকিৎসা প্রয়োজন।",
+                "orange": "সম্ভাবনা: {cond}। ১-২ দিনের মধ্যে ডাক্তার দেখান।",
+                "green": "সম্ভাবনা: {cond}। বাড়িতে যত্ন নেওয়া যায়, কিন্তু অবস্থা খারাপ হলে ডাক্তার দেখান।",
+            }
+
+            cond = special["condition"]
+            special_color = special["color"]
+
+            order = ["green", "orange", "red"]
+            current_color = result.get("color", "green")
+            if current_color not in order:
+                current_color = "green"
+
+            # Use whichever is more severe: ML result or special detection
+            if order.index(special_color) >= order.index(current_color):
+                if language == "বাংলা":
+                    message = color_messages_bn[special_color].format(cond=cond)
+                else:
+                    message = color_messages[special_color].format(cond=cond)
+
+                result = {
+                    "color": special_color,
+                    "source": "Special emergency detection",
+                    "message": message
+                }
+
+            st.session_state.detected_special = special
+        else:
+            st.session_state.detected_special = None
+        
+        
         st.session_state.symptoms = symptoms
         st.session_state.triage_result = result
         st.session_state.original_triage_color = result["color"]
@@ -1336,30 +1382,28 @@ with tab1:
 with tab2:
     st.header("Vital Signs Monitor" if language == "English" else "ভাইটাল সাইন মনিটর")
 
-    v_col1, v_col2 = st.columns(2)
-
-    with v_col1:
-        v_age = st.number_input("Age" if language=="English" else "বয়স", 0, 120, 30, key="v_age")
-        v_gender = st.selectbox(
+    
+    v_age = st.number_input("Age" if language=="English" else "বয়স", 0, 120, 30, key="v_age")
+    v_gender = st.selectbox(
             "Gender" if language=="English" else "লিঙ্গ",
             [t["male"], t["female"]], key="v_gender"
         )
-        hour_from_admission = st.number_input("Hours Since Admission" if language=="English" else "ভর্তির পর কত ঘণ্টা", 0, 72, 1)
-        heart_rate = st.number_input("Heart Rate (bpm)" if language=="English" else "হৃদস্পন্দন (bpm)", 30, 220, 80)
-        respiratory_rate = st.number_input("Respiratory Rate (breaths/min)" if language=="English" else "শ্বাসের গতি", 5, 60, 16)
-        spo2_pct = st.number_input("SpO2 (%)" if language=="English" else "অক্সিজেন স্যাচুরেশন (%)", 50, 100, 98)
-        temperature_c = st.number_input("Temperature (°C)" if language=="English" else "তাপমাত্রা (°C)", 30.0, 43.0, 37.0, step=0.1)
+    hour_from_admission = st.number_input("Hours Since Admission" if language=="English" else "ভর্তির পর কত ঘণ্টা", 0, 72, 1)
+    heart_rate = st.number_input("Heart Rate (bpm)" if language=="English" else "হৃদস্পন্দন (bpm)", 30, 220, 80)
+    respiratory_rate = st.number_input("Respiratory Rate (breaths/min)" if language=="English" else "শ্বাসের গতি", 5, 60, 16)
+    spo2_pct = st.number_input("SpO2 (%)" if language=="English" else "অক্সিজেন স্যাচুরেশন (%)", 50, 100, 98)
+    temperature_c = st.number_input("Temperature (°C)" if language=="English" else "তাপমাত্রা (°C)", 30.0, 43.0, 37.0, step=0.1)
 
-    with v_col2:
-        systolic_bp = st.number_input("Systolic BP" if language=="English" else "সিস্টোলিক রক্তচাপ", 50, 250, 120)
-        diastolic_bp = st.number_input("Diastolic BP" if language=="English" else "ডায়াস্টোলিক রক্তচাপ", 30, 150, 80)
-        oxygen_flow = st.number_input("Oxygen Flow (L/min)" if language=="English" else "অক্সিজেন প্রবাহ (L/min)", 0.0, 15.0, 0.0, step=0.5)
+    
+    systolic_bp = st.number_input("Systolic BP" if language=="English" else "সিস্টোলিক রক্তচাপ", 50, 250, 120)
+    diastolic_bp = st.number_input("Diastolic BP" if language=="English" else "ডায়াস্টোলিক রক্তচাপ", 30, 150, 80)
+    oxygen_flow = st.number_input("Oxygen Flow (L/min)" if language=="English" else "অক্সিজেন প্রবাহ (L/min)", 0.0, 15.0, 0.0, step=0.5)
   
-        comorbidity_index = st.number_input("Comorbidity Index (0-5)" if language=="English" else "সহ-রোগ সংখ্যা (0-5)", 0, 5, 0)
-        hemoglobin = st.number_input("Hemoglobin (g/dL)" if language=="English" else "হিমোগ্লোবিন (g/dL)", 3.0, 20.0, 13.0, step=0.1)
-        wbc_count = st.number_input("WBC Count (x10^9/L)" if language=="English" else "WBC কাউন্ট", 1.0, 40.0, 7.0, step=0.1)
-        crp_level = st.number_input("CRP Level (mg/L)" if language=="English" else "CRP লেভেল", 0.0, 300.0, 5.0, step=0.5)
-        creatinine = st.number_input("Creatinine (mg/dL)" if language=="English" else "ক্রিয়েটিনিন (mg/dL)", 0.1, 15.0, 1.0, step=0.1)
+    comorbidity_index = st.number_input("Comorbidity Index (0-5)" if language=="English" else "সহ-রোগ সংখ্যা (0-5)", 0, 5, 0)
+    hemoglobin = st.number_input("Hemoglobin (g/dL)" if language=="English" else "হিমোগ্লোবিন (g/dL)", 3.0, 20.0, 13.0, step=0.1)
+    wbc_count = st.number_input("WBC Count (x10^9/L)" if language=="English" else "WBC কাউন্ট", 1.0, 40.0, 7.0, step=0.1)
+    crp_level = st.number_input("CRP Level (mg/L)" if language=="English" else "CRP লেভেল", 0.0, 300.0, 5.0, step=0.5)
+    creatinine = st.number_input("Creatinine (mg/dL)" if language=="English" else "ক্রিয়েটিনিন (mg/dL)", 0.1, 15.0, 1.0, step=0.1)
     
 
     if st.button("Check Deterioration Risk" if language=="English" else "ঝুঁকি যাচাই করুন", type="primary", key="check_anomaly"):
@@ -1442,8 +1486,7 @@ with tab3:
     else:
         result = st.session_state.triage_result
         color = normalize_color(result["color"])
-        
-        
+               
         if st.session_state.referral:
             referral = st.session_state.referral
             alternate_referral = st.session_state.alternate_referral
@@ -1454,12 +1497,16 @@ with tab3:
                 language
             )
         show_triage_card(color, language)
-        detected = st.session_state.get("detected_special", "none")
+        special = st.session_state.get("detected_special")
 
-        if result["source"] == "Special emergency detection" and detected in SPECIAL_FIRST_AID:
-                 first_aid = SPECIAL_FIRST_AID[detected]
+        if result["source"] == "Special emergency detection" and special:
+            first_aid = {
+                "condition": special["condition"],
+                "steps_en": special.get("advice_en", []),
+                "steps_bn": special.get("advice_bn", []),
+            }
         else:
-              first_aid = get_first_aid(st.session_state.symptoms, language)
+            first_aid = get_first_aid(st.session_state.symptoms, language)
         label = f"🩹 First Aid: {first_aid['condition']}" if language == "English" else f"🩹 প্রাথমিক চিকিৎসা: {first_aid['condition']}"
         with st.expander(label, expanded=color == "red"):
             if "steps_en" in first_aid:
@@ -1500,14 +1547,16 @@ with tab3:
           st.subheader(t["recommended_hospitals"])
 
           for hospital in hospitals:
-           st.write(
-            f"🏥 {hospital['Organization Name']}"
-        )
+              st.write(
+        f"🏥 {hospital['Name']}"
+        if language != "বাংলা"
+        else f"🏥 {hospital['Name (Bangla)']}"
+    )
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
     if language == "বাংলা"
     else symptom
-    for symptom, value in selected_symptoms.items()
+    for symptom, value in st.session_state.symptoms.items()
     if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
 ]
 
