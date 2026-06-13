@@ -1037,8 +1037,16 @@ def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral
         "gray": "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।",
     }.get(color, "স্পষ্ট করে লক্ষণ লিখুন বা বলুন।")
 
+    symptom_items = []
+
     if active:
-        symptom_text = ", ".join([BANGLA_FEATURES.get(s, s) for s in active[:6]])
+        symptom_items.extend([BANGLA_FEATURES.get(s, s) for s in active[:6]])
+
+    for extra_symptom in st.session_state.get("extra_symptoms", []):
+        symptom_items.append(extra_symptom.replace("_", " "))
+
+    if symptom_items:
+        symptom_text = ", ".join(symptom_items[:8])
     else:
         symptom_text = "কোনো নির্দিষ্ট লক্ষণ পাওয়া যায়নি"
 
@@ -1162,7 +1170,13 @@ if "alternate_referral" not in st.session_state:
     
 if "first_aid" not in st.session_state:
     st.session_state.first_aid = None
-    
+
+if "detected_special" not in st.session_state:
+    st.session_state.detected_special = "none"
+
+if "extra_symptoms" not in st.session_state:
+    st.session_state.extra_symptoms = []
+
 tab1, tab2,tab3 = st.tabs([t["patient_form"], t["worker_form"],t['tab_result']])
 
 
@@ -1373,8 +1387,21 @@ with tab1:
         st.session_state.original_triage_source = result["source"]
         st.session_state.ai_response = None
         st.session_state.first_aid = None
-        st.session_state.referral = None
-        st.session_state.alternate_referral = None
+        if st.session_state.detected_special != "none":
+            st.session_state.referral = (
+                "Emergency Department"
+                if language == "English"
+                else "জরুরি বিভাগ"
+            )
+
+            st.session_state.alternate_referral = (
+                "General Physician"
+                if language == "English"
+                else "জেনারেল ফিজিশিয়ান"
+            )
+        else:
+            st.session_state.referral = None
+            st.session_state.alternate_referral = None
         st.success(t["triage_done"])
 
 
@@ -1563,7 +1590,7 @@ with tab3:
         if active_symptoms:
             st.subheader(t["detected_symptoms"])
             for symptom in active_symptoms:
-                 display_name = ( BANGLA_FEATURES.get(symptom, symptom)if language == "বাংলা" else symptom.title())
+                 
                  st.write(f"- {symptom}")
         else:
             st.info(t["no_symptoms"])
