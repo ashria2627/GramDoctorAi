@@ -71,12 +71,12 @@ h1 {
 /* Tabs */
 .stTabs [data-baseweb="tab-list"] {
     border-radius: 10px;
-    padding: 10px 5px;
-    gap: 15px;
+    padding:5px;
+    gap: 5px;
     margin: auto !important;
 }
 .stTabs [data-baseweb="tab"] {
-    font-size: 1rem !important;
+    font-size: 0.75rem !important;
     border-radius: 8px;
     color: #77A9B6;
     font-weight: 600;
@@ -1307,6 +1307,7 @@ with tab1:
         st.text_area(t["uploaded_preview"], uploaded_text, height=150)
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
+      with st.spinner("Analyzing symptoms..." if language=="English" else "লক্ষণ বিশ্লেষণ হচ্ছে..."):
         st.session_state.filtered_final = filtered_final
         symptoms = {}
 
@@ -1373,7 +1374,7 @@ with tab1:
             if current_color not in order:
                 current_color = "green"
 
-            # Use whichever is more severe: ML result or special detection
+            
             if order.index(special_color) >= order.index(current_color):
                 if language == "বাংলা":
                     message = color_messages_bn[special_color].format(cond=cond)
@@ -1432,12 +1433,13 @@ with tab2:
                  key = f"fu_{cat_idx}_{cat}_{i}"
                  followup_answers[key] = st.text_input(q, key=key)
         if st.button("Update Triage" if language=="English" else "ট্রায়াজ আপডেট করুন"):
+          with st.spinner("Updating triage..." if language=="English" else "ট্রায়াজ আপডেট হচ্ছে..."):
             for k, v in followup_answers.items():
                  st.session_state.symptoms[k] = v
             
             st.session_state.followup_answers = followup_answers
             result = predict_triage(st.session_state.symptoms, model, feature_cols)
-            result = apply_bd_rules(st.session_state.symptoms, result, followup_answers=st.session_state.get("followup_answers", {}))
+            result = apply_bd_rules(st.session_state.symptoms, result, followup_answers, language)
             from modules.FIRSTAID import get_first_aid_from_followup
             st.session_state.first_aid = get_first_aid_from_followup(
     followup_answers,
@@ -1477,7 +1479,7 @@ with tab3:
     
 
     if st.button("Check Deterioration Risk" if language=="English" else "ঝুঁকি যাচাই করুন", type="primary", key="check_anomaly"):
-
+      with st.spinner("Checking vitals..." if language=="English" else "ভাইটাল যাচাই হচ্ছে..."):
         vitals = {
             "heart_rate": heart_rate,
             "respiratory_rate": respiratory_rate,
