@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from google import genai
-
+from modules.Followup import FOLLOWUP_GROUPS
 import json
 
 load_dotenv()
@@ -88,7 +88,7 @@ def generate_ai_response(symptoms, triage_result):
 
     active_symptoms = get_active_symptoms(symptoms)
     color = triage_result["color"]
-
+    followup_text = "\n".join(f"{k}: {v}" for k,v in symptoms.items() if k.split("_")[0] in FOLLOWUP_GROUPS and v)
     prompt = f"""
 You are GramDoctor AI, a rural Bangladesh triage and referral assistant.
 
@@ -117,7 +117,7 @@ Age: {symptoms.get("age", "unknown")}
 Sex code: {symptoms.get("sex-no", "unknown")}
 Pregnancy code: {symptoms.get("ispregnant", "unknown")}
 Active symptoms: {active_symptoms}
-
+Additional details : {followup_text}
 System triage signal: {color}
 System notes: {triage_result["message"]}
 
@@ -183,20 +183,24 @@ def detect_special_emergency(text):
 
 Patient text (Bangla or English, possibly from voice or a note): "{text}"
 
-This text does NOT match any symptom in our structured dataset. It may describe
-an injury or event such as: animal/snake bite, insect/bee/wasp sting,
-burn, cut/wound, fall, drowning, poisoning, electric shock, or something similar.
+Some words in this text may already match our structured symptom dataset
+(like fever, vomiting, etc.) — ignore those. Your job is ONLY to check if the
+text ALSO describes an injury or event NOT covered by simple symptoms, such as:
+animal/dog/cat/snake bite, insect/bee/wasp sting, burn, cut/wound, fall,
+drowning, poisoning, electric shock, drug overdose, needle/injection injury.
 
-If the text describes a real medical event/injury, respond with ONLY a JSON object
-(no markdown, no extra text) in this exact format:
+If such an injury/event IS mentioned (even alongside other symptoms like fever),
+respond with ONLY this JSON:
 {{
   "found": true,
-  "condition": "Short condition name in English (e.g. Animal Bite, Insect Sting, Burn Injury, Fall Injury)",
-  "color": "red" or "orange" or "green",
-  "advice_en": ["step 1", "step 2", "step 3", "step 4"],
-  "advice_bn": ["বাংলায় ধাপ ১", "ধাপ ২", "ধাপ ৩", "ধাপ ৪"]
+  "condition": "...",
+  "color": "red"/"orange"/"green",
+  "advice_en": [...],
+  "advice_bn": [...]
 }}
 
+If NO such injury/event is mentioned at all (only ordinary symptoms like fever, cough, etc.), respond with ONLY:
+{{"found": false}}
 Triage color rules:
 - "red": severe/venomous animal bite, deep wound with heavy bleeding, severe burn, drowning, poisoning, electric shock, suspected rabies exposure, fall with suspected fracture or head injury
 - "orange": moderate injury needing a doctor within 1-2 days (small animal bite needing rabies vaccine check, moderate burn, deep cut, insect sting with swelling)
@@ -240,5 +244,6 @@ If the text does not describe any medical event or injury at all, respond with O
             "advice_bn": data.get("advice_bn", []),
         }
 
-    except Exception:
-        return {"found": False}
+    except Exception as e:
+      print(f"[Gemini Error] detect_special_emergency: {e}")
+      return {"found": False}

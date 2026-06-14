@@ -165,7 +165,7 @@ def check_orange_flags(symptoms):
 
 def predict_triage(symptoms, model, feature_cols):
 
-    # Normalize keys (VERY IMPORTANT)
+    
     symptoms = {k.lower().strip(): v for k, v in symptoms.items()}
 
     SERIOUS_SINGLE_SYMPTOMS = [

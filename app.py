@@ -1,6 +1,5 @@
 import os
 from io import BytesIO
-
 import streamlit as st
 import pandas as pd
 from reportlab.lib.pagesizes import A4
@@ -9,6 +8,10 @@ from modules.FIRSTAID import get_first_aid
 from modules.model_backend import load_model_and_features, predict_triage,load_anomaly_model,predict_deterioration,get_deterioration_recommendations
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
+from modules.FIRSTAID import SYMPTOM_FIRST_AID
+from modules.triage_rules import apply_bd_rules
+from modules.offline_detector import detect_local_emergency
+from modules.Followup import FOLLOWUP_GROUPS, detect_followup_categories
 from gtts import gTTS
 
 try:
@@ -262,6 +265,7 @@ today the weather is good
           "no_symptoms": "No specific symptom detected from the current input.",
         "refer_to": "Refer to:",
         "alternate_referral": "If not available, see:",
+        'follow-up':"Follow-up Questions",
     },
     "বাংলা": {
         "title": "GramDoctor AI",
@@ -342,6 +346,7 @@ today the weather is good
           "refer_to": "রেফার করুন:",
         "alternate_referral": "না পেলে বিকল্প হিসেবে দেখান:",
         "recommended_hospitals": "প্রস্তাবিত হাসপাতাল",
+        'follow-up':"পর্যবেক্ষণ",
     }
 }
 
@@ -351,7 +356,7 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.success("GREEN — বাসায় পর্যবেক্ষণ")
             st.markdown("""
-            **অর্থ:** বর্তমান তথ্য অনুযায়ী লক্ষণগুলো কম ঝুঁকিপূর্ণ মনে হচ্ছে। 
+            **অর্থ:** বর্তমান তথ্য অনুযায়ী লক্ষণগুলো কম ঝুঁকিপূর্ণ মনে হচ্ছে। আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন।
              
             **করণীয়:** বিশ্রাম, পর্যাপ্ত পানি এবং লক্ষণ পর্যবেক্ষণ।  
             
@@ -360,7 +365,7 @@ def show_triage_card(color, language):
         else:
             st.success("GREEN — Home care / observe")
             st.markdown("""
-            **Meaning:** Current symptoms appear low risk based on triage input. 
+            **Meaning:** Current symptoms appear low risk based on triage input. If you have not yet answered ***follow-up*** questions ,please do so you get perfect recommendation for your current condition.  
              
             **Recommended action:** Rest, drink fluids, and monitor symptoms.  
             
@@ -369,20 +374,21 @@ def show_triage_card(color, language):
 
     elif color == "orange":
         if language == "বাংলা":
-            st.warning("ORANGE - পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।")
+            st.warning("ORANGE - পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।  ")
             st.markdown("""
-            **অর্থ:** লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে।  
+            **অর্থ:** লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে। আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন। 
             
-            **করণীয়:** ২৪-৪৮ ঘণ্টার মধ্যে ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান। 
+            **করণীয়:** **২৪-৪৮ ঘণ্টার** মধ্যে ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান। 
              
             **জরুরি চিকিৎসা নিন যদি:** দুর্বলতা, পানিশূন্যতা, তীব্র ব্যথা বা শ্বাসকষ্ট বাড়ে।
             """)
         else:
             st.warning("ORANGE — Observe and if worsen Visit doctor within 1-2 days")
             st.markdown("""
-            **Meaning:** Symptoms need medical review but may not be an immediate emergency.  
+            **Meaning:** Symptoms need medical review but may not be an immediate emergency. If you have not yet answered  ***follow-up questions*** ,please do so you get perfect recommendation for your current condition.
             
-            **Recommended action:** Visit a local doctor, clinic, or Upazila Health Complex within 24-48 hours.  
+            **Recommended action:** Visit a local doctor, clinic, or Upazila Health Complex within **24-48 hours.**
+            
             **Seek urgent care if:** weakness, dehydration, severe pain, or breathing difficulty worsens.
             """)
 
@@ -392,7 +398,7 @@ def show_triage_card(color, language):
             st.markdown("""
             **অর্থ:** জরুরি বিপদ সংকেত থাকতে পারে।
               
-            **করণীয়:** এখনই নিকটস্থ হাসপাতাল বা জরুরি বিভাগে যান।  
+            **করণীয়:** এখনই নিকটস্থ হাসপাতাল বা ***জরুরি বিভাগে যান।*** 
             
             **করবেন না:** বাসায় অপেক্ষা করবেন না বা চিকিৎসা নিতে দেরি করবেন না।
             """)
@@ -401,7 +407,7 @@ def show_triage_card(color, language):
             st.markdown("""
             **Meaning:** Emergency red-flag silent symptoms may be present. 
              
-            **Recommended action:** Go to the nearest emergency department immediately. 
+            **Recommended action:** Go to the nearest ***emergency department immediately.***
              
             **Do not:** wait at home or delay medical care.
             """)
@@ -1177,7 +1183,7 @@ if "detected_special" not in st.session_state:
 if "extra_symptoms" not in st.session_state:
     st.session_state.extra_symptoms = []
 
-tab1, tab2,tab3 = st.tabs([t["patient_form"], t["worker_form"],t['tab_result']])
+tab1, tab2,tab3,tab4 = st.tabs([t["patient_form"],t['follow-up'], t["worker_form"],t['tab_result']])
 
 
 with tab1:
@@ -1334,8 +1340,13 @@ with tab1:
         )
 
         # symptom detection
-        from modules.gemini_helper import detect_special_emergency
-        special = detect_special_emergency(combined_text)
+        local_special = detect_local_emergency(combined_text, SYMPTOM_FIRST_AID)
+
+        if local_special:
+           special = local_special
+        else:
+           from modules.gemini_helper import detect_special_emergency
+           special = detect_special_emergency(combined_text)
 
         if active_symptom_count > 0:
             result = predict_triage(symptoms, model, feature_cols)
@@ -1385,8 +1396,11 @@ with tab1:
         st.session_state.original_triage_color = result["color"]
         st.session_state.original_triage_message = result["message"]
         st.session_state.original_triage_source = result["source"]
+        detected_special=st.session_state.get("detected_special")
+        st.session_state.followup_categories = detect_followup_categories(symptoms, FOLLOWUP_GROUPS,language,detected_special)               
         st.session_state.ai_response = None
         st.session_state.first_aid = None
+        st.session_state.tts_audio = None
         if st.session_state.detected_special != "none":
             st.session_state.referral = (
                 "Emergency Department"
@@ -1404,9 +1418,38 @@ with tab1:
             st.session_state.alternate_referral = None
         st.success(t["triage_done"])
 
-
-
 with tab2:
+    cats = st.session_state.get("followup_categories", [])
+    if not cats:
+        st.info("No follow-up needed yet." if language=="English" else "এখনো ফলো-আপ প্রয়োজন নেই।")
+    else:
+        followup_answers = {}
+        for cat_idx, cat in enumerate(cats):
+            st.subheader(('Probable 'if language=="English" else "সম্ভাব্য ")+cat.title())
+            # st.write("DEBUG cats:", cats)
+            qs = FOLLOWUP_GROUPS[cat]["questions_bn" if language=="বাংলা" else "questions_en"]
+            for i, q in enumerate(qs):
+                 key = f"fu_{cat_idx}_{cat}_{i}"
+                 followup_answers[key] = st.text_input(q, key=key)
+        if st.button("Update Triage" if language=="English" else "ট্রায়াজ আপডেট করুন"):
+            for k, v in followup_answers.items():
+                 st.session_state.symptoms[k] = v
+            
+            st.session_state.followup_answers = followup_answers
+            result = predict_triage(st.session_state.symptoms, model, feature_cols)
+            result = apply_bd_rules(st.session_state.symptoms, result, followup_answers=st.session_state.get("followup_answers", {}))
+            from modules.FIRSTAID import get_first_aid_from_followup
+            st.session_state.first_aid = get_first_aid_from_followup(
+    followup_answers,
+    language,
+    symptoms=st.session_state.symptoms,
+    triage_color=st.session_state.triage_result["color"]
+)
+            st.session_state.triage_result = result
+            st.session_state.tts_audio = None
+            st.success("Updated! Check Result tab." if language=="English" else "আপডেট হয়েছে! Result ট্যাব দেখুন।")
+
+with tab3:
     st.header("Vital Signs Monitor" if language == "English" else "ভাইটাল সাইন মনিটর")
 
     
@@ -1504,7 +1547,7 @@ with tab2:
 
         
 
-with tab3:
+with tab4:
     st.header(t["triage_result"])
 
     if st.session_state.triage_result is None:
@@ -1533,7 +1576,7 @@ with tab3:
                 "steps_bn": special.get("advice_bn", []),
             }
         else:
-            first_aid = get_first_aid(st.session_state.symptoms, language)
+            first_aid = st.session_state.get("first_aid") or get_first_aid(st.session_state.symptoms, language)
         label = f"🩹 First Aid: {first_aid['condition']}" if language == "English" else f"🩹 প্রাথমিক চিকিৎসা: {first_aid['condition']}"
         with st.expander(label, expanded=color == "red"):
             if "steps_en" in first_aid:
@@ -1548,17 +1591,22 @@ with tab3:
         st.write(t["reason"], result["message"])
         st.divider()
         if st.button('listen result', key="listen_result_button"):
-            try:
-                summary_text = get_tts_summary_bangla(
-                    result,
-                    st.session_state.symptoms,
-                    referral,
-                    alternate_referral
-                )
-                audio_buffer = create_tts_audio(summary_text)
-                st.audio(audio_buffer, format="audio/mp3")
-            except Exception:
-                st.error('error')
+          st.session_state.tts_audio = None  # force regenerate
+
+        if st.session_state.get("tts_audio") is None and st.session_state.get("triage_result"):
+          try:
+             summary_text = get_tts_summary_bangla(
+              st.session_state.triage_result,
+              st.session_state.symptoms,
+              st.session_state.get("referral"),
+              st.session_state.get("alternate_referral")
+            )
+             st.session_state.tts_audio = create_tts_audio(summary_text)
+          except Exception as e:
+               st.error(f"TTS error: {e}")  
+
+        if st.session_state.get("tts_audio"):
+              st.audio(st.session_state.tts_audio, format="audio/mp3")
         st.divider()
         if referral:
             st.markdown(f"**{t['refer_to']} {referral}**")
