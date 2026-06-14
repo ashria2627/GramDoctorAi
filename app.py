@@ -8,7 +8,7 @@ from modules.FIRSTAID import get_first_aid
 from modules.model_backend import load_model_and_features, predict_triage,load_anomaly_model,predict_deterioration,get_deterioration_recommendations
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
-from modules.FIRSTAID import SYMPTOM_FIRST_AID
+from modules.FIRSTAID import SYMPTOM_FIRST_AID,SPECIAL_FIRST_AID
 from modules.triage_rules import apply_bd_rules
 from modules.offline_detector import detect_local_emergency
 from modules.Followup import FOLLOWUP_GROUPS, detect_followup_categories
