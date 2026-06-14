@@ -1341,7 +1341,7 @@ with tab1:
         )
 
         # symptom detection
-        local_special = detect_local_emergency(combined_text, SYMPTOM_FIRST_AID)
+        local_special = detect_local_emergency(combined_text, SPECIAL_FIRST_AID)
 
         if local_special:
            special = local_special
@@ -1402,7 +1402,7 @@ with tab1:
         st.session_state.ai_response = None
         st.session_state.first_aid = None
         st.session_state.tts_audio = None
-        if st.session_state.detected_special != "none":
+        if st.session_state.get("detected_special") and st.session_state.detected_special.get("found"):
             st.session_state.referral = (
                 "Emergency Department"
                 if language == "English"

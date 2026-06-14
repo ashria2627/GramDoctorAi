@@ -7,7 +7,4 @@ google-genai
 python-dotenv
 streamlit-mic-recorder
 reportlab
-xgboost
-plotly
 gTTS
-kaleido
