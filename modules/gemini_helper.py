@@ -9,7 +9,7 @@ load_dotenv()
 
 
 def get_gemini_client():
-    api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")  
+    api_key = os.getenv("GEMINI_API_KEY")  
 
     if not api_key:
         return None

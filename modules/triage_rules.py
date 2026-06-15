@@ -97,24 +97,98 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
         fever_days = int(get("dengue", 0).split()[0])
     except:
         fever_days = 0
-
-    abdominal_pain   = yes(get("dengue", 5))
-    bleeding         = yes(get("dengue", 6))
-    poor_urine       = no(get("dengue", 7))
-    rash             = yes(get("dengue", 11))
-    confused         = yes(get("dengue", 12))
-    poor_fluids      = no(get("dengue", 10))
-
+ 
+    abdominal_pain = yes(get("dengue", 5))
+    bleeding = yes(get("dengue", 6))
+    poor_urine = no(get("dengue", 7))
+    poor_fluids = no(get("dengue", 10))
+    rash = yes(get("dengue", 11))
+    confused = yes(get("dengue", 12))
+ 
+    severe_joint_pain = yes(get("dengue", 13))
+    fever_7_days = yes(get("dengue", 14)) or fever_days >= 7
+    weight_loss = yes(get("dengue", 15))
+    spleen_fullness = yes(get("dengue", 16))
+    jaundice = yes(get("dengue", 17))
+    flood_water = yes(get("dengue", 18))
+    muscle_pain = yes(get("dengue", 19))
+    eschar = yes(get("dengue", 20))
+    post_sore_throat_joint = yes(get("dengue", 21))
+    mouth_sores = yes(get("dengue", 22))
+    hand_foot_rash = yes(get("dengue", 23))
+    newborn_poor_feeding = yes(get("dengue", 24))
+ 
+    age = int(symptoms.get("age", 0))
+ 
+    if age < 1 and symptoms.get("fever", 0) == 1 and newborn_poor_feeding:
+        return {
+            "color": "red",
+            "source": "Possible - ***Neonatal Sepsis***" if lang == "English" else "সম্ভাব্য - ***নবজাতকের সেপসিস***",
+            "message": "Newborn fever with poor feeding is dangerous. Go to hospital immediately." if lang == "English" else "নবজাতকের জ্বর ও দুধ না খাওয়া বিপজ্জনক। অবিলম্বে হাসপাতালে যান।"
+        }
+ 
     if fever_days >= 3 and any([abdominal_pain, bleeding, poor_urine, confused]):
-        return {"color": "red", "source": "Possible - ***Dengue Warning Signs***"if lang=="English" else "সম্ভাব্য - ***ডেঙ্গুর সতর্কীকরণ লক্ষণ***",
-                "message": ("Dengue warning signs detected. ***Go to hospital today.*** Do NOT take ibuprofen or aspirin."if lang=='English' else "ডেঙ্গুর সতর্কীকরণ লক্ষণ দেখা গেছে। ***আজই হাসপাতালে যান।*** আইবুপ্রোফেন বা অ্যাসপিরিন খাবেন না।")}
-    if fever_days >= 7:
-        return {"color": "orange", "source": "***Typhoid Suspicion***" if lang=="English" else "***টাইফয়েড সন্দেহ***",
-                "message": ("Prolonged fever over 7 days — possible typhoid. ***See doctor within 24 hours.***" if lang=='English' else '৭ দিনের বেশি সময় ধরে জ্বর থাকলে টাইফয়েড হতে পারে। ***২৪ ঘণ্টার মধ্যে ডাক্তারের সাথে দেখা করুন।***')}
+        return {
+            "color": "red",
+            "source": "Possible - ***Dengue Warning Signs***" if lang == "English" else "সম্ভাব্য - ***ডেঙ্গুর সতর্কীকরণ লক্ষণ***",
+            "message": "Dengue warning signs detected. Go to hospital today. Do NOT take ibuprofen or aspirin." if lang == "English" else "ডেঙ্গুর সতর্কীকরণ লক্ষণ দেখা গেছে। আজই হাসপাতালে যান। আইবুপ্রোফেন বা অ্যাসপিরিন খাবেন না।"
+        }
+ 
     if fever_days >= 3 and (rash or poor_fluids):
-        return {"color": "orange", "source": "***Dengue*** Suspected"if lang=='English' else "***ডেঙ্গু*** সন্দেহ করা হচ্ছে",
-                "message": ("Possible dengue. Monitor closely, ***drink ORS, avoid aspirin/ibuprofen***. See doctor if worsens."if lang=='English' else "ডেঙ্গু হতে পারে। নিবিড়ভাবে পর্যবেক্ষণ করুন, ***ওআরএস পান করুন***। অবস্থার অবনতি হলে ডাক্তারের সাথে দেখা করুন।")}
-
+        return {
+            "color": "orange",
+            "source": "***Dengue*** Suspected" if lang == "English" else "***ডেঙ্গু*** সন্দেহ করা হচ্ছে",
+            "message": "Possible dengue. Drink ORS, avoid aspirin/ibuprofen, and see a doctor if symptoms worsen." if lang == "English" else "ডেঙ্গু হতে পারে। ওআরএস পান করুন, অ্যাসপিরিন/আইবুপ্রোফেন এড়িয়ে চলুন এবং অবস্থা খারাপ হলে ডাক্তার দেখান।"
+        }
+ 
+    if fever_7_days:
+        return {
+            "color": "orange",
+            "source": "***Typhoid Suspicion***" if lang == "English" else "***টাইফয়েড সন্দেহ***",
+            "message": "Prolonged fever for 7 days or more may suggest typhoid. See a doctor within 24 hours." if lang == "English" else "৭ দিন বা তার বেশি জ্বর থাকলে টাইফয়েড হতে পারে। ২৪ ঘণ্টার মধ্যে ডাক্তার দেখান।"
+        }
+ 
+    if symptoms.get("fever", 0) == 1 and severe_joint_pain and rash:
+        return {
+            "color": "orange",
+            "source": "***Chikungunya Suspicion***" if lang == "English" else "***চিকুনগুনিয়া সন্দেহ***",
+            "message": "Fever with severe joint pain and rash may suggest chikungunya. See a doctor and maintain fluids." if lang == "English" else "জ্বরের সাথে তীব্র জয়েন্ট ব্যথা ও র‍্যাশ থাকলে চিকুনগুনিয়া হতে পারে। ডাক্তার দেখান এবং পর্যাপ্ত তরল পান করুন।"
+        }
+ 
+    if fever_7_days and weight_loss and spleen_fullness:
+        return {
+            "color": "orange",
+            "source": "***Kala-azar Suspicion***" if lang == "English" else "***কালা-আজার সন্দেহ***",
+            "message": "Prolonged fever with weight loss and left upper abdominal fullness may suggest kala-azar. Medical testing is needed." if lang == "English" else "দীর্ঘদিনের জ্বর, ওজন কমা ও বাম ওপরের পেট ভারী লাগলে কালা-আজার হতে পারে। পরীক্ষা দরকার।"
+        }
+ 
+    if symptoms.get("fever", 0) == 1 and jaundice and muscle_pain and flood_water:
+        return {
+            "color": "red",
+            "source": "***Leptospirosis Suspicion***" if lang == "English" else "***লেপ্টোস্পাইরোসিস সন্দেহ***",
+            "message": "Fever with jaundice and severe muscle pain after flood/dirty water exposure can be serious. Go to hospital today." if lang == "English" else "বন্যা/নোংরা পানির সংস্পর্শের পর জ্বর, জন্ডিস ও তীব্র পেশি ব্যথা গুরুতর হতে পারে। আজই হাসপাতালে যান।"
+        }
+ 
+    if symptoms.get("fever", 0) == 1 and rash and eschar:
+        return {
+            "color": "orange",
+            "source": "***Scrub Typhus Suspicion***" if lang == "English" else "***স্ক্রাব টাইফাস সন্দেহ***",
+            "message": "Fever with rash and black scab/eschar after insect bite may suggest scrub typhus. See a doctor within 24 hours." if lang == "English" else "পোকা কামড়ের পর জ্বর, র‍্যাশ ও কালো দাগ/খোসা হলে স্ক্রাব টাইফাস হতে পারে। ২৪ ঘণ্টার মধ্যে ডাক্তার দেখান।"
+        }
+ 
+    if age <= 15 and symptoms.get("fever", 0) == 1 and post_sore_throat_joint:
+        return {
+            "color": "orange",
+            "source": "***Acute Rheumatic Fever Suspicion***" if lang == "English" else "***একিউট রিউম্যাটিক ফিভার সন্দেহ***",
+            "message": "Fever and joint pain after sore throat in a child may suggest acute rheumatic fever. Doctor review is needed." if lang == "English" else "শিশুর গলা ব্যথার পর জ্বর ও জয়েন্ট ব্যথা হলে একিউট রিউম্যাটিক ফিভার হতে পারে। ডাক্তার দেখানো দরকার।"
+        }
+ 
+    if age <= 12 and symptoms.get("fever", 0) == 1 and mouth_sores and hand_foot_rash:
+        return {
+            "color": "orange",
+            "source": "***Hand Foot Mouth Disease Suspicion***" if lang == "English" else "***হ্যান্ড ফুট মাউথ ডিজিজ সন্দেহ***",
+            "message": "Fever with mouth sores and rash/blisters on hands or feet may suggest hand foot mouth disease. Maintain fluids and see a doctor if poor feeding or worsening." if lang == "English" else "জ্বরের সাথে মুখে ঘা এবং হাত/পায়ে র‍্যাশ বা ফোসকা হলে হ্যান্ড ফুট মাউথ ডিজিজ হতে পারে। তরল দিন, খাবার কমে গেলে বা অবস্থা খারাপ হলে ডাক্তার দেখান।"
+        }
  #  CARDIAC 
     radiates  = yes(get("cardiac", 1))
     sweating  = yes(get("cardiac", 2))
@@ -286,12 +360,24 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
     heavy_bleeding  = yes(get("mensuration", 1)) and "more" in get("mensuration", 1)
     large_clots     = yes(get("mensuration", 3))
     dizzy_menses    = yes(get("mensuration", 5))
+    regular = yes(get("mensuration", 7))
     fever_discharge = yes(get("mensuration", 8))
 
-    if large_clots and dizzy_menses:
+    if large_clots and dizzy_menses and heavy_bleeding:
         return {
         "color": "red",
         "source": "Possible ***Severe Menstrual Bleeding***" if lang=='English'
+                  else "***তীব্র মাসিক রক্তক্ষরণ***",
+        "message": (
+            "Heavy menstrual bleeding with dizziness — ***possible anemia emergency, seek care now.***"
+            if lang=='English'
+            else "অতিরিক্ত মাসিক রক্তক্ষরণ + মাথা ঘোরা — ***সম্ভাব্য অ্যানিমিয়া জরুরি অবস্থা, এখনই চিকিৎসা নিন।***"
+        )
+    }
+    if regular and  heavy_bleeding:
+        return {
+        "color": "orange",
+        "source": "Possible ***Severe Bleeding***" if lang=='English'
                   else "***তীব্র মাসিক রক্তক্ষরণ***",
         "message": (
             "Heavy menstrual bleeding with dizziness — ***possible anemia emergency, seek care now.***"

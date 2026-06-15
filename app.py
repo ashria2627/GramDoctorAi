@@ -1,4 +1,5 @@
 import os
+import math
 from io import BytesIO
 import streamlit as st
 import pandas as pd
@@ -18,7 +19,10 @@ try:
     from streamlit_mic_recorder import speech_to_text
 except Exception:
     speech_to_text = None
-
+try:
+    from streamlit_js_eval import get_geolocation
+except Exception:
+    get_geolocation = None
 
 st.set_page_config(
     page_title="GramDoctor AI",
@@ -257,6 +261,10 @@ today the weather is good
         "district": "Select District",
         "upazila": "Select Upazila",
         "hospitals": "Hospitals Found near you",
+        "use_device_location": "Turn on device location for better experience",
+        "location_unavailable": "Device location is unavailable. Showing hospitals from selected area.",
+        "location_found": "Device location detected. Hospitals are sorted by distance.",
+        "distance": "Distance",
         "beds": "Beds",
         'search':'Search and click',
         'subwrite':'write your symptoms',
@@ -339,6 +347,10 @@ today the weather is good
         "district": "জেলা নির্বাচন করুন",
         "upazila": "উপজেলা নির্বাচন করুন",
         "hospitals": "আপনার নিকটবর্তী হাসপাতালসমূহ",
+        "use_device_location": "আরও ভালো অভিজ্ঞতার জন্য ডিভাইস লোকেশন চালু করুন",
+        "location_unavailable": "ডিভাইস লোকেশন পাওয়া যায়নি। নির্বাচিত এলাকার হাসপাতাল দেখানো হচ্ছে।",
+        "location_found": "ডিভাইস লোকেশন পাওয়া গেছে। দূরত্ব অনুযায়ী হাসপাতাল সাজানো হয়েছে।",
+        "distance": "দূরত্ব",
         "beds": "শয্যা",
         'search':'অনুসন্ধান করে ক্লিক করুন',
         "subwrite":'আপনার উপসর্গ লিখুন',
@@ -759,13 +771,68 @@ def create_referral_pdf(ai_response, triage_result, symptoms):
     buffer.seek(0)
     return buffer
 
-def get_recommended_hospitals(filtered_final, n=5):
-    return (
-        filtered_final
-        .drop_duplicates(subset=["Name"])
-        .head(5)[["Name",'Name (Bangla)']]
-        .to_dict("records")
+def calculate_distance_km(lat1, lon1, lat2, lon2):
+    """
+    Haversine distance between two latitude/longitude points.
+    Returns distance in kilometers.
+    """
+    try:
+        lat1 = float(lat1)
+        lon1 = float(lon1)
+        lat2 = float(lat2)
+        lon2 = float(lon2)
+    except Exception:
+        return None
+
+    radius_km = 6371.0
+
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(math.radians(lat1))
+        * math.cos(math.radians(lat2))
+        * math.sin(dlon / 2) ** 2
     )
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return radius_km * c
+
+
+def get_recommended_hospitals(filtered_final, n=5, user_location=None):
+    hospitals_df = filtered_final.copy()
+
+    hospitals_df = hospitals_df.drop_duplicates(subset=["Name"])
+
+    if (
+        user_location
+        and "Latitude" in hospitals_df.columns
+        and "Longitude" in hospitals_df.columns
+    ):
+        user_lat = user_location.get("latitude")
+        user_lon = user_location.get("longitude")
+
+        hospitals_df["Distance_km"] = hospitals_df.apply(
+            lambda row: calculate_distance_km(
+                user_lat,
+                user_lon,
+                row["Latitude"],
+                row["Longitude"]
+            ),
+            axis=1
+        )
+
+        hospitals_df = hospitals_df.dropna(subset=["Distance_km"])
+        hospitals_df = hospitals_df.sort_values("Distance_km")
+
+        return hospitals_df.head(n)[
+            ["Name", "Name (Bangla)", "Distance_km"]
+        ].to_dict("records")
+
+    return hospitals_df.head(n)[
+        ["Name", "Name (Bangla)"]
+    ].to_dict("records")
 
 def normalize_color(color):
     if not color:
@@ -1168,6 +1235,8 @@ if "voice_text" not in st.session_state:
     st.session_state.voice_text = ""
 if "filtered_final" not in st.session_state:
     st.session_state.filtered_final = None
+if "user_location" not in st.session_state:
+    st.session_state.user_location = None
 if "referral" not in st.session_state:
     st.session_state.referral = None
 
@@ -1225,13 +1294,43 @@ with tab1:
     upazila = col3.selectbox(t["upazila"], upazilas)
 
     filtered_final = filtered_district[filtered_district["Upazila"] == upazila]
+
+    st.info(t["use_device_location"])
+
+    if get_geolocation is not None:
+        location = get_geolocation()
+
+        if location and "coords" in location:
+            coords = location["coords"]
+            st.session_state.user_location = {
+                "latitude": coords.get("latitude"),
+                "longitude": coords.get("longitude")
+            }
+            st.success(t["location_found"])
+        else:
+            st.caption(t["location_unavailable"])
+    else:
+        st.caption(t["location_unavailable"])
+
     st.subheader(t["hospitals"])
-    for _, row in filtered_final.head(5).iterrows():
-        st.write(
-        f"🏥 {row['Name']}"
-        if language != "বাংলা"
-        else f"🏥 {row['Name (Bangla)']}"
+
+    preview_hospitals = get_recommended_hospitals(
+        filtered_final,
+        n=5,
+        user_location=st.session_state.get("user_location")
     )
+
+    for hospital in preview_hospitals:
+        hospital_name = (
+            hospital["Name"]
+            if language != "বাংলা"
+            else hospital["Name (Bangla)"]
+        )
+
+        if "Distance_km" in hospital:
+            st.write(f"🏥 {hospital_name} — {t['distance']}: {hospital['Distance_km']:.2f} km")
+        else:
+            st.write(f"🏥 {hospital_name}")
   
     st.header(t['write'])
     st.subheader(t['subwrite'])
@@ -1620,15 +1719,25 @@ with tab4:
         if result["color"] in ["red", "orange"]:
          if st.session_state.filtered_final is not None:
 
-          hospitals = get_recommended_hospitals( st.session_state.filtered_final )
+          hospitals = get_recommended_hospitals(
+              st.session_state.filtered_final,
+              n=5,
+              user_location=st.session_state.get("user_location")
+          )
+
           st.subheader(t["recommended_hospitals"])
 
           for hospital in hospitals:
-              st.write(
-        f"🏥 {hospital['Name']}"
-        if language != "বাংলা"
-        else f"🏥 {hospital['Name (Bangla)']}"
-    )
+              hospital_name = (
+                  hospital["Name"]
+                  if language != "বাংলা"
+                  else hospital["Name (Bangla)"]
+              )
+
+              if "Distance_km" in hospital:
+                  st.write(f"🏥 {hospital_name} — {t['distance']}: {hospital['Distance_km']:.2f} km")
+              else:
+                  st.write(f"🏥 {hospital_name}")
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
     if language == "বাংলা"

@@ -8,3 +8,4 @@ python-dotenv
 streamlit-mic-recorder
 reportlab
 gTTS
+streamlit-js-eval

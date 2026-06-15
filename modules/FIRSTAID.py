@@ -464,7 +464,59 @@ frozenset(["drug exposure", "pain", "swelling"]): {
     ]
 },
 
+frozenset(["irregular periods"]): {
+    "condition": "Possible Irregular Menstrual Cycle",
+    "steps_en": [
+        "Keep a record of your menstrual dates and symptoms",
+        "Eat a balanced diet and stay hydrated",
+        "Manage stress and get adequate sleep",
+        "Avoid taking hormonal medicines without medical advice",
+        "See a healthcare provider if periods are very infrequent, absent, or accompanied by severe symptoms",
+    ],
+    "steps_bn": [
+        "মাসিকের তারিখ ও উপসর্গের রেকর্ড রাখুন",
+        "সুষম খাবার খান এবং পর্যাপ্ত পানি পান করুন",
+        "মানসিক চাপ কমানোর চেষ্টা করুন এবং পর্যাপ্ত ঘুমান",
+        "চিকিৎসকের পরামর্শ ছাড়া হরমোনজাতীয় ওষুধ গ্রহণ করবেন না",
+        "মাসিক খুব অনিয়মিত, বন্ধ হয়ে গেলে বা অন্য গুরুতর উপসর্গ থাকলে চিকিৎসকের পরামর্শ নিন",
+    ]
+},
 
+frozenset(["painful periods"]): {
+    "condition": "Possible Painful Menstruation",
+    "steps_en": [
+        "Rest and apply a warm compress to the lower abdomen",
+        "Drink plenty of fluids",
+        "Light exercise or walking may help relieve discomfort",
+        "Take pain medicine only as directed",
+        "Seek medical care if pain is severe or worsening",
+    ],
+    "steps_bn": [
+        "বিশ্রাম নিন এবং তলপেটে হালকা গরম সেঁক দিন",
+        "পর্যাপ্ত পানি ও তরল পান করুন",
+        "হালকা ব্যায়াম বা হাঁটাচলা ব্যথা কমাতে সাহায্য করতে পারে",
+        "প্রয়োজন হলে নির্দেশনা অনুযায়ী ব্যথার ওষুধ গ্রহণ করুন",
+        "ব্যথা খুব বেশি হলে বা বাড়তে থাকলে চিকিৎসকের পরামর্শ নিন",
+    ]
+},
+
+frozenset(["heavy menstrual bleeding"]): {
+    "condition": "Possible Heavy Menstrual Bleeding",
+    "steps_en": [
+        "Use clean sanitary pads and monitor the amount of bleeding",
+        "Drink plenty of fluids and eat iron-rich foods",
+        "Avoid strenuous activities if feeling weak or dizzy",
+        "Do not take medicines to stop bleeding without medical advice",
+        "Go to a healthcare facility promptly if bleeding is very heavy, prolonged, or causing dizziness",
+    ],
+    "steps_bn": [
+        "পরিষ্কার স্যানিটারি প্যাড ব্যবহার করুন এবং রক্তপাতের পরিমাণ লক্ষ্য করুন",
+        "পর্যাপ্ত পানি পান করুন এবং আয়রনসমৃদ্ধ খাবার খান",
+        "দুর্বলতা বা মাথা ঘোরা থাকলে অতিরিক্ত পরিশ্রম এড়িয়ে চলুন",
+        "চিকিৎসকের পরামর্শ ছাড়া রক্তপাত বন্ধের ওষুধ গ্রহণ করবেন না",
+        "রক্তপাত খুব বেশি হলে, দীর্ঘস্থায়ী হলে বা মাথা ঘোরা দেখা দিলে দ্রুত চিকিৎসাকেন্দ্রে যান",
+    ]
+},
 
 }
 
@@ -543,6 +595,15 @@ SPECIAL_FIRST_AID = {
     "drug_injection_exposure": SYMPTOM_FIRST_AID[
         frozenset(["drug exposure", "pain", "swelling"])
     ],
+    "heavy_menstrual_bleeding": SYMPTOM_FIRST_AID[
+        frozenset(["heavy menstrual bleeding"])
+    ],
+    "painful_periods": SYMPTOM_FIRST_AID[
+        frozenset(["painful periods"])
+    ],
+    "irregular_periods": SYMPTOM_FIRST_AID[
+        frozenset(["irregular periods"])
+    ],
 }
 
 def get_first_aid_from_followup(followup_answers: dict, language: str, symptoms: dict = None, triage_color: str = None) -> dict:
@@ -569,7 +630,9 @@ def get_first_aid_from_followup(followup_answers: dict, language: str, symptoms:
         "wound": "fall_injury",
         "drowning": "drowning",
         "seizure": "electrocution",
-        "heat_stroke": "heat_stroke",
+        "heavy_menstrual_bleeding": "heavy_menstrual_bleeding",
+        "painful_periods": "painful_periods",
+        "irregular_periods": "irregular_periods",
     }
 
     for cat, key in category_map.items():

@@ -98,7 +98,9 @@ FOLLOWUP_GROUPS = {
     "Are you having severe abdominal pain?",
     "Are you leaking fluid?",
     "Do you have swelling of the hands or face?",
-    "Are you having severe headache or blurred vision?"
+    "Are you having severe headache or blurred vision?",
+       "Have you had seizures or convulsions?"
+
 ],
 
 "questions_bn": [
@@ -108,7 +110,8 @@ FOLLOWUP_GROUPS = {
     "আপনার কি তীব্র পেট ব্যথা হচ্ছে?",
     "যোনিপথ দিয়ে কি পানি বের হচ্ছে?",
     "হাত বা মুখ কি ফুলে গেছে?",
-    "আপনার কি তীব্র মাথাব্যথা বা ঝাপসা দেখা হচ্ছে?"
+    "আপনার কি তীব্র মাথাব্যথা বা ঝাপসা দেখা হচ্ছে?",
+    "আপনার কি খিঁচুনি হয়েছে?"
 ]
     },
 
@@ -130,7 +133,7 @@ FOLLOWUP_GROUPS = {
     "Which day of fever is this?",
     "What is the highest temperature you have measured?",
     "Have you been having chills or shivering?",
-    "Have you had any recent travel or mosquito bites?",
+    "Have you had recent travel or mosquito bites?",
     "Are you having severe abdominal pain?",
     "Have you noticed bleeding from the nose or gums?",
     "Are you urinating normally?",
@@ -138,26 +141,50 @@ FOLLOWUP_GROUPS = {
     "Have you had vomiting or diarrhea?",
     "Are you able to drink enough fluids?",
     "Have you noticed any rash on your body?",
-    "Are you feeling unusually sleepy or confused?"
+    "Are you feeling unusually sleepy or confused?",
+    "Do you have severe joint pain?",
+    "Have you had fever for 7 days or more?",
+    "Do you have weight loss?",
+    "Do you have swelling or fullness in the left upper abdomen?",
+    "Do you have yellow eyes or jaundice?",
+    "Were you exposed to flood water, dirty water, or waterlogged areas recently?",
+    "Do you have severe calf or muscle pain?",
+    "Do you have a black scab or eschar after an insect/tick bite?",
+    "Did joint pain or fever happen after a recent sore throat?",
+    "Do you have mouth sores?",
+    "Do you have rash or blisters on hands, feet, or mouth?",
+    "Is the patient a newborn under 28 days with poor feeding?"
 ],
-
+ 
 "questions_bn": [
-    
     "কত দিন ধরে আপনার জ্বর আছে?",
     "আজ জ্বরের কততম দিন?",
-    "আপনার কি তীব্র পেট ব্যথা হচ্ছে?",
-    "আপনি সর্বোচ্চ কত তাপমাত্রা মেপেছেন?",
-    "সম্প্রতি কি কোথাও ভ্রমণ করেছেন বা মশার কামড় বেশি খেয়েছেন?",
+    "আপনার সর্বোচ্চ কত তাপমাত্রা মাপা হয়েছে?",
     "আপনার কি কাঁপুনি বা শীত শীত লাগছে?",
-    "আপনার কি কাশি, গলা ব্যথা বা সর্দি আছে?",  
-    "আপনার কি বমি বা ডায়রিয়া হয়েছে?",
+    "সম্প্রতি কি কোথাও ভ্রমণ করেছেন বা মশার কামড় বেশি খেয়েছেন?",
+    "আপনার কি তীব্র পেট ব্যথা হচ্ছে?",
     "নাক বা মাড়ি থেকে কি রক্তপাত হচ্ছে?",
     "প্রস্রাব কি স্বাভাবিকভাবে হচ্ছে?",
-    "আপনি কি পর্যাপ্ত তরল পান করতে পারছেন?",
+    "আপনার কি কাশি, গলা ব্যথা বা সর্দি আছে?",
+    "আপনার কি বমি বা ডায়রিয়া হয়েছে?",
     "আপনি কি পর্যাপ্ত পানি বা তরল পান করতে পারছেন?",
     "শরীরে কি কোনো ফুসকুড়ি বা র‍্যাশ হয়েছে?",
     "আপনি কি অস্বাভাবিকভাবে ঝিমাচ্ছেন বা বিভ্রান্ত বোধ করছেন?",
+    "আপনার কি তীব্র জয়েন্ট/গিরায় ব্যথা আছে?",
+    "আপনার কি ৭ দিন বা তার বেশি সময় ধরে জ্বর আছে?",
+    "আপনার কি ওজন কমে যাচ্ছে?",
+    "বাম ওপরের পেটে কি ফুলে থাকা বা ভারী লাগছে?",
+    "আপনার চোখ বা শরীর কি হলুদ হয়ে গেছে?",
+    "সম্প্রতি কি বন্যার পানি, নোংরা পানি বা জলাবদ্ধ এলাকায় ছিলেন?",
+    "আপনার কি পায়ের পেশি বা শরীরের মাংসপেশিতে তীব্র ব্যথা আছে?",
+    "পোকা/টিক কামড়ের পর কালো খোসা বা দাগ হয়েছে কি?",
+    "সাম্প্রতিক গলা ব্যথার পর কি জ্বর ও জয়েন্ট ব্যথা হয়েছে?",
+    "আপনার কি মুখে ঘা আছে?",
+    "হাত, পা বা মুখে কি র‍্যাশ/ফোসকা হয়েছে?",
+    "রোগী কি ২৮ দিনের কম বয়সী নবজাতক এবং ঠিকমতো দুধ খাচ্ছে না?"
 ]
+ 
+  
     },
 
     "snake bite": {
@@ -594,20 +621,95 @@ FOLLOWUP_GROUPS = {
     # Menstruation / Menstrual Problems
 
 "triggers_en": [
+    # General menstruation
     "menstruation",
+    "menstrual cycle",
+    "period",
+    "periods",
+    "menstrual period",
+    "monthly period",
+    "monthly bleeding",
+    "menses",
+
+    # Painful periods
     "period pain",
+    "painful period",
+    "painful periods",
+    "painful menstruation",
+    "menstrual pain",
+    "cramps",
+    "menstrual cramps",
+    "period cramps",
+
+    # Heavy bleeding
     "heavy bleeding",
+    "heavy period",
+    "heavy periods",
+    "heavy menstrual bleeding",
+    "excessive bleeding",
+    "excessive menstrual bleeding",
+    "menorrhagia",
+
+    # Missed periods
     "missed period",
+    "missed periods",
+    "period missed",
+    "no period",
+    "absence of periods",
+    "stopped periods",
+    "period delayed",
+    "delayed period",
+    "late period",
+    "late periods",
+
+    # Irregular periods
     "irregular period",
-    'painful mensuration'
+    "irregular periods",
+    "irregular menstruation",
+    "irregular menstrual cycle",
+    "periods are irregular",
+    "uneven periods",
+    "infrequent periods"
 ],
 
 "triggers_bn": [
+    # General menstruation
     "মাসিক",
+    "পিরিয়ড",
+    "ঋতুস্রাব",
+    "মাসিকের রক্তপাত",
+
+    # Painful periods
     "পিরিয়ড ব্যথা",
+    "মাসিকের ব্যথা",
+    "ব্যথাযুক্ত মাসিক",
+    "ব্যথাযুক্ত পিরিয়ড",
+    "তলপেটে ব্যথাসহ মাসিক",
+    "মাসিকের ক্র্যাম্প",
+
+    # Heavy bleeding
     "অতিরিক্ত রক্তপাত",
+    "অতিরিক্ত মাসিক",
+    "অতিরিক্ত পিরিয়ড",
+    "বেশি রক্তপাত",
+    "মাসিকে বেশি রক্তপাত",
+
+    # Missed periods
     "পিরিয়ড বন্ধ",
-    "অনিয়মিত পিরিয়ড"
+    "মাসিক বন্ধ",
+    "পিরিয়ড না হওয়া",
+    "মাসিক না হওয়া",
+    "পিরিয়ড দেরি",
+    "মাসিক দেরি",
+    "দেরিতে মাসিক",
+    "পিরিয়ড মিস",
+
+    # Irregular periods
+    "অনিয়মিত পিরিয়ড",
+    "অনিয়মিত মাসিক",
+    "পিরিয়ড অনিয়মিত",
+    "মাসিক অনিয়মিত",
+    "মাসিকের অনিয়ম"
 ],
 
 "questions_en": [
@@ -646,7 +748,7 @@ def normalize(text):
 
 def should_check_group(group_name, symptoms_dict):
     if group_name == "pregnancy":
-        return symptoms_dict.get("pregnancy_status", 0) == 1
+        return symptoms_dict.get("ispregnant", 0) == 1
     return True
 
 PRIORITY_ORDER = [
@@ -696,4 +798,4 @@ def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang,detected_spe
 
    
     sorted_active = sorted(active, key=lambda x: PRIORITY_ORDER.index(x) if x in PRIORITY_ORDER else 99)
-    return sorted_active[:1]
+    return sorted_active[:3]
