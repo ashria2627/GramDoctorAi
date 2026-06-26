@@ -1,9 +1,15 @@
 import os
+import time
 from dotenv import load_dotenv
 from google import genai
 from modules.Followup import FOLLOWUP_GROUPS
 import streamlit as st
 import json
+
+try:
+    import ollama
+except Exception:
+    ollama = None
 
 load_dotenv()
 
@@ -15,6 +21,66 @@ def get_gemini_client():
         return None
 
     return genai.Client(api_key=api_key)
+
+
+def retry_with_backoff(call_fn, attempts=3, base_delay=1.0):
+    last_error = None
+
+    for attempt in range(attempts):
+        try:
+            return call_fn()
+        except Exception as exc:
+            last_error = exc
+            if attempt < attempts - 1:
+                time.sleep(base_delay * (2 ** attempt))
+
+    raise last_error
+
+
+def call_gemini_flash(prompt):
+    client = get_gemini_client()
+    if client is None:
+        raise RuntimeError("Gemini API key missing.")
+
+    response = client.models.generate_content(
+        model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+        contents=prompt
+    )
+
+    return response.text
+
+
+def call_ollama_local(prompt):
+    if ollama is None:
+        raise RuntimeError("Ollama package is not installed.")
+
+    response = ollama.chat(
+        model=os.getenv("OLLAMA_MODEL", "gemma3"),
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return response["message"]["content"]
+
+
+def cascade_llm_call(prompt, triage_result=None, fallback_text=None):
+    errors = []
+
+    for provider_name, provider_fn in (
+        ("Gemini Flash", call_gemini_flash),
+        ("Ollama local", call_ollama_local),
+    ):
+        try:
+            return retry_with_backoff(lambda: provider_fn(prompt))
+        except Exception as exc:
+            errors.append(f"{provider_name}: {exc}")
+
+    if fallback_text is not None:
+        return fallback_text
+
+    if triage_result is not None:
+        return get_fallback_response(triage_result, " | ".join(errors))
+
+    raise RuntimeError("All LLM providers failed: " + " | ".join(errors))
 
 
 def get_active_symptoms(symptoms):
@@ -82,11 +148,6 @@ Patient has emergency-level triage features. Immediate emergency medical evaluat
 
 
 def generate_ai_response(symptoms, triage_result):
-    client = get_gemini_client()
-
-    if client is None:
-        return "Gemini API key missing. Please add GEMINI_API_KEY to your .env file."
-
     active_symptoms = get_active_symptoms(symptoms)
     color = triage_result["color"]
     followup_text = "\n".join(f"{k}: {v}" for k,v in symptoms.items() if k.split("_")[0] in FOLLOWUP_GROUPS and v)
@@ -143,16 +204,7 @@ Referral Note English:
 ...
 """
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-
-        return response.text
-
-    except Exception as e:
-        return get_fallback_response(triage_result, str(e))
+    return cascade_llm_call(prompt, triage_result=triage_result)
 
 
 def detect_special_emergency(text):
@@ -174,10 +226,6 @@ def detect_special_emergency(text):
     """
 
     if not text or not text.strip():
-        return {"found": False}
-
-    client = get_gemini_client()
-    if client is None:
         return {"found": False}
 
     prompt = f"""You are a medical triage assistant for rural Bangladesh.
@@ -215,12 +263,7 @@ If the text does not describe any medical event or injury at all, respond with O
 """
 
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-
-        raw = response.text.strip()
+        raw = cascade_llm_call(prompt, fallback_text='{"found": false}').strip()
 
         if raw.startswith("```"):
             raw = raw.strip("`")

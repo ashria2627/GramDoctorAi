@@ -1,0 +1,67 @@
+{
+  "Cardiology": {
+    "specialist": "Cardiologist",
+    "symptoms": ["sharp chest pain", "chest pain", "chest tightness", "palpitations", "irregular heartbeat", "sweating", "arm pain"],
+    "red_flags": ["sharp chest pain", "chest pain", "fainting"]
+  },
+  "Neurology": {
+    "specialist": "Neurologist",
+    "symptoms": ["headache", "seizures", "fainting", "slurring words", "blindness", "diminished vision", "weakness", "loss of sensation"],
+    "red_flags": ["seizures", "slurring words", "blindness", "fainting"]
+  },
+  "ENT": {
+    "specialist": "ENT Specialist",
+    "symptoms": ["sore throat", "ear pain", "diminished hearing", "ringing in ear", "nasal congestion", "runny nose", "hoarse voice", "snoring", "sleep apnea", "difficulty breathing"],
+    "red_flags": ["difficulty in swallowing", "throat swelling"]
+  },
+  "Respiratory": {
+    "specialist": "Pulmonologist",
+    "symptoms": ["cough", "shortness of breath", "difficulty breathing", "wheezing", "coughing up sputum", "hemoptysis"],
+    "red_flags": ["hemoptysis"]
+  },
+  "Gastroenterology": {
+    "specialist": "Gastroenterologist",
+    "symptoms": ["sharp abdominal pain", "lower abdominal pain", "vomiting", "nausea", "diarrhea", "burning abdominal pain", "blood in stool"],
+    "red_flags": ["blood in stool", "vomiting blood"]
+  },
+  "Urology": {
+    "specialist": "Urologist",
+    "symptoms": ["painful urination", "frequent urination", "blood in urine", "involuntary urination", "retention of urine"]
+  },
+  "Nephrology": {
+    "specialist": "Nephrologist",
+    "symptoms": ["leg swelling", "facial swelling", "decreased urination"]
+  },
+  "Endocrinology": {
+    "specialist": "Endocrinologist",
+    "symptoms": ["increased thirst", "frequent urination", "weight gain", "weight loss", "fatigue", "excessive appetite"]
+  },
+  "Dermatology": {
+    "specialist": "Dermatologist",
+    "symptoms": ["skin rash", "itching of skin", "skin swelling", "acne", "skin lesion", "changes in skin color"]
+  },
+  "Ophthalmology": {
+    "specialist": "Ophthalmologist",
+    "symptoms": ["pain in eye", "eye redness", "diminished vision", "blindness", "double vision", "foreign body sensation in eye"]
+  },
+  "Dentistry": {
+    "specialist": "Dentist",
+    "symptoms": ["toothache", "tooth pain", "gum pain", "mouth ulcer", "jaw pain", "mouth pain"]
+  },
+  "Gynecology": {
+    "specialist": "Gynecologist",
+    "symptoms": ["pelvic pain", "lower abdominal pain", "heavy menstrual flow", "irregular periods", "spotting or bleeding during pregnancy", "vaginal discharge", "vaginal pain"]
+  },
+  "Orthopedics": {
+    "specialist": "Orthopedic Specialist",
+    "symptoms": ["back pain", "leg pain", "arm pain", "knee pain", "joint pain", "neck pain", "hip pain"]
+  },
+  "Psychiatry": {
+    "specialist": "Psychiatrist",
+    "symptoms": ["depressive or psychotic symptoms", "anxiety and nervousness", "insomnia", "low mood"]
+  },
+  "Surgery": {
+    "specialist": "General Surgeon",
+    "symptoms": ["sharp abdominal pain", "pain in testicles", "rectal bleeding", "vomiting blood"]
+  }
+}

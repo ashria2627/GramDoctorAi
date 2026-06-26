@@ -1,5 +1,6 @@
 import os
 import math
+import json
 from io import BytesIO
 import streamlit as st
 import pandas as pd
@@ -13,6 +14,7 @@ from modules.FIRSTAID import SYMPTOM_FIRST_AID,SPECIAL_FIRST_AID
 from modules.triage_rules import apply_bd_rules
 from modules.offline_detector import detect_local_emergency
 from modules.Followup import FOLLOWUP_GROUPS, detect_followup_categories
+from modules.symptom_normalizer import normalize_symptom_input
 from gtts import gTTS
 
 try:
@@ -447,66 +449,7 @@ def show_triage_card(color, language):
 
 
 def extract_english_symptoms(text, feature_cols):
-    extracted = {}
-
-    if not text:
-        return extracted
-
-    lowered_text = text.lower()
-
-    english_map = {
-        "fever": "fever",
-        "cough": "cough",
-        "headache": "headache",
-        "head ache": "headache",
-        "vomiting": "vomiting",
-        "vomit": "vomiting",
-        "nausea": "nausea",
-        "weakness": "weakness",
-        "weak": "weakness",
-        "dizziness": "dizziness",
-        "dizzy": "dizziness",
-        "chest pain": "sharp chest pain",
-        "sharp chest pain": "sharp chest pain",
-        "breathlessness": "shortness of breath",
-        "shortness of breath": "shortness of breath",
-        "breathing problem": "shortness of breath",
-        "difficulty breathing": "shortness of breath",
-        "abdominal pain": "sharp abdominal pain",
-        "stomach pain": "sharp abdominal pain",
-        "belly pain": "sharp abdominal pain",
-        "diarrhea": "diarrhea",
-        "loose motion": "diarrhea",
-        "sweating": "sweating",
-        "sweat": "sweating",
-        "seizure": "seizures",
-        "seizures": "seizures",
-        "convulsion": "seizures",
-        "fainting": "fainting",
-        "faint": "fainting",
-        "sore throat": "sore throat",
-        "runny nose": "nasal congestion",
-        "blocked nose": "nasal congestion",
-        "nasal congestion": "nasal congestion",
-        "blood in stool": "blood in stool",
-        "painful urination": "painful urination",
-        "burning urination": "painful urination",
-        "jaundice": "jaundice",
-        "nosebleed": "nosebleed",
-    }
-
-    for phrase, feature_name in english_map.items():
-        if phrase in lowered_text and feature_name in feature_cols:
-            extracted[feature_name] = 1
-
-    for feature in feature_cols:
-        if feature in ["age", "sex-no", "ispregnant"]:
-            continue
-
-        if feature.lower() in lowered_text:
-            extracted[feature] = 1
-
-    return extracted
+    return normalize_symptom_input(text, feature_cols)
 
 
 BANGLA_FEATURES = {
@@ -621,7 +564,8 @@ def create_gray_result(language):
     return {
         "color": "gray",
         "source": "Input validation",
-        "message": message
+        "message": message,
+        "confidence": None
     }
 
 
@@ -771,6 +715,116 @@ def create_referral_pdf(ai_response, triage_result, symptoms):
     buffer.seek(0)
     return buffer
 
+
+def create_structured_referral_pdf(ai_response, triage_result, symptoms, vitals=None, referral=None, first_aid=None, hospitals=None):
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+    y = height - 50
+
+    def ensure_space(required=60):
+        nonlocal y
+        if y < required:
+            pdf.showPage()
+            y = height - 50
+
+    def section(title):
+        nonlocal y
+        ensure_space(80)
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(50, y, title)
+        y -= 18
+        pdf.setFont("Helvetica", 10)
+
+    def write_lines(lines, left=60, max_chars=90):
+        nonlocal y
+        if isinstance(lines, str):
+            lines = [lines]
+        for item in lines:
+            for line in wrap_text(str(item), max_chars=max_chars):
+                ensure_space()
+                pdf.drawString(left, y, line)
+                y -= 13
+
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, y, "GramDoctor AI - Structured Referral Report")
+    y -= 30
+
+    section("Patient Info")
+    write_lines([
+        f"Age: {symptoms.get('age', 'unknown')}",
+        f"Sex code: {symptoms.get('sex-no', 'unknown')}",
+        f"Pregnancy code: {symptoms.get('ispregnant', 'unknown')}",
+    ])
+
+    section("Vitals")
+    if vitals:
+        write_lines([f"{k.replace('_', ' ').title()}: {v}" for k, v in vitals.items()])
+    else:
+        write_lines("No vitals recorded.")
+
+    active_symptoms = [
+        symptom
+        for symptom, value in symptoms.items()
+        if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+    ]
+
+    section("Symptoms Detected")
+    write_lines([f"- {symptom}" for symptom in active_symptoms[:25]] or "- No specific symptom detected")
+
+    section("Triage Level and Reasoning")
+    write_lines([
+        f"Triage Level: {triage_result.get('color', 'unknown').upper()}",
+        f"Decision Source: {triage_result.get('source', 'unknown')}",
+        f"Reason: {triage_result.get('message', '')}",
+    ])
+
+    section("Confidence Score")
+    confidence = triage_result.get("confidence")
+    if confidence is None:
+        write_lines("Rule-based decision; model confidence not applicable.")
+    else:
+        write_lines(f"Model Confidence: {confidence}%")
+
+    section("Recommended Specialist")
+    write_lines(referral or "General Physician")
+
+    section("First Aid Steps")
+    if first_aid:
+        steps = first_aid.get("steps_en") or first_aid.get("steps") or []
+        write_lines([f"- {step}" for step in steps[:6]] or "No first aid steps available.")
+    else:
+        write_lines("No first aid steps available.")
+
+    section("Nearest Hospitals")
+    if hospitals:
+        hospital_lines = []
+        for hospital in hospitals[:7]:
+            line = hospital.get("Name", "Unknown hospital")
+            if hospital.get("Priority"):
+                line += " [Govt/Upazila]"
+            if "Distance_km" in hospital:
+                line += f" - {hospital['Distance_km']:.2f} km"
+            hospital_lines.append(f"- {line}")
+        write_lines(hospital_lines)
+    else:
+        write_lines("No hospital list available.")
+
+    section("Follow-up Advice")
+    write_lines(extract_english_referral_note(ai_response))
+
+    ensure_space(80)
+    pdf.setFont("Helvetica-Oblique", 9)
+    disclaimer = (
+        "Disclaimer: This tool does not provide a final diagnosis. "
+        "It supports triage and referral guidance only."
+    )
+    write_lines(disclaimer, left=50, max_chars=95)
+
+    pdf.save()
+    buffer.seek(0)
+    return buffer
+
 def calculate_distance_km(lat1, lon1, lat2, lon2):
     """
     Haversine distance between two latitude/longitude points.
@@ -800,10 +854,25 @@ def calculate_distance_km(lat1, lon1, lat2, lon2):
     return radius_km * c
 
 
-def get_recommended_hospitals(filtered_final, n=5, user_location=None):
+def is_priority_hospital(name):
+    name = str(name).lower()
+    priority_terms = [
+        "upazila health complex",
+        "district hospital",
+        "medical college",
+        "sadar hospital",
+        "government",
+        "govt",
+        "uhc",
+    ]
+    return any(term in name for term in priority_terms)
+
+
+def get_recommended_hospitals(filtered_final, n=5, user_location=None, radius_km=15):
     hospitals_df = filtered_final.copy()
 
     hospitals_df = hospitals_df.drop_duplicates(subset=["Name"])
+    hospitals_df["Priority"] = hospitals_df["Name"].apply(is_priority_hospital)
 
     if (
         user_location
@@ -824,14 +893,22 @@ def get_recommended_hospitals(filtered_final, n=5, user_location=None):
         )
 
         hospitals_df = hospitals_df.dropna(subset=["Distance_km"])
-        hospitals_df = hospitals_df.sort_values("Distance_km")
+        nearby = hospitals_df[hospitals_df["Distance_km"] <= radius_km]
+        if not nearby.empty:
+            hospitals_df = nearby
+
+        hospitals_df = hospitals_df.sort_values(
+            by=["Priority", "Distance_km"],
+            ascending=[False, True]
+        )
 
         return hospitals_df.head(n)[
-            ["Name", "Name (Bangla)", "Distance_km"]
+            ["Name", "Name (Bangla)", "Distance_km", "Priority"]
         ].to_dict("records")
 
+    hospitals_df = hospitals_df.sort_values("Priority", ascending=False)
     return hospitals_df.head(n)[
-        ["Name", "Name (Bangla)"]
+        ["Name", "Name (Bangla)", "Priority"]
     ].to_dict("records")
 
 def normalize_color(color):
@@ -1091,6 +1168,134 @@ def get_specialist_referral(triage_result, symptoms, language):
         return emergency_note + doctor("General Surgeon"), general_physician
 
     return general_physician, None
+
+
+@st.cache_data
+def load_specialist_lookup():
+    path = os.path.join(os.path.dirname(__file__), "modules", "specialist_lookup.json")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def get_specialist_referral_clustered(triage_result, symptoms, language):
+    color = normalize_color(triage_result.get("color", "gray"))
+    active = set(get_active_symptom_keys(symptoms))
+
+    if color == "green":
+        return None, None
+
+    specialists = {
+        "Emergency": {
+            "English": "Emergency Department",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà¦°à§à¦°à¦¿ à¦¬à¦¿à¦­à¦¾à¦—"
+        },
+        "General Physician": {
+            "English": "General Physician",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà§‡à¦¨à¦¾à¦°à§‡à¦² à¦«à¦¿à¦œà¦¿à¦¶à¦¿à§Ÿà¦¾à¦¨"
+        },
+        "Cardiologist": {
+            "English": "Cardiologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦•à¦¾à¦°à§à¦¡à¦¿à¦“à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¹à§ƒà¦¦à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Neurologist": {
+            "English": "Neurologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à¦¿à¦‰à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¸à§à¦¨à¦¾à§Ÿà§à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Pulmonologist": {
+            "English": "Pulmonologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà¦¾à¦²à¦®à§‹à¦¨à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¬à¦•à§à¦·à¦¬à§à¦¯à¦¾à¦§à¦¿ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Gastroenterologist": {
+            "English": "Gastroenterologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà¦°à¦¿à¦ªà¦¾à¦•à¦¤à¦¨à§à¦¤à§à¦° à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Urologist": {
+            "English": "Urologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦‡à¦‰à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦®à§‚à¦¤à§à¦°à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Nephrologist": {
+            "English": "Nephrologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à§‡à¦«à§à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦•à¦¿à¦¡à¦¨à¦¿ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Endocrinologist": {
+            "English": "Endocrinologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦à¦¨à§à¦¡à§‹à¦•à§à¦°à¦¾à¦‡à¦¨à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¹à¦°à¦®à§‹à¦¨ à¦“ à¦¡à¦¾à§Ÿà¦¾à¦¬à§‡à¦Ÿà¦¿à¦¸ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Dermatologist": {
+            "English": "Dermatologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¡à¦¾à¦°à§à¦®à¦¾à¦Ÿà§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦šà¦°à§à¦®à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "ENT Specialist": {
+            "English": "ENT Specialist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à¦¾à¦•-à¦•à¦¾à¦¨-à¦—à¦²à¦¾ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Ophthalmologist": {
+            "English": "Ophthalmologist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦…à¦«à¦¥à¦¾à¦²à¦®à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦šà¦•à§à¦·à§ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Dentist": {
+            "English": "Dentist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¦à¦¨à§à¦¤ à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•"
+        },
+        "Gynecologist": {
+            "English": "Gynecologist / Obstetrician",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà§à¦°à¦¸à§‚à¦¤à¦¿ à¦“ à¦¸à§à¦¤à§à¦°à§€à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Pediatrician": {
+            "English": "Pediatrician",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¶à¦¿à¦¶à§ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Orthopedic Specialist": {
+            "English": "Orthopedic Specialist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¹à¦¾à§œ-à¦œà§‹à§œà¦¾ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "Psychiatrist": {
+            "English": "Psychiatrist",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦®à¦¾à¦¨à¦¸à¦¿à¦• à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
+        },
+        "General Surgeon": {
+            "English": "General Surgeon",
+            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà§‡à¦¨à¦¾à¦°à§‡à¦² à¦¸à¦¾à¦°à§à¦œà¦¨"
+        },
+    }
+
+    lookup = load_specialist_lookup()
+    scored = []
+
+    for cluster, info in lookup.items():
+        matched = active.intersection(set(info.get("symptoms", [])))
+        red_matched = active.intersection(set(info.get("red_flags", [])))
+        if matched:
+            scored.append({
+                "cluster": cluster,
+                "specialist": info["specialist"],
+                "score": len(matched) + (2 * len(red_matched)),
+                "matched": len(matched),
+                "red_matched": len(red_matched),
+            })
+
+    if not scored:
+        if symptoms.get("ispregnant", 2) == 1:
+            return specialists["Gynecologist"][language], specialists["General Physician"][language]
+        if symptoms.get("age", 30) < 13:
+            return specialists["Pediatrician"][language], specialists["General Physician"][language]
+        return specialists["General Physician"][language], None
+
+    scored.sort(key=lambda row: (row["score"], row["matched"], row["cluster"] == "ENT"), reverse=True)
+    selected = scored[0]
+    specialist_name = selected["specialist"]
+    emergency_note = ""
+
+    true_emergency = color == "red" and selected["red_matched"] > 0
+    if true_emergency:
+        emergency_note = "Emergency " if language == "English" else "à¦œà¦°à§à¦°à¦¿ à¦…à¦¬à¦¸à§à¦¥à¦¾ "
+
+    if symptoms.get("ispregnant", 2) == 1 and selected["score"] <= 1:
+        specialist_name = "Gynecologist"
+    elif symptoms.get("age", 30) < 13 and selected["score"] <= 1:
+        specialist_name = "Pediatrician"
+
+    return emergency_note + specialists[specialist_name][language], specialists["General Physician"][language]
 
 def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral=None):
     color = normalize_color(triage_result.get("color", "gray"))
@@ -1483,7 +1688,8 @@ with tab1:
                 result = {
                     "color": special_color,
                     "source": "Special emergency detection",
-                    "message": message
+                    "message": message,
+                    "confidence": None
                 }
 
             st.session_state.detected_special = special
@@ -1551,6 +1757,74 @@ with tab2:
             st.success("Updated! Check Result tab." if language=="English" else "আপডেট হয়েছে! Result ট্যাব দেখুন।")
 
 with tab3:
+    st.header("Clinical Worker Intake" if language == "English" else "ক্লিনিকাল ওয়ার্কার ইনটেক")
+
+    worker_col1, worker_col2, worker_col3 = st.columns(3)
+    worker_age = worker_col1.number_input("Patient Age" if language == "English" else "রোগীর বয়স", 0, 120, 30, key="worker_age")
+    worker_sex = worker_col2.selectbox("Patient Sex" if language == "English" else "রোগীর লিঙ্গ", [t["male"], t["female"]], key="worker_sex")
+    worker_pregnancy = worker_col3.selectbox("Pregnancy" if language == "English" else "গর্ভাবস্থা", [t["not_applicable"], t["no"], t["yes"]], key="worker_pregnancy")
+
+    worker_duration = st.selectbox(
+        "Symptom Duration" if language == "English" else "লক্ষণ কতদিন",
+        ["< 6 hours", "6-24 hours", "1-2 days", "3+ days"],
+        key="worker_duration"
+    )
+    worker_consciousness = st.selectbox(
+        "Consciousness Level" if language == "English" else "চেতনার অবস্থা",
+        ["Alert", "Drowsy", "Unconscious"],
+        key="worker_consciousness"
+    )
+
+    worker_symptom_features = [
+        col for col in feature_cols
+        if col not in ["age", "sex-no", "ispregnant"]
+    ]
+    worker_symptom_options = {
+        (
+            BANGLA_FEATURES.get(symptom, symptom.title())
+            if language == "à¦¬à¦¾à¦‚à¦²à¦¾"
+            else symptom.title()
+        ): symptom
+        for symptom in sorted(worker_symptom_features)
+    }
+    worker_selected_labels = st.multiselect(
+        "Visible Symptoms" if language == "English" else "দৃশ্যমান লক্ষণ",
+        options=worker_symptom_options.keys(),
+        key="worker_visible_symptoms"
+    )
+
+    if st.button("Run Worker Triage" if language == "English" else "ওয়ার্কার ট্রায়াজ চালান", type="primary", key="worker_triage_button"):
+        worker_symptoms = {
+            "age": int(worker_age),
+            "sex-no": 1 if worker_sex == t["female"] else 0,
+            "ispregnant": 1 if worker_pregnancy == t["yes"] else (0 if worker_pregnancy == t["no"] else 2),
+        }
+
+        for symptom in worker_symptom_features:
+            worker_symptoms[symptom] = 0
+
+        for label in worker_selected_labels:
+            worker_symptoms[worker_symptom_options[label]] = 1
+
+        if worker_consciousness == "Unconscious":
+            worker_symptoms["fainting"] = 1
+        elif worker_consciousness == "Drowsy":
+            worker_symptoms["sleepiness"] = 1
+
+        result = predict_triage(worker_symptoms, model, feature_cols)
+        st.session_state.symptoms = worker_symptoms
+        st.session_state.triage_result = result
+        st.session_state.original_triage_color = result["color"]
+        st.session_state.original_triage_message = result["message"]
+        st.session_state.original_triage_source = result["source"]
+        st.session_state.ai_response = None
+        st.session_state.first_aid = None
+        st.session_state.tts_audio = None
+        st.session_state.followup_categories = detect_followup_categories(worker_symptoms, FOLLOWUP_GROUPS, language, None)
+        st.success("Worker intake triage complete. Open Result tab." if language == "English" else "ওয়ার্কার ইনটেক ট্রায়াজ সম্পন্ন। Result ট্যাব দেখুন।")
+
+    st.divider()
+
     st.header("Vital Signs Monitor" if language == "English" else "ভাইটাল সাইন মনিটর")
 
     
@@ -1662,7 +1936,7 @@ with tab4:
             referral = st.session_state.referral
             alternate_referral = st.session_state.alternate_referral
         else:
-            referral, alternate_referral = get_specialist_referral(
+            referral, alternate_referral = get_specialist_referral_clustered(
                 result,
                 st.session_state.symptoms,
                 language
@@ -1690,6 +1964,11 @@ with tab4:
          
         st.write(t["decision_source"], result["source"])
         st.write(t["reason"], result["message"])
+        confidence = result.get("confidence")
+        if confidence is not None:
+            st.progress(min(max(float(confidence) / 100, 0), 1), text=f"Model Confidence: {confidence}%")
+            if confidence < 60:
+                st.warning("Low confidence — please consult a doctor." if language == "English" else "à¦•à¦¨à¦«à¦¿à¦¡à§‡à¦¨à§à¦¸ à¦•à¦® â€” à¦¡à¦¾à¦•à§à¦¤à¦¾à¦°à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦¨à¦¿à¦¨à¥¤")
         st.divider()
         if st.button('listen result', key="listen_result_button"):
           st.session_state.tts_audio = None  # force regenerate
@@ -1724,6 +2003,7 @@ with tab4:
               n=5,
               user_location=st.session_state.get("user_location")
           )
+          st.session_state.recommended_hospitals = hospitals
 
           st.subheader(t["recommended_hospitals"])
 
@@ -1776,10 +2056,14 @@ with tab4:
                 st.subheader(t["ai_title"])
                 st.markdown(st.session_state.ai_response)
 
-                pdf_buffer = create_referral_pdf(
+                pdf_buffer = create_structured_referral_pdf(
                     st.session_state.ai_response,
                     st.session_state.triage_result,
-                    st.session_state.symptoms
+                    st.session_state.symptoms,
+                    vitals=st.session_state.get("vitals"),
+                    referral=referral,
+                    first_aid=first_aid,
+                    hospitals=st.session_state.get("recommended_hospitals")
                 )
 
                 st.download_button(

@@ -9,3 +9,5 @@ streamlit-mic-recorder
 reportlab
 gTTS
 streamlit-js-eval
+ollama
+rapidfuzz

@@ -169,11 +169,10 @@ def predict_triage(symptoms, model, feature_cols):
     symptoms = {k.lower().strip(): v for k, v in symptoms.items()}
 
     SERIOUS_SINGLE_SYMPTOMS = [
-        "shortness of breath", "blindness", "seizures", "fainting",
+        "blindness", "seizures", "fainting",
         "vomiting blood", "rectal bleeding", "blood in stool",
         "involuntary urination", "loss of sensation", "slurring words",
-        "irregular heartbeat", "spots or clouds in vision",
-        "difficulty breathing","sharp chest pain"
+        "irregular heartbeat", "spots or clouds in vision"
     ]
 
     SERIOUS_SINGLE_SYMPTOMS = [s.lower().strip() for s in SERIOUS_SINGLE_SYMPTOMS]
@@ -183,7 +182,26 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "red",
             "source": "Safety rules",
-            "message": "Emergency symptoms detected. Seek medical care."
+            "message": "Emergency symptoms detected. Seek medical care.",
+            "confidence": None
+        }
+
+    respiratory_danger = (
+        (symptoms.get("shortness of breath", 0) == 1 or symptoms.get("difficulty breathing", 0) == 1)
+        and (
+            symptoms.get("sharp chest pain", 0) == 1
+            or symptoms.get("chest pain", 0) == 1
+            or symptoms.get("fainting", 0) == 1
+            or symptoms.get("sweating", 0) == 1
+        )
+    )
+
+    if respiratory_danger:
+        return {
+            "color": "red",
+            "source": "Safety rules",
+            "message": "Breathing difficulty with danger signs detected. Seek emergency care.",
+            "confidence": None
         }
     active_symptoms = [
         k for k, v in symptoms.items()
@@ -195,20 +213,23 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "grey",
             "source": "Minimum symptom threshold",
-            "message": "Too few symptoms. Monitor or visit clinic if persists."
+            "message": "Too few symptoms. Monitor or visit clinic if persists.",
+            "confidence": None
         }
     orange_result = check_orange_flags(symptoms)
     if orange_result == "orange":
         return {
             "color": "orange",
             "source": "Warning rules",
-            "message": "Observe your condition. If worsen in the next 1-2days then Visit a doctor."
+            "message": "Observe your condition. If worsen in the next 1-2days then Visit a doctor.",
+            "confidence": None
         }
     if len(active_symptoms) < 2:
         return {
             "color": "green",
             "source": "Symptom threshold",
-            "message": "You are fine. Drink water and take rest !"
+            "message": "You are fine. Drink water and take rest !",
+            "confidence": None
         }
     
     red_result = check_red_flags(symptoms)
@@ -216,7 +237,8 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "red",
             "source": "Safety rules",
-            "message": "Emergency red-flag symptoms detected. Immediately visit a doctor . YOu might be showing silent symptoms of something serious"
+            "message": "Emergency red-flag symptoms detected. Immediately visit a doctor . You might be showing silent symptoms of something serious",
+            "confidence": None
         }
 
     
@@ -232,14 +254,16 @@ def predict_triage(symptoms, model, feature_cols):
         return{
             "color": "orange",
             "source": "Low confidence fallback",
-            "message": f"Uncertain prediction ({confidence}%). Please consult a doctor."
+            "message": f"Uncertain prediction ({confidence}%). Please consult a doctor.",
+            "confidence": confidence
         }
     
     if confidence < 40:
         return {
             "color": "orange",
             "source": "Low confidence fallback",
-            "message": f"Uncertain prediction ({confidence}%). Please consult a doctor."
+            "message": f"Uncertain prediction ({confidence}%). Please consult a doctor.",
+            "confidence": confidence
         }
     
 
@@ -247,17 +271,20 @@ def predict_triage(symptoms, model, feature_cols):
         return {
             "color": "orange",
             "source": "Machine Learning Model",
-            "message": f"Observe your condition. If worsen then visit a doctor within 24–48 hours."
+            "message": f"Observe your condition. If worsen then visit a doctor within 24-48 hours.",
+            "confidence": confidence
         }
     if color=='red':
         return {
             "color": "red",
             "source": "Machine Learning Model",
-            "message": f"Emergency symptoms detected . Please consult a doctor within few hours."
+            "message": f"Emergency symptoms detected . Please consult a doctor within few hours.",
+            "confidence": confidence
         }
     if color=='green':
         return {
             "color": "green",
             "source": "Machine Learning Model",
-            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse."
+            "message": f"Do not worry!! you are doing fine. Overthinking will make it worse.",
+            "confidence": confidence
         }
