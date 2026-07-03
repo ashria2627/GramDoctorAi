@@ -233,6 +233,10 @@ def check_orange_flags(symptoms):
     if fever_cluster or headache_cluster or weakness_cluster:
         return "orange"
 
+    # Menstrual pain needs clinic/gynecology review, but is not an ER rule by itself.
+    if symptoms.get("painful menstruation", 0) == 1:
+        return "orange"
+
     # Gastrointestinal symptoms needing review
     if symptoms.get("diarrhea", 0) == 1 and (
         symptoms.get("vomiting", 0) == 1

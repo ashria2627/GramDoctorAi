@@ -97,7 +97,9 @@ ROMANIZED_BANGLA_SYNONYMS = {
     "chulkani": "itching of skin", "rash": "skin rash", "fuskuri": "skin rash", "fula": "skin swelling",
     "masike beshi rokto": "heavy menstrual flow", "shada srab": "vaginal discharge", "yoni chulkani": "vaginal itching", "komor betha": "pelvic pain",
     "jondis": "jaundice", "chokh holud": "jaundice", "mukh gha": "mouth ulcer", "dat betha": "toothache",
-    "period pain": "painful menstruation", "menstruation pain": "painful menstruation", "menstrual pain": "painful menstruation",
+    "period pain": "painful menstruation", "painful period": "painful menstruation", "painful periods": "painful menstruation",
+    "period cramps": "painful menstruation", "menstrual cramps": "painful menstruation",
+    "menstruation pain": "painful menstruation", "menstrual pain": "painful menstruation",
 }
 
 ADDITIONAL_ENGLISH_SYNONYMS = {
@@ -117,7 +119,9 @@ ADDITIONAL_ENGLISH_SYNONYMS = {
     "fits": "seizures", "convulsions": "seizures", "passed out": "fainting", "blackout": "fainting",
     "arm ache": "arm pain", "arms ache": "arm pain", "aching arms": "arm pain", "leg ache": "leg pain", "legs ache": "leg pain", "aching legs": "leg pain", "joint ache": "knee pain", "spine pain": "back pain",
     "skin itch": "itching of skin", "itchy skin": "itching of skin", "swollen skin": "skin swelling", "hives": "skin rash",
-    "heavy period": "heavy menstrual flow", "heavy bleeding period": "heavy menstrual flow", "vaginal fluid": "vaginal discharge", "period pain": "painful menstruation",
+    "heavy period": "heavy menstrual flow", "heavy bleeding period": "heavy menstrual flow", "vaginal fluid": "vaginal discharge",
+    "period pain": "painful menstruation", "painful period": "painful menstruation", "painful periods": "painful menstruation",
+    "period cramps": "painful menstruation", "menstrual cramps": "painful menstruation",
     "yellow eyes": "jaundice", "yellow skin": "jaundice", "mouth sore": "mouth ulcer", "tooth pain": "toothache",
     "loss of feeling": "loss of sensation", "numbness": "loss of sensation", "tingling": "loss of sensation", "slurred speech": "slurring words",
     "swollen leg": "leg swelling", "feet swelling": "leg swelling", "ankle swelling": "leg swelling", "testicle pain": "pain in testicles",
