@@ -2,12 +2,11 @@ SYMPTOM_ALIASES = {
     "painful periods": "painful menstruation",
     "heavy menstrual bleeding": "heavy menstrual flow",
     "slurring words": "difficulty speaking",
-    "difficulty breathing": "shortness of breath",
 }
 
 
 SYMPTOM_FIRST_AID = {
-    frozenset(["sharp chest pain", "sweating", "shortness of breath",'palpitations']): {
+    frozenset(["sharp chest pain", "shortness of breath",'palpitations']): {
         "condition": "Possible Cardiac Emergency",
         "steps_en": [
             "Call 999 immediately",
@@ -545,7 +544,7 @@ frozenset(["cough", "sore throat", "fever"]): {
 },
 
 # 2. Influenza
-frozenset(["fever", "cough", "body pain", "chills"]): {
+frozenset(["fever", "cough", "body pain", "chills","difficulty breathing"]): {
     "condition": "Possible Influenza",
     "steps_en": [
         "Rest at home",
@@ -733,7 +732,23 @@ frozenset(["nasal congestion", "painful sinuses", "headache"]): {
         "১০ দিনের বেশি থাকলে বা অবস্থা খারাপ হলে চিকিৎসকের কাছে যান",
     ]
 },
-
+frozenset(["vomiting"]): {
+    "condition": "Vomiting",
+    "steps_en": [
+        "Take small sips of clean water or ORS frequently to prevent dehydration",
+        "Avoid solid food until vomiting settles",
+        "Once vomiting improves, start with bland foods such as rice, toast, or bananas",
+        "Rest and avoid strenuous activity",
+        "Seek medical care if vomiting continues for more than 24 hours, you cannot keep fluids down, or blood appears in the vomit"
+    ],
+    "steps_bn": [
+        "পানিশূন্যতা রোধে অল্প অল্প করে বারবার পানি বা ওআরএস পান করুন",
+        "বমি কমা পর্যন্ত শক্ত খাবার এড়িয়ে চলুন",
+        "বমি কমে গেলে ভাত, টোস্ট বা কলার মতো হালকা খাবার দিয়ে শুরু করুন",
+        "বিশ্রাম নিন এবং ভারী কাজ এড়িয়ে চলুন",
+        "২৪ ঘণ্টার বেশি বমি চললে, পানি ধরে রাখতে না পারলে বা বমিতে রক্ত দেখা গেলে দ্রুত চিকিৎসকের কাছে যান"
+    ]
+},
 # 12. Ear Infection
 frozenset(["ear pain", "diminished hearing", "fever"]): {
     "condition": "Possible Ear Infection",
@@ -887,7 +902,7 @@ frozenset(["toothache", "mouth pain", "mouth ulcer"]): {
 },
 
 # 20. Neck Infection
-frozenset(["neck swelling", "sore throat", "fever"]): {
+frozenset(["neck swelling", "sore throat", "fever","difficulty breathing"]): {
     "condition": "Possible Neck Infection",
     "steps_en": [
         "Rest and drink plenty of fluids",
@@ -906,7 +921,7 @@ frozenset(["neck swelling", "sore throat", "fever"]): {
 },
 
 # 21. Severe Lung Disease
-frozenset(["hemoptysis", "cough", "shortness of breath"]): {
+frozenset(["hemoptysis", "cough", "difficulty breathing"]): {
     "condition": "Possible Severe Lung Disease",
     "steps_en": [
         "Go to the nearest hospital immediately",
@@ -981,7 +996,7 @@ frozenset(["back pain", "arm pain", "leg pain"]): {
 },
 
 # 25. Allergy + Pain
-frozenset(["allergic reaction", "back pain", "arm pain"]): {
+frozenset(["allergic reaction", "back pain", "arm pain","difficulty breathing"]): {
     "condition": "Allergic Reaction with Muscle Pain",
     "steps_en": [
         "Avoid the suspected allergen",
@@ -996,6 +1011,23 @@ frozenset(["allergic reaction", "back pain", "arm pain"]): {
         "পর্যাপ্ত পানি পান করুন",
         "আগে থেকে পরামর্শ থাকলে অ্যান্টিহিস্টামিন গ্রহণ করুন",
         "ঠোঁট ফুলে গেলে বা শ্বাসকষ্ট হলে দ্রুত হাসপাতালে যান",
+    ]
+},
+frozenset(["lower abdominal pain"]): {
+    "condition": "Lower Abdominal Pain",
+    "steps_en": [
+        "Rest and avoid strenuous activity",
+        "Drink plenty of water unless your doctor has advised otherwise",
+        "Eat light, easily digestible foods if you feel able to eat",
+        "Avoid taking painkillers such as ibuprofen or aspirin until the cause is known",
+        "Seek medical care promptly if the pain becomes severe, is persistent, or is accompanied by fever, vomiting, blood in stool or urine, dizziness, or pregnancy-related symptoms"
+    ],
+    "steps_bn": [
+        "বিশ্রাম নিন এবং ভারী কাজ এড়িয়ে চলুন",
+        "চিকিৎসক নিষেধ না করলে পর্যাপ্ত পানি পান করুন",
+        "খেতে পারলে হালকা ও সহজপাচ্য খাবার খান",
+        "কারণ নিশ্চিত না হওয়া পর্যন্ত আইবুপ্রোফেন বা অ্যাসপিরিনের মতো ব্যথানাশক ওষুধ নিজে থেকে খাবেন না",
+        "ব্যথা তীব্র হলে, দীর্ঘস্থায়ী হলে, অথবা জ্বর, বমি, মল বা প্রস্রাবে রক্ত, মাথা ঘোরা বা গর্ভাবস্থার উপসর্গ থাকলে দ্রুত চিকিৎসকের কাছে যান"
     ]
 },
 
@@ -1153,7 +1185,7 @@ def get_first_aid(symptoms: dict, language: str) -> dict:
 
     if active.intersection(abdominal_symptoms) and active.intersection({"vomiting", "nausea", "diarrhea"}):
         return {
-            "condition": "Possible Abdominal/Gastrointestinal Illness" if language == "English" else "à¦ªà§‡à¦Ÿ/à¦ªà¦°à¦¿à¦ªà¦¾à¦•à¦¤à¦¨à§à¦¤à§à¦°à§‡à¦° à¦¸à¦®à¦¸à§à¦¯à¦¾ à¦¹à¦¤à§‡ à¦ªà¦¾à¦°à§‡",
+            "condition": "Possible Abdominal/Gastrointestinal Illness" if language == "English" else "সম্ভাব্য পেটের/পাকস্থলীর অসুস্থতা",
             "steps": [
                 "Take small sips of clean water or ORS",
                 "Eat light food and avoid oily or spicy food",
@@ -1161,11 +1193,14 @@ def get_first_aid(symptoms: dict, language: str) -> dict:
                 "Do not take painkillers or antibiotics without medical advice",
                 "Go to hospital urgently if pain is severe, persistent, right-sided, with blood, fainting, or repeated vomiting",
             ] if language == "English" else [
-                "à¦…à¦²à§à¦ª à¦…à¦²à§à¦ª à¦•à¦°à§‡ à¦ªà¦°à¦¿à¦·à§à¦•à¦¾à¦° à¦ªà¦¾à¦¨à¦¿ à¦¬à¦¾ à¦“à¦†à¦°à¦à¦¸ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨",
-                "à¦¹à¦¾à¦²à¦•à¦¾ à¦–à¦¾à¦¬à¦¾à¦° à¦–à¦¾à¦¨ à¦à¦¬à¦‚ à¦¤à§‡à¦²/à¦à¦¾à¦² à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
-                "à¦¬à¦¿à¦¶à§à¦°à¦¾à¦® à¦¨à¦¿à¦¨ à¦à¦¬à¦‚ à¦¬à§à¦¯à¦¥à¦¾, à¦¬à¦®à¦¿, à¦ªà¦¾à¦¯à¦¼à¦–à¦¾à¦¨à¦¾ à¦“ à¦œà§à¦¬à¦° à¦²à¦•à§à¦· à¦•à¦°à§à¦¨",
-                "à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦›à¦¾à¦¡à¦¼à¦¾ à¦¬à§à¦¯à¦¥à¦¾à¦° à¦“à¦·à§à¦§ à¦¬à¦¾ à¦…à§à¦¯à¦¾à¦¨à§à¦Ÿà¦¿à¦¬à¦¾à¦¯à¦¼à§‹à¦Ÿà¦¿à¦• à¦–à¦¾à¦¬à§‡à¦¨ à¦¨à¦¾",
-                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°/à¦¦à§€à¦°à§à¦˜à¦¸à§à¦¥à¦¾à¦¯à¦¼à§€, à¦¡à¦¾à¦¨ à¦ªà¦¾à¦¶à§‡, à¦°à¦•à§à¦¤, à¦…à¦œà§à¦žà¦¾à¦¨ à¦¬à¦¾ à¦¬à¦¾à¦°à¦¬à¦¾à¦° à¦¬à¦®à¦¿ à¦¹à¦²à§‡ à¦œà¦°à§à¦°à¦¿ à¦¹à¦¾à¦¸à¦ªà¦¾à¦¤à¦¾à¦²à§‡ à¦¯à¦¾à¦¨",
+                "পরিষ্কার জল বা ওআরএস অল্প অল্প করে পান করুন",
+
+"হালকা খাবার খান এবং তৈলাক্ত বা মশলাদার খাবার এড়িয়ে চলুন",
+
+"বিশ্রাম নিন এবং ব্যথা, বমি, মল ও জ্বরের দিকে নজর রাখুন",
+
+"ডাক্তারের পরামর্শ ছাড়া ব্যথানাশক বা অ্যান্টিবায়োটিক খাবেন না",
+"ব্যথা তীব্র, দীর্ঘস্থায়ী, ডান দিকে হলে, ব্যথার সাথে রক্ত ​​গেলে, জ্ঞান হারালে বা বারবার বমি হলে অবিলম্বে হাসপাতালে যান",
             ],
         }
 
@@ -1174,26 +1209,34 @@ def get_first_aid(symptoms: dict, language: str) -> dict:
             "condition": (
                 "Multiple Symptoms With Menstrual/Gynecological Pain"
                 if language == "English"
-                else "à¦®à¦¾à¦¸à¦¿à¦•/à¦—à¦¾à¦‡à¦¨à¦¿ à¦¬à§à¦¯à¦¥à¦¾à¦¸à¦¹ à¦à¦•à¦¾à¦§à¦¿à¦• à¦‰à¦ªà¦¸à¦°à§à¦—"
+                else "মাসিক/স্ত্রীরোগ সংক্রান্ত ব্যথার সাথে একাধিক উপসর্গ"
             ),
             "steps": [
                 "Rest and avoid heavy activity",
                 "Use a warm compress on the lower abdomen if comfortable",
                 "Drink clean water and eat light food",
                 "Do not take multiple medicines without medical advice",
+                "See a gynecologist or clinic if pain is severe, recurrent, with heavy bleeding, fever, fainting, or unusual dischargeRest and avoid heavy activity",
+                "Use a warm compress on the lower abdomen if comfortable",
+                "Drink clean water and eat light food",
+                "Do not take multiple medicines without medical advice",
                 "See a gynecologist or clinic if pain is severe, recurrent, with heavy bleeding, fever, fainting, or unusual discharge",
             ] if language == "English" else [
-                "à¦¬à¦¿à¦¶à§à¦°à¦¾à¦® à¦¨à¦¿à¦¨ à¦à¦¬à¦‚ à¦­à¦¾à¦°à§€ à¦•à¦¾à¦œ à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
-                "à¦†à¦°à¦¾à¦® à¦²à¦¾à¦—à¦²à§‡ à¦¤à¦²à¦ªà§‡à¦Ÿà§‡ à¦—à¦°à¦® à¦¸à§‡à¦à¦• à¦¦à¦¿à¦¨",
-                "à¦ªà¦°à¦¿à¦·à§à¦•à¦¾à¦° à¦ªà¦¾à¦¨à¦¿ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨ à¦à¦¬à¦‚ à¦¹à¦¾à¦²à¦•à¦¾ à¦–à¦¾à¦¬à¦¾à¦° à¦–à¦¾à¦¨",
-                "à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦›à¦¾à¦¡à¦¼à¦¾ à¦à¦•à¦¾à¦§à¦¿à¦• à¦“à¦·à§à¦§ à¦–à¦¾à¦¬à§‡à¦¨ à¦¨à¦¾",
-                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°/à¦¬à¦¾à¦°à¦¬à¦¾à¦° à¦¹à¦²à§‡ à¦¬à¦¾ à¦¬à§‡à¦¶à¦¿ à¦°à¦•à§à¦¤à¦ªà¦¾à¦¤, à¦œà§à¦¬à¦°, à¦…à¦œà§à¦žà¦¾à¦¨, à¦…à¦¸à§à¦¬à¦¾à¦­à¦¾à¦¬à¦¿à¦• à¦¸à§à¦°à¦¾à¦¬ à¦¥à¦¾à¦•à¦²à§‡ à¦—à¦¾à¦‡à¦¨à¦¿ à¦¬à¦¾ à¦•à§à¦²à¦¿à¦¨à¦¿à¦•à§‡ à¦¯à¦¾à¦¨",
+                "বিশ্রাম নিন এবং ভারী কাজ থেকে বিরত থাকুন",
+
+"আরামদায়ক হলে তলপেটে গরম সেঁক দিন",
+
+"পরিষ্কার জল পান করুন এবং হালকা খাবার খান",
+
+"ডাক্তারের পরামর্শ ছাড়া একাধিক ওষুধ খাবেন না",
+
+"ব্যথা তীব্র হলে, বারবার হলে, অতিরিক্ত রক্তপাত, জ্বর, জ্ঞান হারানো বা অস্বাভাবিক স্রাব হলে স্ত্রীরোগ বিশেষজ্ঞ বা ক্লিনিকে যান।",
             ]
         }
 
     if len(active.intersection(limb_pain_symptoms)) >= 2:
         return {
-            "condition": "Possible Muscle or Joint Pain" if language == "English" else "à¦®à¦¾à¦‚à¦¸à¦ªà§‡à¦¶à§€ à¦¬à¦¾ à¦œà¦¯à¦¼à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¬à§à¦¯à¦¥à¦¾ à¦¹à¦¤à§‡ à¦ªà¦¾à¦°à§‡",
+            "condition": "Possible Muscle or Joint Pain" if language == "English" else "সম্ভাব্য পেশী বা জয়েন্টের ব্যথা",
             "steps": [
                 "Rest the painful areas",
                 "Use warm compresses for muscle aches, or cold compresses if pain followed an injury",
@@ -1201,11 +1244,15 @@ def get_first_aid(symptoms: dict, language: str) -> dict:
                 "Drink water and monitor swelling, redness, numbness, or weakness",
                 "See a doctor if pain is severe, follows injury, or does not improve",
             ] if language == "English" else [
-                "à¦¬à§à¦¯à¦¥à¦¾à¦° à¦…à¦‚à¦¶ à¦¬à¦¿à¦¶à§à¦°à¦¾à¦®à§‡ à¦°à¦¾à¦–à§à¦¨",
-                "à¦®à¦¾à¦‚à¦¸à¦ªà§‡à¦¶à§€à¦° à¦¬à§à¦¯à¦¥à¦¾à¦¯à¦¼ à¦—à¦°à¦® à¦¸à§‡à¦à¦•, à¦†à¦˜à¦¾à¦¤à§‡à¦° à¦ªà¦° à¦¹à¦²à§‡ à¦ à¦¾à¦¨à§à¦¡à¦¾ à¦¸à§‡à¦à¦• à¦¦à¦¿à¦¨",
-                "à¦­à¦¾à¦°à§€ à¦•à¦¾à¦œ à¦à¦¬à¦‚ à¦•à¦·à§à¦Ÿà¦•à¦° à¦•à¦¾à¦œ à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
-                "à¦ªà¦¾à¦¨à¦¿ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨ à¦à¦¬à¦‚ à¦«à§‹à¦²à¦¾, à¦²à¦¾à¦² à¦¹à¦“à¦¯à¦¼à¦¾, à¦…à¦¬à¦¶ à¦¬à¦¾ à¦¦à§à¦°à§à¦¬à¦²à¦¤à¦¾ à¦²à¦•à§à¦· à¦•à¦°à§à¦¨",
-                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°, à¦†à¦˜à¦¾à¦¤à§‡à¦° à¦ªà¦° à¦¹à¦²à§‡, à¦¬à¦¾ à¦•à¦®à§‡ à¦¨à¦¾ à¦—à§‡à¦²à§‡ à¦¡à¦¾à¦•à§à¦¤à¦¾à¦° à¦¦à§‡à¦–à¦¾à¦¨",
+                "ব্যথাযুক্ত স্থানগুলিতে বিশ্রাম দিন",
+
+"পেশীর ব্যথার জন্য গরম সেঁক দিন, অথবা আঘাতের পর ব্যথা হলে ঠান্ডা সেঁক দিন",
+
+"ভারী জিনিস তোলা এবং কঠোর পরিশ্রমের কাজ এড়িয়ে চলুন",
+
+"জল পান করুন এবং ফোলা, লালচে ভাব, অসাড়তা বা দুর্বলতার দিকে নজর রাখুন",
+
+"ব্যথা তীব্র হলে, আঘাতের পর হলে, বা অবস্থার উন্নতি না হলে ডাক্তারের পরামর্শ নিন।",
             ],
         }
 
@@ -1253,7 +1300,28 @@ def get_first_aid(symptoms: dict, language: str) -> dict:
         }
 
     for symptom_set, advice in rules:
-        if len(symptom_set) <= 2 and len(symptom_set & active) == len(symptom_set):
+      if len(symptom_set) <= 2 and symptom_set.issubset(active):
+        return {
+            "condition": advice["condition"],
+            "steps": advice[f"steps_{lang_key}"]
+        }
+    EMERGENCY_SYMPTOMS = {
+    "sharp chest pain",
+    "shortness of breath",
+    "palpitations",
+    "loss of consciousness",
+    "difficulty breathing",
+    "snake bite",
+    "seizure",
+    "heavy bleeding",
+    "severe burn",
+    "drowning",
+    "pesticide poisoning",
+}    
+    for symptom_set, advice in rules:
+      if len(symptom_set) >= 3:
+        matched = symptom_set & active
+        if matched and any(sym in EMERGENCY_SYMPTOMS for sym in matched):
             return {
                 "condition": advice["condition"],
                 "steps": advice[f"steps_{lang_key}"]

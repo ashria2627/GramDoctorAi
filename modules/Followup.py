@@ -38,7 +38,6 @@ FOLLOWUP_GROUPS = {
 
     "stroke": {
         "triggers_en": [
-    "weakness",
     "slurring words",
     "blindness",
     "diminished vision",
@@ -267,12 +266,12 @@ FOLLOWUP_GROUPS = {
       
        "triggers_en": [
     "diarrhea",
-    "vomiting"
+    "liquid stool"
 ],
 
 "triggers_bn": [
     "ডায়রিয়া",
-    "বমি"
+    "পাতলা পায়খানা"
 ],
 
 "questions_en": [
@@ -330,7 +329,42 @@ FOLLOWUP_GROUPS = {
     "আপনি কি ঝিমাচ্ছেন বা বিভ্রান্ত বোধ করছেন?"
 ]
     },
-    
+    "vomiting": {
+
+    "triggers_en": [
+        "vomiting",
+        "vomit",
+        "throwing up",
+        "threw up",
+        "nausea and vomiting"
+    ],
+
+    "triggers_bn": [
+        "বমি",
+        "বমি হচ্ছে",
+        "বমি করেছি",
+        "বমি বমি ভাব",
+        "বমি হচ্ছে বারবার"
+    ],
+
+    "questions_en": [
+        "How many times have you vomited today?",
+        "Are you able to keep water or ORS down?",
+        "Is there blood or coffee-ground material in the vomit?",
+        "Do you have severe abdominal pain?",
+        "Do you have diarrhea as well?",
+        "Do you feel dizzy or very weak?"
+    ],
+
+    "questions_bn": [
+        "আজ কতবার বমি হয়েছে?",
+        "আপনি কি পানি বা ওআরএস খেয়ে রাখতে পারছেন?",
+        "বমির সঙ্গে কি রক্ত বা কফির গুঁড়ার মতো কালচে কিছু বের হচ্ছে?",
+        "আপনার কি তীব্র পেট ব্যথা আছে?",
+        "আপনার কি পাতলা পায়খানাও হচ্ছে?",
+        "আপনার কি খুব মাথা ঘুরছে বা দুর্বল লাগছে?"
+    ]
+},
 'seizure':
         {
            
@@ -758,11 +792,41 @@ PRIORITY_ORDER = [
     "abnormal involuntary movements", "diarrhea", "mensuration","headache",
     "weakness", "dizziness"
 ]
+STOP_WORDS = {
+    "pain", "painful", "severe", "mild", "acute", "chronic",
+    "very", "slight",
 
-def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang,detected_special=None):
+    "ব্যথা", "তীব্র", "হালকা", "খুব"
+}
+
+def is_half_match(trigger, symptom):
+    trigger_words = {
+        w for w in trigger.lower().strip().split()
+        if w not in STOP_WORDS
+    }
+
+    symptom_words = {
+        w for w in symptom.lower().strip().split()
+        if w not in STOP_WORDS
+    }
+
+    if not trigger_words or not symptom_words:
+        return False
+
+    intersection = len(trigger_words & symptom_words)
+    union = len(trigger_words | symptom_words)
+
+    # Jaccard similarity
+    return (intersection / union) >= 0.6
+
+
+def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang, detected_special=None):
     active = set()
+
+    # High-priority special conditions
     if detected_special and detected_special.get("found"):
         cond = detected_special["condition"].lower()
+
         if "snake" in cond:
             return ["snake bite"]
         elif "bite" in cond or "scratch" in cond:
@@ -783,19 +847,51 @@ def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang,detected_spe
         triggers = []
         triggers.extend(group_data.get("triggers_en", []))
         triggers.extend(group_data.get("triggers_bn", []))
+        if group_name == "pregnancy" and symptoms_dict.get("ispregnant", 0) != 1:
+            continue
+
+        triggers = (
+            group_data.get("triggers_en", [])
+            + group_data.get("triggers_bn", [])
+        )
+
+        matched = False
+
         for trigger in triggers:
             t = trigger.lower().strip()
-            if normalized_symptoms.get(t, 0) == 1:
-                active.add(group_name)
-                break
-            for sym, val in normalized_symptoms.items():
-                if val == 1 and (t in sym or sym in t):
-                    active.add(group_name)
-                    break
-            else:
-                continue
-            break
 
-   
-    sorted_active = sorted(active, key=lambda x: PRIORITY_ORDER.index(x) if x in PRIORITY_ORDER else 99)
-    return sorted_active[:3]
+            # Exact match
+            if normalized_symptoms.get(t, 0) == 1:
+                matched = True
+                break
+
+            # Check every detected symptom
+            for sym, val in normalized_symptoms.items():
+                if val != 1:
+                 continue
+
+                sym = sym.lower().strip()
+
+                if (
+                      t == sym
+                      or t in sym
+                      or sym in t
+                      or is_half_match(t, sym)
+                     ):
+                       matched = True
+                       break
+
+            if matched:
+                break
+
+        if matched:
+            active.add(group_name)
+
+    # Sort by priority
+    sorted_active = sorted(
+        active,
+        key=lambda x: PRIORITY_ORDER.index(x) if x in PRIORITY_ORDER else 999
+    )
+
+    # Return only the highest-priority follow-up
+    return sorted_active[:1]

@@ -123,7 +123,7 @@ ADDITIONAL_ENGLISH_SYNONYMS = {
     "period pain": "painful menstruation", "painful period": "painful menstruation", "painful periods": "painful menstruation",
     "period cramps": "painful menstruation", "menstrual cramps": "painful menstruation",
     "yellow eyes": "jaundice", "yellow skin": "jaundice", "mouth sore": "mouth ulcer", "tooth pain": "toothache",
-    "loss of feeling": "loss of sensation", "numbness": "loss of sensation", "tingling": "loss of sensation", "slurred speech": "slurring words",
+    "loss of feeling": "loss of sensation", "numbness": "loss of sensation", "tingling": "weakness", "slurred speech": "slurring words",
     "swollen leg": "leg swelling", "feet swelling": "leg swelling", "ankle swelling": "leg swelling", "testicle pain": "pain in testicles",
 }
 
