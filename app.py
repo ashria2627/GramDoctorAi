@@ -1,6 +1,7 @@
-import os
+﻿import os
 import math
 import json
+import re
 from io import BytesIO
 import streamlit as st
 import pandas as pd
@@ -12,7 +13,7 @@ from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
 from modules.FIRSTAID import SYMPTOM_FIRST_AID,SPECIAL_FIRST_AID
 from modules.triage_rules import apply_bd_rules
-from modules.offline_detector import detect_local_emergency
+from modules.offline_detector import detect_local_emergency, detect_local_emergencies
 from modules.Followup import FOLLOWUP_GROUPS, detect_followup_categories
 from modules.symptom_normalizer import normalize_symptom_input
 from gtts import gTTS
@@ -65,7 +66,7 @@ h1 {
     background-color: #161B22 !important;
     border-right: 2px solid #21262D !important;
 }
-/* Warning box — replace ugly yellow */
+/* Warning box " replace ugly yellow */
 .stAlert {  
     border: 2px solid #FFFD8A !important;
     border-left: 6px solid #F0883E !important;
@@ -239,7 +240,7 @@ today the weather is good
         "no": "No",
         "yes": "Yes",
         "text_input": "Describe symptoms in Bangla or English",
-        "text_placeholder": "Example: fever, vomiting, headache or আমার জ্বর, বমি, মাথা ব্যথা হচ্ছে",
+        "text_placeholder": "Example: fever, vomiting, headache or জ্বর, বমি, মাথাব্যথা",
         "upload_note": "Optional: Upload patient symptom note",
         "uploaded_preview": "Uploaded note preview",
         "voice_input": "Voice input",
@@ -277,7 +278,7 @@ today the weather is good
         "alternate_referral": "If not available, see:",
         'follow-up':"Follow-up Questions",
     },
-    "বাংলা": {
+   "বাংলা": {
         "title": "GramDoctor AI",
         "subtitle": "বাংলা AI ট্রায়াজ ও রেফারেল সহকারী",
         "warning": (
@@ -453,7 +454,7 @@ def extract_english_symptoms(text, feature_cols):
 
 
 BANGLA_FEATURES = {
-    "sharp abdominal pain": "তীব্র পেট ব্যথা",
+    "sharp abdominal pain": "পেটে ব্যথা",
     "vomiting": "বমি",
     "headache": "মাথা ব্যথা",
     "cough": "কাশি",
@@ -550,8 +551,46 @@ BANGLA_FEATURES = {
     "slurring words": "জড়িয়ে কথা বলা",
     "eyelid swelling": "চোখের পাতা ফুলে যাওয়া",
     "jaundice": "জন্ডিস",
-    "nosebleed": "নাক দিয়ে রক্ত পড়া"
+    "nosebleed": "নাক দিয়ে রক্ত পড়া",
+    "sneezing": "হাঁচি",
 }
+
+
+EXTRA_DISPLAY_SYMPTOMS = {
+    "sneezing": {
+        "English": "Sneezing",
+        "বাংলা": "হাঁচি",
+        "terms": [
+            "sneezing",
+            "sneeze",
+            "sneezes",
+            "হাঁচি",
+            "হাচি",
+            "হাঁচি হচ্ছে",
+            "হাচি হচ্ছে",
+            "অনেক হাঁচি",
+            "বারবার হাঁচি",
+            "hachi",
+            "hanchi",
+            "haci",
+        ],
+    },
+}
+
+
+def detect_extra_display_symptoms(text):
+    if not text:
+        return []
+
+    lowered = text.lower()
+    found = []
+    for symptom, info in EXTRA_DISPLAY_SYMPTOMS.items():
+        for term in info["terms"]:
+            term_text = term.lower().strip()
+            if term_text and re.search(rf"(?<![a-z0-9]){re.escape(term_text)}(?![a-z0-9])", lowered):
+                found.append(symptom)
+                break
+    return found
 
 
 
@@ -624,96 +663,16 @@ def extract_english_referral_note(ai_response):
     return ai_response
 
 
-def create_referral_pdf(ai_response, triage_result, symptoms):
-    buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+def format_prediction_driver(item, triage_color=None):
+    feature = str(item.get("feature", "This factor")).replace("_", " ").title()
+    impact = float(item.get("impact", 0))
 
-    y = height - 50
+    if abs(impact) < 0.0001:
+        return None
 
-    pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, "GramDoctor AI - Referral Note")
-    y -= 35
-
-    pdf.setFont("Helvetica", 11)
-    pdf.drawString(50, y, f"Triage Level: {triage_result.get('color', 'unknown').upper()}")
-    y -= 18
-    pdf.drawString(50, y, f"Decision Source: {triage_result.get('source', 'unknown')}")
-    y -= 18
-
-    reason = triage_result.get("message", "")
-    for line in wrap_text(f"Reason: {reason}", max_chars=90):
-        pdf.drawString(50, y, line)
-        y -= 14
-
-    y -= 15
-
-    active_symptoms = [
-    BANGLA_FEATURES.get(symptom, symptom)
-    if language == "বাংলা"
-    else symptom
-    for symptom, value in symptoms.items()
-    if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-]
-
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(50, y, "Detected Symptoms:")
-    y -= 18
-
-    pdf.setFont("Helvetica", 10)
-
-    if active_symptoms:
-        for symptom in active_symptoms[:25]:
-            pdf.drawString(65, y, f"- {symptom}")
-            y -= 14
-
-            if y < 60:
-                pdf.showPage()
-                pdf.setFont("Helvetica", 10)
-                y = height - 50
-    else:
-        pdf.drawString(65, y, "- No specific symptom detected")
-        y -= 18
-
-    y -= 15
-
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(50, y, "Referral Note:")
-    y -= 20
-
-    pdf.setFont("Helvetica", 10)
-
-    english_note = extract_english_referral_note(ai_response)
-
-    for line in wrap_text(english_note, max_chars=90):
-        if y < 60:
-            pdf.showPage()
-            pdf.setFont("Helvetica", 10)
-            y = height - 50
-
-        pdf.drawString(50, y, line)
-        y -= 14
-
-    y -= 20
-
-    if y < 80:
-        pdf.showPage()
-        pdf.setFont("Helvetica", 10)
-        y = height - 50
-
-    pdf.setFont("Helvetica-Oblique", 9)
-    disclaimer = (
-        "Disclaimer: This tool does not provide a final diagnosis. "
-        "It supports triage and referral guidance only."
-    )
-
-    for line in wrap_text(disclaimer, max_chars=95):
-        pdf.drawString(50, y, line)
-        y -= 12
-
-    pdf.save()
-    buffer.seek(0)
-    return buffer
+    direction = "increased" if impact > 0 else "reduced"
+    target = f" the {triage_color} result" if triage_color else " this triage result"
+    return f"{feature} {direction} confidence in{target}."
 
 
 def create_structured_referral_pdf(ai_response, triage_result, symptoms, vitals=None, referral=None, first_aid=None, hospitals=None):
@@ -785,6 +744,18 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, vitals=
         write_lines("Rule-based decision; model confidence not applicable.")
     else:
         write_lines(f"Model Confidence: {confidence}%")
+
+    section("Prediction Drivers")
+    explanation = triage_result.get("explanation") or []
+    explanation_lines = [
+        format_prediction_driver(item, triage_result.get("color"))
+        for item in explanation
+    ]
+    explanation_lines = [line for line in explanation_lines if line]
+    if explanation_lines:
+        write_lines([f"- {line}" for line in explanation_lines])
+    else:
+        write_lines("No SHAP explanation available for this decision.")
 
     section("Recommended Specialist")
     write_lines(referral or "General Physician")
@@ -868,48 +839,59 @@ def is_priority_hospital(name):
     return any(term in name for term in priority_terms)
 
 
+def haversine_filter(hospitals_df, user_location, radius_km=15):
+    if (
+        not user_location
+        or "Latitude" not in hospitals_df.columns
+        or "Longitude" not in hospitals_df.columns
+    ):
+        return hospitals_df
+
+    user_lat = user_location.get("latitude")
+    user_lon = user_location.get("longitude")
+
+    hospitals_df = hospitals_df.copy()
+    hospitals_df["Distance_km"] = hospitals_df.apply(
+        lambda row: calculate_distance_km(
+            user_lat,
+            user_lon,
+            row["Latitude"],
+            row["Longitude"]
+        ),
+        axis=1
+    )
+
+    hospitals_df = hospitals_df.dropna(subset=["Distance_km"])
+    nearby = hospitals_df[hospitals_df["Distance_km"] <= radius_km]
+
+    return nearby if not nearby.empty else hospitals_df
+
+
+def rank_hospitals(hospitals_df):
+    sort_columns = ["Priority"]
+    ascending = [False]
+
+    if "Distance_km" in hospitals_df.columns:
+        sort_columns.append("Distance_km")
+        ascending.append(True)
+
+    return hospitals_df.sort_values(by=sort_columns, ascending=ascending)
+
+
 def get_recommended_hospitals(filtered_final, n=5, user_location=None, radius_km=15):
     hospitals_df = filtered_final.copy()
 
     hospitals_df = hospitals_df.drop_duplicates(subset=["Name"])
     hospitals_df["Priority"] = hospitals_df["Name"].apply(is_priority_hospital)
 
-    if (
-        user_location
-        and "Latitude" in hospitals_df.columns
-        and "Longitude" in hospitals_df.columns
-    ):
-        user_lat = user_location.get("latitude")
-        user_lon = user_location.get("longitude")
+    hospitals_df = haversine_filter(hospitals_df, user_location, radius_km)
+    hospitals_df = rank_hospitals(hospitals_df)
 
-        hospitals_df["Distance_km"] = hospitals_df.apply(
-            lambda row: calculate_distance_km(
-                user_lat,
-                user_lon,
-                row["Latitude"],
-                row["Longitude"]
-            ),
-            axis=1
-        )
+    columns = ["Name", "Name (Bangla)", "Priority"]
+    if "Distance_km" in hospitals_df.columns:
+        columns.append("Distance_km")
 
-        hospitals_df = hospitals_df.dropna(subset=["Distance_km"])
-        nearby = hospitals_df[hospitals_df["Distance_km"] <= radius_km]
-        if not nearby.empty:
-            hospitals_df = nearby
-
-        hospitals_df = hospitals_df.sort_values(
-            by=["Priority", "Distance_km"],
-            ascending=[False, True]
-        )
-
-        return hospitals_df.head(n)[
-            ["Name", "Name (Bangla)", "Distance_km", "Priority"]
-        ].to_dict("records")
-
-    hospitals_df = hospitals_df.sort_values("Priority", ascending=False)
-    return hospitals_df.head(n)[
-        ["Name", "Name (Bangla)", "Priority"]
-    ].to_dict("records")
+    return hospitals_df.head(n)[columns].to_dict("records")
 
 def normalize_color(color):
     if not color:
@@ -939,236 +921,143 @@ def get_active_symptom_keys(symptoms):
     ]
 
 
-def get_specialist_referral(triage_result, symptoms, language):
-    color = normalize_color(triage_result.get("color", "gray"))
+SPECIALIST_LABELS = {
+    "General Physician": {"English": "General Physician", "বাংলা": "জেনারেল ফিজিশিয়ান"},
+    "Cardiologist": {"English": "Cardiologist", "বাংলা": "কার্ডিওলজিস্ট / হৃদরোগ বিশেষজ্ঞ"},
+    "Neurologist": {"English": "Neurologist", "বাংলা": "নিউরোলজিস্ট / স্নায়ুরোগ বিশেষজ্ঞ"},
+    "Pulmonologist": {"English": "Pulmonologist", "বাংলা": "পালমোনোলজিস্ট / বক্ষব্যাধি বিশেষজ্ঞ"},
+    "Gastroenterologist": {"English": "Gastroenterologist", "বাংলা": "পরিপাকতন্ত্র বিশেষজ্ঞ"},
+    "Urologist": {"English": "Urologist", "বাংলা": "ইউরোলজিস্ট / মূত্ররোগ বিশেষজ্ঞ"},
+    "Nephrologist": {"English": "Nephrologist", "বাংলা": "নেফ্রোলজিস্ট / কিডনি বিশেষজ্ঞ"},
+    "Endocrinologist": {"English": "Endocrinologist", "বাংলা": "এন্ডোক্রাইনোলজিস্ট / হরমোন ও ডায়াবেটিস বিশেষজ্ঞ"},
+    "Dermatologist": {"English": "Dermatologist", "বাংলা": "ডার্মাটোলজিস্ট / চর্মরোগ বিশেষজ্ঞ"},
+    "ENT Specialist": {"English": "ENT Specialist", "বাংলা": "নাক-কান-গলা বিশেষজ্ঞ"},
+    "Ophthalmologist": {"English": "Ophthalmologist", "বাংলা": "চক্ষু বিশেষজ্ঞ"},
+    "Dentist": {"English": "Dentist", "বাংলা": "দন্ত চিকিৎসক"},
+    "Gynecologist": {"English": "Gynecologist / Obstetrician", "বাংলা": "প্রসূতি ও স্ত্রীরোগ বিশেষজ্ঞ"},
+    "Pediatrician": {"English": "Pediatrician", "বাংলা": "শিশু বিশেষজ্ঞ"},
+    "Orthopedic Specialist": {"English": "Orthopedic Specialist", "বাংলা": "হাড়-জোড়া বিশেষজ্ঞ"},
+    "Psychiatrist": {"English": "Psychiatrist", "বাংলা": "মানসিক রোগ বিশেষজ্ঞ"},
+    "General Surgeon": {"English": "General Surgeon", "বাংলা": "জেনারেল সার্জন"},
+}
+
+SPECIALIST_LANGUAGE_ALIASES = {
+    "English": "English",
+    "বাংলা": "বাংলা",
+}
+
+
+def specialist_label(name, language):
+    normalized_language = SPECIALIST_LANGUAGE_ALIASES.get(language, "English")
+    labels = SPECIALIST_LABELS.get(name, SPECIALIST_LABELS["General Physician"])
+    return labels.get(normalized_language, labels["English"])
+
+
+def cluster_priority_resolver(scored_clusters, active_symptoms):
+    if not scored_clusters:
+        return None
+
+    ent_symptoms = {"sore throat", "ear pain", "diminished hearing", "ringing in ear", "nasal congestion", "runny nose", "hoarse voice", "snoring", "sleep apnea"}
+    respiratory_danger_context = {"shortness of breath", "wheezing", "hemoptysis", "coughing up sputum"}
+    gynecology_priority = {"painful menstruation", "heavy menstrual flow", "irregular periods", "spotting or bleeding during pregnancy", "vaginal discharge", "vaginal pain", "pelvic pain"}
+
+    ent_count = len(active_symptoms.intersection(ent_symptoms))
+    respiratory_context_count = len(active_symptoms.intersection(respiratory_danger_context))
+
+    for row in scored_clusters:
+        if row["cluster"] == "ENT" and ent_count >= 3 and respiratory_context_count == 0:
+            row["score"] += 4
+            row["reason"] = "ENT majority resolved over isolated breathing symptom"
+        if row["cluster"] == "Gynecology" and active_symptoms.intersection(gynecology_priority):
+            row["score"] += 3
+            row["reason"] = "Gynecology-specific symptom resolved mixed complaint"
+
+    scored_clusters.sort(
+        key=lambda row: (
+            row["score"],
+            row.get("priority_matched", 0),
+            row["matched"],
+            row["red_matched"],
+            row["cluster"] in {"Gynecology", "Urology", "Ophthalmology", "ENT", "Orthopedics"},
+        ),
+        reverse=True,
+    )
+    return scored_clusters[0]
+
+
+def build_specialist_concerns(symptoms):
     active = set(get_active_symptom_keys(symptoms))
+    lookup = load_specialist_lookup()
+    concerns = []
+    generic_low_specificity = {"headache", "weakness", "dizziness", "nausea", "vomiting", "fatigue", "cough"}
 
-    if color == "green":
-        return None, None
+    for cluster, info in lookup.items():
+        matched = active.intersection(set(info.get("symptoms", [])))
+        red_matched = active.intersection(set(info.get("red_flags", [])))
+        priority_matched = active.intersection(set(info.get("priority_symptoms", [])))
+        if not matched:
+            continue
 
-    specialists = {
-        "Emergency": {
-            "English": "Emergency Department",
-            "বাংলা": "জরুরি বিভাগ"
-        },
-        "General Physician": {
-            "English": "General Physician",
-            "বাংলা": "জেনারেল ফিজিশিয়ান"
-        },
-        "Cardiologist": {
-            "English": "Cardiologist",
-            "বাংলা": "কার্ডিওলজিস্ট / হৃদরোগ বিশেষজ্ঞ"
-        },
-        "Neurologist": {
-            "English": "Neurologist",
-            "বাংলা": "নিউরোলজিস্ট / স্নায়ুরোগ বিশেষজ্ঞ"
-        },
-        "Pulmonologist": {
-            "English": "Pulmonologist",
-            "বাংলা": "পালমোনোলজিস্ট / বক্ষব্যাধি বিশেষজ্ঞ"
-        },
-        "Gastroenterologist": {
-            "English": "Gastroenterologist",
-            "বাংলা": "পরিপাকতন্ত্র বিশেষজ্ঞ"
-        },
-        "Hepatologist":{
-            "English":"Hepatologist",
-            'বাংলা':'হেপাটোলজিস্ট / লিভার বিশেষজ্ঞ'
-        },
-        "Urologist": {
-            "English": "Urologist",
-            "বাংলা": "ইউরোলজিস্ট / মূত্ররোগ বিশেষজ্ঞ"
-        },
-        "Endocrinologist": {
-            "English": "Endocrinologist",
-            "বাংলা": "এন্ডোক্রাইনোলজিস্ট / হরমোন ও ডায়াবেটিস বিশেষজ্ঞ"
-        },
-        "Dermatologist": {
-            "English": "Dermatologist",
-            "বাংলা": "ডার্মাটোলজিস্ট / চর্মরোগ বিশেষজ্ঞ"
-        },
-        "ENT Specialist": {
-            "English": "ENT Specialist",
-            "বাংলা": "নাক-কান-গলা বিশেষজ্ঞ"
-        },
-        "Ophthalmologist": {
-            "English": "Ophthalmologist",
-            "বাংলা": "অফথালমোলজিস্ট / চক্ষু বিশেষজ্ঞ"
-        },
-        "Dentist": {
-            "English": "Dentist",
-            "বাংলা": "দন্ত চিকিৎসক"
-        },
-        "Gynecologist": {
-            "English": "Gynecologist / Obstetrician",
-            "বাংলা": "প্রসূতি ও স্ত্রীরোগ বিশেষজ্ঞ"
-        },
-        "Pediatrician": {
-            "English": "Pediatrician",
-            "বাংলা": "শিশু বিশেষজ্ঞ"
-        },
-        "Orthopedic Specialist": {
-            "English": "Orthopedic Specialist",
-            "বাংলা": "হাড়-জোড়া বিশেষজ্ঞ"
-        },
-        "Psychiatrist": {
-            "English": "Psychiatrist",
-            "বাংলা": "মানসিক রোগ বিশেষজ্ঞ"
-        },
-        "Nephrologist": {
-            "English": "Nephrologist",
-            "বাংলা": "নেফ্রোলজিস্ট / কিডনি বিশেষজ্ঞ"
-        },
-        "General Surgeon": {
-            "English": "General Surgeon",
-            "বাংলা": "জেনারেল সার্জন"
-        },
-    }
+        generic_only_penalty = 0.5 if matched.issubset(generic_low_specificity) and not red_matched else 0
+        concerns.append({
+            "cluster": cluster,
+            "specialist": info["specialist"],
+            "score": len(matched) + (5 * len(red_matched)) + (2 * len(priority_matched)) - generic_only_penalty,
+            "matched": len(matched),
+            "priority_matched": len(priority_matched),
+            "red_matched": len(red_matched),
+            "symptoms": sorted(matched),
+        })
 
-    def doctor(name):
-        return specialists[name][language]
-
-    general_physician = doctor("General Physician")
-
-    emergency_note = ""
-
-    if color == "red":
-      emergency_note = (
-        "⚠️ Emergency "
-        if language == "English"
-        else
-        "⚠️ জরুরি অবস্থা "
+    selected = cluster_priority_resolver(concerns, active)
+    concerns.sort(
+        key=lambda row: (
+            row["score"],
+            row.get("priority_matched", 0),
+            row["matched"],
+            row["red_matched"],
+        ),
+        reverse=True,
     )
 
-    cardiac_core_symptoms = {
-        "sharp chest pain", "chest pain", "chest tightness",
-        "palpitations", "irregular heartbeat"
-    }
+    if selected:
+        concerns = [selected] + [
+            row for row in concerns
+            if row["cluster"] != selected["cluster"]
+        ]
 
-    cardiac_symptoms = {
-        "sharp chest pain", "chest pain", "chest tightness",
-        "palpitations", "irregular heartbeat", "sweating", "arm pain"
-    }
+    return concerns
 
-    neuro_symptoms = {
-        "headache", "seizures", "fainting", "slurring words",
-        "blindness", "diminished vision", "weakness", "loss of sensation"
-    }
 
-    respiratory_symptoms = {
-        "cough", "shortness of breath", "wheezing",
-        "coughing up sputum", "hemoptysis"
-    }
+def format_additional_concerns(symptoms, language, primary_specialist=None, limit=3):
+    concerns = build_specialist_concerns(symptoms)
+    lines = []
+    primary_plain = str(primary_specialist or "").replace("Emergency ", "")
+    active_count = len(get_active_symptom_keys(symptoms))
+    minimum_secondary_score = 1 if active_count >= 4 else 1.5
 
-    gi_symptoms = {
-        "sharp abdominal pain", "lower abdominal pain", "vomiting",
-        "nausea", "diarrhea", "burning abdominal pain", "blood in stool"
-    }
+    for concern in concerns:
+        label = specialist_label(concern["specialist"], language)
+        if primary_plain and label == primary_plain:
+            continue
+        if concern["cluster"] == "Orthopedics" and concern["matched"] < 2:
+            continue
+        if concern["score"] < minimum_secondary_score and concern.get("priority_matched", 0) == 0:
+            continue
 
-    urinary_symptoms = {
-        "painful urination", "frequent urination",
-        "blood in urine", "involuntary urination"
-    }
+        symptom_text = ", ".join(
+            get_symptom_display(symptom, language)
+            for symptom in concern["symptoms"][:4]
+        )
+        if language == "English":
+            lines.append(f"{label}: possible {concern['cluster']} concern ({symptom_text})")
+        else:
+            lines.append(f"{label}: সম্ভাব্য {concern['cluster']} সমস্যা ({symptom_text})")
 
-    kidney_symptoms = {
-        "leg swelling", "facial swelling", "decreased urination"
-    }
+        if len(lines) >= limit:
+            break
 
-    endocrine_symptoms = {
-        "increased thirst", "frequent urination", "weight gain",
-        "weight loss", "fatigue", "excessive appetite"
-    }
-
-    skin_symptoms = {
-        "skin rash", "itching of skin", "skin swelling",
-        "acne", "skin lesion", "changes in skin color"
-    }
-
-    ent_symptoms = {
-        "sore throat", "ear pain", "hearing loss",
-        "nasal congestion", "runny nose", "hoarse voice"
-    }
-
-    eye_symptoms = {
-        "eye pain", "redness in eye", "diminished vision", "blindness"
-    }
-
-    dental_symptoms = {
-        "tooth pain", "gum pain", "mouth ulcer", "jaw pain"
-    }
-
-    gynae_symptoms = {
-        "pelvic pain", "lower abdominal pain", "heavy menstrual flow",
-        "irregular periods", "spotting or bleeding during pregnancy"
-    }
-
-    ortho_symptoms = {
-        "back pain", "leg pain", "arm pain", "knee pain",
-        "joint pain", "neck pain", "hip pain"
-    }
-
-    psych_symptoms = {
-        "depressive or psychotic symptoms", "anxiety and nervousness",
-        "insomnia", "low mood"
-    }
-
-    surgical_symptoms = {
-        "sharp abdominal pain", "pain in testicles",
-        "rectal bleeding", "vomiting blood"
-    }
-
-    if active.intersection(cardiac_core_symptoms) or (
-        {"sweating", "arm pain"}.issubset(active) and active.intersection(cardiac_symptoms)
-    ):
-        return emergency_note + doctor("Cardiologist"), general_physician
-
-    if active.intersection(neuro_symptoms):
-        return emergency_note + doctor("Neurologist"), general_physician
-
-    if active.intersection(respiratory_symptoms):
-        return emergency_note + doctor("Pulmonologist"), general_physician
-
-    if active.intersection(gi_symptoms):
-        return emergency_note + doctor("Gastroenterologist"), general_physician
-
-    if active.intersection(urinary_symptoms):
-        return emergency_note + doctor("Urologist"), general_physician
-
-    if active.intersection(kidney_symptoms):
-        return emergency_note + doctor("Nephrologist"), general_physician
-
-    if active.intersection(endocrine_symptoms):
-        return emergency_note + doctor("Endocrinologist"), general_physician
-
-    if active.intersection(skin_symptoms):
-        return emergency_note + doctor("Dermatologist"), general_physician
-
-    if active.intersection(ent_symptoms):
-        return emergency_note + doctor("ENT Specialist"), general_physician
-
-    if active.intersection(eye_symptoms):
-        return emergency_note + doctor("Ophthalmologist"), general_physician
-
-    if active.intersection(dental_symptoms):
-        return emergency_note + doctor("Dentist"), general_physician
-
-    if symptoms.get("ispregnant", 2) == 1 or active.intersection(gynae_symptoms):
-        return emergency_note + doctor("Gynecologist"), general_physician
-
-    if symptoms.get("age", 30) < 13:
-        return emergency_note + doctor("Pediatrician"), general_physician
-
-    if active.intersection(ortho_symptoms):
-        return emergency_note + doctor("Orthopedic Specialist"), general_physician
-
-    if active.intersection(psych_symptoms):
-        return emergency_note + doctor("Psychiatrist"), general_physician
-
-    if active.intersection(surgical_symptoms):
-        return emergency_note + doctor("General Surgeon"), general_physician
-
-    return general_physician, None
-
+    return lines
 
 @st.cache_data
 def load_specialist_lookup():
@@ -1184,118 +1073,29 @@ def get_specialist_referral_clustered(triage_result, symptoms, language):
     if color == "green":
         return None, None
 
-    specialists = {
-        "Emergency": {
-            "English": "Emergency Department",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà¦°à§à¦°à¦¿ à¦¬à¦¿à¦­à¦¾à¦—"
-        },
-        "General Physician": {
-            "English": "General Physician",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà§‡à¦¨à¦¾à¦°à§‡à¦² à¦«à¦¿à¦œà¦¿à¦¶à¦¿à§Ÿà¦¾à¦¨"
-        },
-        "Cardiologist": {
-            "English": "Cardiologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦•à¦¾à¦°à§à¦¡à¦¿à¦“à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¹à§ƒà¦¦à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Neurologist": {
-            "English": "Neurologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à¦¿à¦‰à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¸à§à¦¨à¦¾à§Ÿà§à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Pulmonologist": {
-            "English": "Pulmonologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà¦¾à¦²à¦®à§‹à¦¨à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¬à¦•à§à¦·à¦¬à§à¦¯à¦¾à¦§à¦¿ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Gastroenterologist": {
-            "English": "Gastroenterologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà¦°à¦¿à¦ªà¦¾à¦•à¦¤à¦¨à§à¦¤à§à¦° à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Urologist": {
-            "English": "Urologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦‡à¦‰à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦®à§‚à¦¤à§à¦°à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Nephrologist": {
-            "English": "Nephrologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à§‡à¦«à§à¦°à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦•à¦¿à¦¡à¦¨à¦¿ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Endocrinologist": {
-            "English": "Endocrinologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦à¦¨à§à¦¡à§‹à¦•à§à¦°à¦¾à¦‡à¦¨à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦¹à¦°à¦®à§‹à¦¨ à¦“ à¦¡à¦¾à§Ÿà¦¾à¦¬à§‡à¦Ÿà¦¿à¦¸ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Dermatologist": {
-            "English": "Dermatologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¡à¦¾à¦°à§à¦®à¦¾à¦Ÿà§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦šà¦°à§à¦®à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "ENT Specialist": {
-            "English": "ENT Specialist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¨à¦¾à¦•-à¦•à¦¾à¦¨-à¦—à¦²à¦¾ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Ophthalmologist": {
-            "English": "Ophthalmologist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦…à¦«à¦¥à¦¾à¦²à¦®à§‹à¦²à¦œà¦¿à¦¸à§à¦Ÿ / à¦šà¦•à§à¦·à§ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Dentist": {
-            "English": "Dentist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¦à¦¨à§à¦¤ à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•"
-        },
-        "Gynecologist": {
-            "English": "Gynecologist / Obstetrician",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦ªà§à¦°à¦¸à§‚à¦¤à¦¿ à¦“ à¦¸à§à¦¤à§à¦°à§€à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Pediatrician": {
-            "English": "Pediatrician",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¶à¦¿à¦¶à§ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Orthopedic Specialist": {
-            "English": "Orthopedic Specialist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦¹à¦¾à§œ-à¦œà§‹à§œà¦¾ à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "Psychiatrist": {
-            "English": "Psychiatrist",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦®à¦¾à¦¨à¦¸à¦¿à¦• à¦°à§‹à¦— à¦¬à¦¿à¦¶à§‡à¦·à¦œà§à¦ž"
-        },
-        "General Surgeon": {
-            "English": "General Surgeon",
-            "à¦¬à¦¾à¦‚à¦²à¦¾": "à¦œà§‡à¦¨à¦¾à¦°à§‡à¦² à¦¸à¦¾à¦°à§à¦œà¦¨"
-        },
-    }
-
-    lookup = load_specialist_lookup()
-    scored = []
-
-    for cluster, info in lookup.items():
-        matched = active.intersection(set(info.get("symptoms", [])))
-        red_matched = active.intersection(set(info.get("red_flags", [])))
-        if matched:
-            scored.append({
-                "cluster": cluster,
-                "specialist": info["specialist"],
-                "score": len(matched) + (2 * len(red_matched)),
-                "matched": len(matched),
-                "red_matched": len(red_matched),
-            })
+    scored = build_specialist_concerns(symptoms)
 
     if not scored:
         if symptoms.get("ispregnant", 2) == 1:
-            return specialists["Gynecologist"][language], specialists["General Physician"][language]
+            return specialist_label("Gynecologist", language), specialist_label("General Physician", language)
         if symptoms.get("age", 30) < 13:
-            return specialists["Pediatrician"][language], specialists["General Physician"][language]
-        return specialists["General Physician"][language], None
+            return specialist_label("Pediatrician", language), specialist_label("General Physician", language)
+        return specialist_label("General Physician", language), None
 
-    scored.sort(key=lambda row: (row["score"], row["matched"], row["cluster"] == "ENT"), reverse=True)
     selected = scored[0]
     specialist_name = selected["specialist"]
     emergency_note = ""
 
     true_emergency = color == "red" and selected["red_matched"] > 0
     if true_emergency:
-        emergency_note = "Emergency " if language == "English" else "à¦œà¦°à§à¦°à¦¿ à¦…à¦¬à¦¸à§à¦¥à¦¾ "
+        emergency_note = "Emergency " if language == "English" else "জরুরি অবস্থা "
 
     if symptoms.get("ispregnant", 2) == 1 and selected["score"] <= 1:
         specialist_name = "Gynecologist"
     elif symptoms.get("age", 30) < 13 and selected["score"] <= 1:
         specialist_name = "Pediatrician"
 
-    return emergency_note + specialists[specialist_name][language], specialists["General Physician"][language]
+    return emergency_note + specialist_label(specialist_name, language), specialist_label("General Physician", language)
 
 def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral=None):
     color = normalize_color(triage_result.get("color", "gray"))
@@ -1321,7 +1121,7 @@ def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral
         symptom_items.extend([BANGLA_FEATURES.get(s, s) for s in active[:6]])
 
     for extra_symptom in st.session_state.get("extra_symptoms", []):
-        symptom_items.append(extra_symptom.replace("_", " "))
+        symptom_items.append(BANGLA_FEATURES.get(extra_symptom, extra_symptom.replace("_", " ")))
 
     if symptom_items:
         symptom_text = ", ".join(symptom_items[:8])
@@ -1331,6 +1131,7 @@ def get_tts_summary_bangla(triage_result, symptoms, referral, alternate_referral
     summary = (
         f"আপনার ট্রায়াজ ফলাফল {bangla_color}. "
         f"সনাক্ত হওয়া লক্ষণ: {symptom_text}. "
+    
     )
 
     if referral:
@@ -1355,7 +1156,7 @@ NORMAL_RANGES = {
     "heart_rate": (60, 100, "bpm"),
     "respiratory_rate": (12, 20, "breaths/min"),
     "spo2_pct": (95, 100, "%"),
-    "temperature_c": (36.1, 37.2, "°C"),
+    "temperature_c": (36.1, 37.2, "Â°C"),
     "systolic_bp": (90, 120, "mmHg"),
     "diastolic_bp": (60, 80, "mmHg"),
     "hemoglobin": (12, 16, "g/dL"),
@@ -1395,6 +1196,80 @@ def check_abnormal_vitals(vitals, language="English"):
                 abnormal.append(f"{name}: {val} {unit} (normal range: {low}-{high} {unit})")
 
     return abnormal
+
+
+def vitals_red_flag_override(vitals, language="English"):
+    critical_rules = [
+        vitals.get("spo2_pct", 98) < 90,
+        vitals.get("systolic_bp", 120) < 80,
+        vitals.get("heart_rate", 80) > 140,
+        vitals.get("respiratory_rate", 16) > 30,
+        vitals.get("temperature_c", 37) >= 40,
+    ]
+
+    if any(critical_rules):
+        return {
+            "color": "red",
+            "source": "Vitals red-flag override" if language == "English" else "ভাইটাল রেড-ফ্ল্যাগ ওভাররাইড",
+            "message": "Critical vital signs detected. Refer for emergency care now." if language == "English" else "গুরুতর ভাইটাল সাইন পাওয়া গেছে। এখনই জরুরি চিকিৎসায় রেফার করুন।",
+            "confidence": None,
+        }
+
+    return None
+
+
+def apply_vitals_to_triage(triage_result, vitals, language="English"):
+    override = vitals_red_flag_override(vitals, language)
+    if override:
+        return override
+
+    abnormal_list = check_abnormal_vitals(vitals, language)
+    order = ["green", "orange", "red"]
+    base_color = normalize_color(triage_result.get("color", "gray"))
+
+    if len(abnormal_list) >= 2 and base_color in order:
+        idx = order.index(base_color)
+        new_color = order[min(idx + 1, len(order) - 1)]
+        updated = dict(triage_result)
+        updated["color"] = new_color
+        updated["source"] = "Vitals-based escalation" if language == "English" else "ভাইটাল-ভিত্তিক উন্নতি"
+        updated["message"] = (
+            "Multiple abnormal vitals detected — possible deterioration risk."
+            if language == "English"
+            else "একাধিক অস্বাভাবিক ভাইটাল পাওয়া গেছে — স্বাস্থ্যের অবনতির ঝুঁকি থাকতে পারে।"
+        )
+        return updated
+
+    return triage_result
+
+
+def worker_referral_decision(triage_result, symptom_count, consciousness, language="English"):
+    color = normalize_color(triage_result.get("color", "gray"))
+    source = str(triage_result.get("source", "")).lower()
+    impaired_consciousness = consciousness in ["Drowsy", "Unconscious"]
+
+    if color == "red" or impaired_consciousness or "safety" in source:
+        return {
+            "refer": True,
+            "urgency": "Refer NOW" if language == "English" else "এখনই রেফার করুন",
+            "reason": "Emergency triage, impaired consciousness, or safety-rule trigger." if language == "English" else "জরুরি ট্রায়াজ, চেতনার সমস্যা, অথবা সেফটি রুল ট্রিগার হয়েছে।",
+            "style": "error",
+        }
+
+    if color == "orange" or symptom_count >= 3:
+        return {
+            "refer": True,
+            "urgency": "Refer within 24h" if language == "English" else "২৪ ঘণ্টার মধ্যে রেফার করুন",
+            "reason": "Warning-level symptoms need clinic or Upazila review." if language == "English" else "সতর্কতামূলক লক্ষণের জন্য ক্লিনিক বা উপজেলা পর্যায়ের মূল্যায়ন দরকার।",
+            "style": "warning",
+        }
+
+    return {
+        "refer": False,
+        "urgency": "Home management + return if worsens" if language == "English" else "বাড়িতে যত্ন + খারাপ হলে ফিরে আসুন",
+        "reason": "No immediate Upazila referral trigger found." if language == "English" else "তাৎক্ষণিক উপজেলা রেফারের কারণ পাওয়া যায়নি।",
+        "style": "success",
+    }
 
 @st.cache_resource
 def load_resources():
@@ -1533,7 +1408,7 @@ with tab1:
         )
 
         if "Distance_km" in hospital:
-            st.write(f"🏥 {hospital_name} — {t['distance']}: {hospital['Distance_km']:.2f} km")
+            st.write(f"🏥 {hospital_name} ” {t['distance']}: {hospital['Distance_km']:.2f} km")
         else:
             st.write(f"🏥 {hospital_name}")
   
@@ -1629,6 +1504,7 @@ with tab1:
             symptoms[symptom_name] = value
 
         combined_text = f"{bangla_text}\n{uploaded_text}\n{st.session_state.voice_text}".strip()
+        st.session_state.extra_symptoms = detect_extra_display_symptoms(combined_text)
 
         bangla_extracted = extract_bangla_symptoms(combined_text, feature_cols)
         english_extracted = extract_english_symptoms(combined_text, feature_cols)
@@ -1645,7 +1521,8 @@ with tab1:
         )
 
         # symptom detection
-        local_special = detect_local_emergency(combined_text, SPECIAL_FIRST_AID)
+        local_specials = detect_local_emergencies(combined_text, SPECIAL_FIRST_AID)
+        local_special = local_specials[0] if local_specials else None
 
         if local_special:
            special = local_special
@@ -1670,8 +1547,10 @@ with tab1:
                 "green": "সম্ভাবনা: {cond}। বাড়িতে যত্ন নেওয়া যায়, কিন্তু অবস্থা খারাপ হলে ডাক্তার দেখান।",
             }
 
-            cond = special["condition"]
+            cond = ", ".join(item["condition"] for item in local_specials) if local_specials else special["condition"]
             special_color = special["color"]
+            if any(item.get("color") == "red" for item in local_specials):
+                special_color = "red"
 
             order = ["green", "orange", "red"]
             current_color = result.get("color", "green")
@@ -1693,8 +1572,10 @@ with tab1:
                 }
 
             st.session_state.detected_special = special
+            st.session_state.detected_specials = local_specials or [special]
         else:
             st.session_state.detected_special = None
+            st.session_state.detected_specials = []
         
         
         st.session_state.symptoms = symptoms
@@ -1782,7 +1663,7 @@ with tab3:
     worker_symptom_options = {
         (
             BANGLA_FEATURES.get(symptom, symptom.title())
-            if language == "à¦¬à¦¾à¦‚à¦²à¦¾"
+            if language == "বাংলা"
             else symptom.title()
         ): symptom
         for symptom in sorted(worker_symptom_features)
@@ -1821,6 +1702,32 @@ with tab3:
         st.session_state.first_aid = None
         st.session_state.tts_audio = None
         st.session_state.followup_categories = detect_followup_categories(worker_symptoms, FOLLOWUP_GROUPS, language, None)
+        active_worker_symptom_count = sum(
+            value for key, value in worker_symptoms.items()
+            if key not in ["age", "sex-no", "ispregnant"] and value == 1
+        )
+        worker_decision = worker_referral_decision(
+            result,
+            active_worker_symptom_count,
+            worker_consciousness,
+            language
+        )
+        decision_title = (
+            "YES — Refer to Upazila Hospital"
+            if worker_decision["refer"] and language == "English"
+            else "হ্যাঁ — উপজেলা হাসপাতালে রেফার করুন"
+            if worker_decision["refer"]
+            else "NO — Upazila referral not needed now"
+            if language == "English"
+            else "না — এখনই উপজেলা রেফার দরকার নেই"
+        )
+        decision_text = f"**{decision_title}**\n\n{worker_decision['urgency']}\n\n{worker_decision['reason']}"
+        if worker_decision["style"] == "error":
+            st.error(decision_text)
+        elif worker_decision["style"] == "warning":
+            st.warning(decision_text)
+        else:
+            st.success(decision_text)
         st.success("Worker intake triage complete. Open Result tab." if language == "English" else "ওয়ার্কার ইনটেক ট্রায়াজ সম্পন্ন। Result ট্যাব দেখুন।")
 
     st.divider()
@@ -1828,16 +1735,16 @@ with tab3:
     st.header("Vital Signs Monitor" if language == "English" else "ভাইটাল সাইন মনিটর")
 
     
-    v_age = st.number_input("Age" if language=="English" else "বয়স", 0, 120, 30, key="v_age")
+    v_age = st.number_input("Age" if language=="English" else "à¦¬à¦¯à¦¼à¦¸", 0, 120, 30, key="v_age")
     v_gender = st.selectbox(
-            "Gender" if language=="English" else "লিঙ্গ",
+            "Gender" if language=="English" else "à¦²à¦¿à¦™à§à¦—",
             [t["male"], t["female"]], key="v_gender"
         )
     hour_from_admission = st.number_input("Hours Since Admission" if language=="English" else "ভর্তির পর কত ঘণ্টা", 0, 72, 1)
     heart_rate = st.number_input("Heart Rate (bpm)" if language=="English" else "হৃদস্পন্দন (bpm)", 30, 220, 80)
     respiratory_rate = st.number_input("Respiratory Rate (breaths/min)" if language=="English" else "শ্বাসের গতি", 5, 60, 16)
     spo2_pct = st.number_input("SpO2 (%)" if language=="English" else "অক্সিজেন স্যাচুরেশন (%)", 50, 100, 98)
-    temperature_c = st.number_input("Temperature (°C)" if language=="English" else "তাপমাত্রা (°C)", 30.0, 43.0, 37.0, step=0.1)
+    temperature_c = st.number_input("Temperature (Â°C)" if language=="English" else "তাপমাত্রা (°C)", 30.0, 43.0, 37.0, step=0.1)
 
     
     systolic_bp = st.number_input("Systolic BP" if language=="English" else "সিস্টোলিক রক্তচাপ", 50, 250, 120)
@@ -1877,30 +1784,12 @@ with tab3:
         st.session_state.anomaly = anomaly
         st.session_state.anomaly_proba = probability
 
-        abnormal_list = check_abnormal_vitals(vitals, language)
-
-        order = ["green", "orange", "red"]
-
         if st.session_state.triage_result is not None:
-          base_color = st.session_state.get("original_triage_color", st.session_state.triage_result["color"])
-          base_message = st.session_state.get("original_triage_message", st.session_state.triage_result["message"])
-          base_source = st.session_state.get("original_triage_source", st.session_state.triage_result["source"])
-
-
-          if len(abnormal_list) >= 2 and base_color in order:
-             idx = order.index(base_color)
-             new_color = order[min(idx + 1, len(order) - 1)]
-             st.session_state.triage_result["color"] = new_color
-             st.session_state.triage_result["source"] = "Vitals-based escalation" if language=="English" else "ভাইটাল-ভিত্তিক উন্নতি"
-             st.session_state.triage_result["message"] =  (
-            " Multiple abnormal vitals detected — possible deterioration risk."
-            if language == "English" else
-            " একাধিক অস্বাভাবিক ভাইটাল পাওয়া গেছে — স্বাস্থ্যের অবনতির ঝুঁকি থাকতে পারে।"
-          )
-          else:
-            st.session_state.triage_result["color"] = base_color
-            st.session_state.triage_result["source"] = base_source
-            st.session_state.triage_result["message"] = base_message
+            st.session_state.triage_result = apply_vitals_to_triage(
+                st.session_state.triage_result,
+                vitals,
+                language
+            )
 
         st.success("Check completed. See result below." if language=="English" else "যাচাই সম্পন্ন হয়েছে। নিচে ফলাফল দেখুন।")
 
@@ -1909,11 +1798,11 @@ with tab3:
         abnormal_list = check_abnormal_vitals(vitals, language)
 
         if abnormal_list:
-            st.warning("⚠️ Abnormal Vitals Detected" if language=="English" else "⚠️ অস্বাভাবিক ভাইটাল পাওয়া গেছে")
+            st.warning("Abnormal Vitals Detected" if language=="English" else "অস্বাভাবিক ভাইটাল পাওয়া গেছে")
             for item in abnormal_list:
                 st.write(f"- {item}")
         else:
-            st.success("✅ All vitals within normal range" if language=="English" else "✅ সব ভাইটাল স্বাভাবিক সীমার মধ্যে")
+            st.success("âœ… All vitals within normal range" if language=="English" else "সব ভাইটাল স্বাভাবিক সীমার মধ্যে")
 
         st.subheader("Recommendations" if language=="English" else "সুপারিশ")
         recs = get_deterioration_recommendations(vitals, language)
@@ -1943,12 +1832,20 @@ with tab4:
             )
         show_triage_card(color, language)
         special = st.session_state.get("detected_special")
+        special_events = st.session_state.get("detected_specials", [])
 
-        if result["source"] == "Special emergency detection" and special:
+        if result["source"] == "Special emergency detection" and special_events:
+            steps_en = []
+            steps_bn = []
+            for event in special_events:
+                steps_en.append(f"{event['condition']}:")
+                steps_en.extend(event.get("advice_en", []))
+                steps_bn.append(f"{event['condition']}:")
+                steps_bn.extend(event.get("advice_bn", []))
             first_aid = {
-                "condition": special["condition"],
-                "steps_en": special.get("advice_en", []),
-                "steps_bn": special.get("advice_bn", []),
+                "condition": "Multiple Injury/Event First Aid" if len(special_events) > 1 else special_events[0]["condition"],
+                "steps_en": steps_en,
+                "steps_bn": steps_bn,
             }
         else:
             first_aid = st.session_state.get("first_aid") or get_first_aid(st.session_state.symptoms, language)
@@ -1968,7 +1865,17 @@ with tab4:
         if confidence is not None:
             st.progress(min(max(float(confidence) / 100, 0), 1), text=f"Model Confidence: {confidence}%")
             if confidence < 60:
-                st.warning("Low confidence — please consult a doctor." if language == "English" else "à¦•à¦¨à¦«à¦¿à¦¡à§‡à¦¨à§à¦¸ à¦•à¦® â€” à¦¡à¦¾à¦•à§à¦¤à¦¾à¦°à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦¨à¦¿à¦¨à¥¤")
+                st.warning("Low confidence - please consult a doctor." if language == "English" else "Low confidence - অনুগ্রহ করে ডাক্তারের পরামর্শ নিন। ")
+        explanation = result.get("explanation") or []
+        explanation_lines = [
+            format_prediction_driver(item, result.get("color"))
+            for item in explanation
+        ]
+        explanation_lines = [line for line in explanation_lines if line]
+        if explanation_lines:
+            st.caption("Top prediction drivers")
+            for line in explanation_lines:
+                st.write(f"- {line}")
         st.divider()
         if st.button('listen result', key="listen_result_button"):
           st.session_state.tts_audio = None  # force regenerate
@@ -1994,6 +1901,16 @@ with tab4:
         if alternate_referral:
             st.markdown(f"**{t['alternate_referral']} {alternate_referral}**")
 
+        concern_lines = format_additional_concerns(
+            st.session_state.symptoms,
+            language,
+            primary_specialist=referral,
+        )
+        if concern_lines and not special_events:
+            st.markdown("**Additional possible concerns:**" if language == "English" else "**অতিরিক্ত সম্ভাব্য সমস্যা:**")
+            for line in concern_lines:
+                st.write(f"- {line}")
+
         
         if result["color"] in ["red", "orange"]:
          if st.session_state.filtered_final is not None:
@@ -2015,9 +1932,9 @@ with tab4:
               )
 
               if "Distance_km" in hospital:
-                  st.write(f"🏥 {hospital_name} — {t['distance']}: {hospital['Distance_km']:.2f} km")
+                  st.write(f" {hospital_name} ” {t['distance']}: {hospital['Distance_km']:.2f} km")
               else:
-                  st.write(f"🏥 {hospital_name}")
+                  st.write(f"ðŸ¥ {hospital_name}")
         active_symptoms = [
     BANGLA_FEATURES.get(symptom, symptom)
     if language == "বাংলা"
@@ -2025,6 +1942,12 @@ with tab4:
     for symptom, value in st.session_state.symptoms.items()
     if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
 ]
+        for extra_symptom in st.session_state.get("extra_symptoms", []):
+            active_symptoms.append(
+                BANGLA_FEATURES.get(extra_symptom, extra_symptom)
+                if language == "বাংলা"
+                else EXTRA_DISPLAY_SYMPTOMS.get(extra_symptom, {}).get("English", extra_symptom.replace("_", " ").title())
+            )
 
         if active_symptoms:
             st.subheader(t["detected_symptoms"])

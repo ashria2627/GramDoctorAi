@@ -11,3 +11,4 @@ gTTS
 streamlit-js-eval
 ollama
 rapidfuzz
+shap

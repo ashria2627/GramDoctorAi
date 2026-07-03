@@ -15,7 +15,6 @@ ENGLISH_SYNONYMS = {
     "high temperature": "fever",
     "cough": "cough",
     "coughing": "cough",
-    "sneezing": "cough",
     "headache": "headache",
     "head ache": "headache",
     "head hurts": "headache",
@@ -35,7 +34,6 @@ ENGLISH_SYNONYMS = {
     "breathing problem": "shortness of breath",
     "difficulty breathing": "difficulty breathing",
     "airway issue": "difficulty breathing",
-    "mouth breathing": "difficulty breathing",
     "abdominal pain": "sharp abdominal pain",
     "stomach pain": "sharp abdominal pain",
     "belly pain": "sharp abdominal pain",
@@ -66,6 +64,62 @@ ENGLISH_SYNONYMS = {
     "burning urination": "painful urination",
     "jaundice": "jaundice",
     "nosebleed": "nosebleed",
+    "arm pain": "arm pain",
+    "arms pain": "arm pain",
+    "pain in arm": "arm pain",
+    "pain in arms": "arm pain",
+    "hand pain": "arm pain",
+    "hands pain": "arm pain",
+    "leg pain": "leg pain",
+    "legs pain": "leg pain",
+    "pain in leg": "leg pain",
+    "pain in legs": "leg pain",
+}
+
+
+ROMANIZED_BANGLA_SYNONYMS = {
+    "jor": "fever", "jhor": "fever", "jar": "fever", "gaye jor": "fever", "kapuni": "chills",
+    "matha betha": "headache", "mathay betha": "headache", "matha batha": "headache", "matha ghora": "dizziness",
+    "bomi": "vomiting", "bomi hocche": "vomiting", "bomi bomi": "nausea", "vomit hocche": "vomiting",
+    "durbol": "weakness", "durbolota": "weakness", "shorir durbol": "weakness", "klanti": "weakness",
+    "kashi": "cough", "kasi": "cough", "khushi": "cough", "kof": "coughing up sputum", "kof utha": "coughing up sputum",
+    "shash kosto": "shortness of breath", "shash nite kosto": "difficulty breathing", "dom bondho": "shortness of breath", "hapani": "wheezing",
+    "buk betha": "sharp chest pain", "buke betha": "sharp chest pain", "buk chap": "chest tightness", "buk dhorfor": "palpitations",
+    "pet betha": "sharp abdominal pain", "pet byatha": "sharp abdominal pain", "tolpet betha": "lower abdominal pain", "pete jala": "burning abdominal pain",
+    "patla paykhana": "diarrhea", "loose motion": "diarrhea", "dairia": "diarrhea", "paykhanay rokto": "blood in stool",
+    "prosrabe jala": "painful urination", "prosrabe betha": "painful urination", "ghonoghon prosrab": "frequent urination", "prosrab bondho": "retention of urine",
+    "kan betha": "ear pain", "kane betha": "ear pain", "kom shuni": "diminished hearing", "kane shobdo": "ringing in ear",
+    "gola betha": "sore throat", "gola boshe geche": "hoarse voice", "gila kosto": "difficulty in swallowing", "nak bondho": "nasal congestion",
+    "nak diye pani": "nasal congestion", "nak jhora": "nasal congestion", "nak diye rokto": "nosebleed", "nak daka": "snoring",
+    "chokh betha": "pain in eye", "chokh lal": "eye redness", "kom dekhi": "diminished vision", "chokhe jhapsha": "diminished vision",
+    "khichuni": "seizures", "fit": "seizures", "oggan": "fainting", "gyan hariyeche": "fainting",
+    "hat betha": "arm pain", "pa betha": "leg pain", "hatu betha": "knee pain", "pith betha": "back pain",
+    "chulkani": "itching of skin", "rash": "skin rash", "fuskuri": "skin rash", "fula": "skin swelling",
+    "masike beshi rokto": "heavy menstrual flow", "shada srab": "vaginal discharge", "yoni chulkani": "vaginal itching", "komor betha": "pelvic pain",
+    "jondis": "jaundice", "chokh holud": "jaundice", "mukh gha": "mouth ulcer", "dat betha": "toothache",
+}
+
+ADDITIONAL_ENGLISH_SYNONYMS = {
+    "high fever": "fever", "low grade fever": "fever", "body temperature": "fever", "feeling feverish": "fever",
+    "migraine": "headache", "head pressure": "headache", "severe headache": "headache", "lightheaded": "dizziness", "vertigo": "dizziness",
+    "tiredness": "weakness", "fatigue": "weakness", "body weakness": "weakness", "loss of energy": "weakness",
+    "productive cough": "coughing up sputum", "phlegm": "coughing up sputum", "sputum": "coughing up sputum", "dry cough": "cough",
+    "cannot breathe": "difficulty breathing", "hard to breathe": "difficulty breathing", "air hunger": "shortness of breath", "wheeze": "wheezing",
+    "chest pressure": "chest tightness", "tight chest": "chest tightness", "heart racing": "palpitations", "irregular pulse": "irregular heartbeat",
+    "stomach ache": "sharp abdominal pain", "stomach cramps": "sharp abdominal pain", "lower belly pain": "lower abdominal pain", "pelvic ache": "pelvic pain",
+    "watery stool": "diarrhea", "bloody stool": "blood in stool", "blood stool": "blood in stool", "constipated": "constipation",
+    "burning urine": "painful urination", "urine pain": "painful urination", "pee burning": "painful urination", "pee often": "frequent urination",
+    "ear ache": "ear pain", "reduced hearing": "diminished hearing", "blocked ear": "diminished hearing", "tinnitus": "ringing in ear",
+    "throat ache": "sore throat", "lost voice": "hoarse voice", "voice hoarse": "hoarse voice", "trouble swallowing": "difficulty in swallowing",
+    "nasal discharge": "nasal congestion", "nose running": "nasal congestion", "runny nostril": "nasal congestion", "snore": "snoring",
+    "eye pain": "pain in eye", "red eye": "eye redness", "blurry vision": "diminished vision", "vision loss": "blindness",
+    "fits": "seizures", "convulsions": "seizures", "passed out": "fainting", "blackout": "fainting",
+    "arm ache": "arm pain", "arms ache": "arm pain", "aching arms": "arm pain", "leg ache": "leg pain", "legs ache": "leg pain", "aching legs": "leg pain", "joint ache": "knee pain", "spine pain": "back pain",
+    "skin itch": "itching of skin", "itchy skin": "itching of skin", "swollen skin": "skin swelling", "hives": "skin rash",
+    "heavy period": "heavy menstrual flow", "heavy bleeding period": "heavy menstrual flow", "vaginal fluid": "vaginal discharge", "period pain": "painful menstruation",
+    "yellow eyes": "jaundice", "yellow skin": "jaundice", "mouth sore": "mouth ulcer", "tooth pain": "toothache",
+    "loss of feeling": "loss of sensation", "numbness": "loss of sensation", "tingling": "loss of sensation", "slurred speech": "slurring words",
+    "swollen leg": "leg swelling", "feet swelling": "leg swelling", "ankle swelling": "leg swelling", "testicle pain": "pain in testicles",
 }
 
 
@@ -74,11 +128,30 @@ def _candidate_phrases(text):
     phrases = set(re.findall(r"[a-z][a-z\s-]{2,}", lowered))
     words = re.findall(r"[a-z]+", lowered)
 
-    for size in (1, 2, 3, 4):
+    for size in (2, 3, 4):
         for idx in range(0, max(len(words) - size + 1, 0)):
             phrases.add(" ".join(words[idx:idx + size]))
 
     return phrases
+
+
+def _contains_phrase(text, phrase):
+    phrase = str(phrase).lower().strip()
+    if not phrase:
+        return False
+
+    escaped = re.escape(phrase).replace(r"\ ", r"\s+")
+    pattern = rf"(?<![a-z0-9]){escaped}(?![a-z0-9])"
+    return re.search(pattern, text.lower()) is not None
+
+
+def _is_negated(text, phrase):
+    escaped = re.escape(str(phrase).lower().strip()).replace(r"\ ", r"\s+")
+    if not escaped:
+        return False
+
+    negation_pattern = rf"(?<![a-z0-9])(?:no|not|without|deny|denies|denied|never)\s+(?:\w+\s+){{0,1}}{escaped}(?![a-z0-9])"
+    return re.search(negation_pattern, text.lower()) is not None
 
 
 def normalize_symptom_input(text, feature_cols, min_score=88):
@@ -88,15 +161,20 @@ def normalize_symptom_input(text, feature_cols, min_score=88):
         return extracted
 
     feature_set = set(feature_cols)
+    normalized_text = text.lower()
 
-    for phrase, feature_name in {**BANGLA_SYMPTOMS, **ENGLISH_SYNONYMS}.items():
-        if phrase and phrase.lower() in text.lower() and feature_name in feature_set:
+    for phrase, feature_name in {**BANGLA_SYMPTOMS, **ENGLISH_SYNONYMS, **ROMANIZED_BANGLA_SYNONYMS, **ADDITIONAL_ENGLISH_SYNONYMS}.items():
+        if (
+            feature_name in feature_set
+            and _contains_phrase(normalized_text, phrase)
+            and not _is_negated(normalized_text, phrase)
+        ):
             extracted[feature_name] = 1
 
     for feature in feature_cols:
         if feature in ["age", "sex-no", "ispregnant"]:
             continue
-        if feature.lower() in text.lower():
+        if _contains_phrase(normalized_text, feature) and not _is_negated(normalized_text, feature):
             extracted[feature] = 1
 
     if process is None or fuzz is None:
@@ -104,11 +182,13 @@ def normalize_symptom_input(text, feature_cols, min_score=88):
 
     choices = {
         phrase: feature
-        for phrase, feature in ENGLISH_SYNONYMS.items()
+        for phrase, feature in {**ENGLISH_SYNONYMS, **ROMANIZED_BANGLA_SYNONYMS, **ADDITIONAL_ENGLISH_SYNONYMS}.items()
         if feature in feature_set
     }
 
     for phrase in _candidate_phrases(text):
+        if _is_negated(normalized_text, phrase):
+            continue
         match = process.extractOne(
             phrase,
             choices.keys(),
@@ -118,3 +198,21 @@ def normalize_symptom_input(text, feature_cols, min_score=88):
             extracted[choices[match[0]]] = 1
 
     return extracted
+
+
+def validate_canonical_self_match(feature_cols):
+    checked = [
+        feature
+        for feature in feature_cols
+        if feature not in ["age", "sex-no", "ispregnant"]
+    ]
+    missed = [
+        feature
+        for feature in checked
+        if normalize_symptom_input(feature, feature_cols).get(feature) != 1
+    ]
+    return {
+        "checked": len(checked),
+        "matched": len(checked) - len(missed),
+        "missed": missed,
+    }

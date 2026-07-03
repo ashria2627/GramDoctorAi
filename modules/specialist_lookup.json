@@ -1,12 +1,13 @@
 {
   "Cardiology": {
     "specialist": "Cardiologist",
-    "symptoms": ["sharp chest pain", "chest pain", "chest tightness", "palpitations", "irregular heartbeat", "sweating", "arm pain"],
+    "symptoms": ["sharp chest pain", "chest pain", "chest tightness", "palpitations", "irregular heartbeat", "sweating"],
     "red_flags": ["sharp chest pain", "chest pain", "fainting"]
   },
   "Neurology": {
     "specialist": "Neurologist",
     "symptoms": ["headache", "seizures", "fainting", "slurring words", "blindness", "diminished vision", "weakness", "loss of sensation"],
+    "priority_symptoms": ["seizures", "fainting", "slurring words", "blindness", "loss of sensation"],
     "red_flags": ["seizures", "slurring words", "blindness", "fainting"]
   },
   "ENT": {
@@ -50,11 +51,13 @@
   },
   "Gynecology": {
     "specialist": "Gynecologist",
-    "symptoms": ["pelvic pain", "lower abdominal pain", "heavy menstrual flow", "irregular periods", "spotting or bleeding during pregnancy", "vaginal discharge", "vaginal pain"]
+    "symptoms": ["painful menstruation", "pelvic pain", "lower abdominal pain", "sharp abdominal pain", "heavy menstrual flow", "irregular periods", "spotting or bleeding during pregnancy", "vaginal discharge", "vaginal pain"],
+    "priority_symptoms": ["painful menstruation", "heavy menstrual flow", "irregular periods", "spotting or bleeding during pregnancy", "vaginal discharge", "vaginal pain", "pelvic pain"]
   },
   "Orthopedics": {
     "specialist": "Orthopedic Specialist",
-    "symptoms": ["back pain", "leg pain", "arm pain", "knee pain", "joint pain", "neck pain", "hip pain"]
+    "symptoms": ["back pain", "leg pain", "arm pain", "knee pain", "joint pain", "neck pain", "hip pain"],
+    "priority_symptoms": ["back pain", "leg pain", "arm pain", "knee pain", "joint pain", "neck pain", "hip pain"]
   },
   "Psychiatry": {
     "specialist": "Psychiatrist",
@@ -62,6 +65,6 @@
   },
   "Surgery": {
     "specialist": "General Surgeon",
-    "symptoms": ["sharp abdominal pain", "pain in testicles", "rectal bleeding", "vomiting blood"]
+    "symptoms": ["pain in testicles", "rectal bleeding", "vomiting blood"]
   }
 }

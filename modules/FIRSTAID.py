@@ -1,3 +1,11 @@
+SYMPTOM_ALIASES = {
+    "painful periods": "painful menstruation",
+    "heavy menstrual bleeding": "heavy menstrual flow",
+    "slurring words": "difficulty speaking",
+    "difficulty breathing": "shortness of breath",
+}
+
+
 SYMPTOM_FIRST_AID = {
     frozenset(["sharp chest pain", "sweating", "shortness of breath",'palpitations']): {
         "condition": "Possible Cardiac Emergency",
@@ -33,7 +41,7 @@ SYMPTOM_FIRST_AID = {
             "আজই হাসপাতালে যান",
         ]
     },
-    frozenset(["slurring words"]): {
+    frozenset(["difficulty speaking"]): {
         "condition": "Possible Stroke",
         "steps_en": [
             "Call 999 immediately — every minute matters",
@@ -482,7 +490,7 @@ frozenset(["irregular periods"]): {
     ]
 },
 
-frozenset(["painful periods"]): {
+frozenset(["painful menstruation"]): {
     "condition": "Possible Painful Menstruation",
     "steps_en": [
         "Rest and apply a warm compress to the lower abdomen",
@@ -500,7 +508,7 @@ frozenset(["painful periods"]): {
     ]
 },
 
-frozenset(["heavy menstrual bleeding"]): {
+frozenset(["heavy menstrual flow"]):  {
     "condition": "Possible Heavy Menstrual Bleeding",
     "steps_en": [
         "Use clean sanitary pads and monitor the amount of bleeding",
@@ -515,6 +523,479 @@ frozenset(["heavy menstrual bleeding"]): {
         "দুর্বলতা বা মাথা ঘোরা থাকলে অতিরিক্ত পরিশ্রম এড়িয়ে চলুন",
         "চিকিৎসকের পরামর্শ ছাড়া রক্তপাত বন্ধের ওষুধ গ্রহণ করবেন না",
         "রক্তপাত খুব বেশি হলে, দীর্ঘস্থায়ী হলে বা মাথা ঘোরা দেখা দিলে দ্রুত চিকিৎসাকেন্দ্রে যান",
+    ]
+},
+# 1. Viral Upper Respiratory Infection
+frozenset(["cough", "sore throat", "fever"]): {
+    "condition": "Possible Viral Respiratory Infection",
+    "steps_en": [
+        "Drink plenty of warm fluids",
+        "Gargle with warm salt water",
+        "Rest well",
+        "Wear a mask to avoid spreading infection",
+        "See a doctor if fever lasts more than 3 days or breathing becomes difficult",
+    ],
+    "steps_bn": [
+        "গরম তরল পান করুন",
+        "গরম লবণ পানি দিয়ে গার্গল করুন",
+        "পর্যাপ্ত বিশ্রাম নিন",
+        "অন্যদের সংক্রমণ এড়াতে মাস্ক ব্যবহার করুন",
+        "৩ দিনের বেশি জ্বর থাকলে বা শ্বাসকষ্ট হলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 2. Influenza
+frozenset(["fever", "cough", "body pain", "chills"]): {
+    "condition": "Possible Influenza",
+    "steps_en": [
+        "Rest at home",
+        "Drink plenty of fluids",
+        "Take paracetamol for fever",
+        "Avoid close contact with others",
+        "Seek medical care if breathing becomes difficult",
+    ],
+    "steps_bn": [
+        "বাড়িতে বিশ্রাম নিন",
+        "পর্যাপ্ত তরল পান করুন",
+        "জ্বরের জন্য প্যারাসিটামল গ্রহণ করুন",
+        "অন্যদের থেকে দূরে থাকুন",
+        "শ্বাসকষ্ট হলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 3. Asthma
+frozenset(["wheezing", "chest tightness", "cough"]): {
+    "condition": "Possible Asthma Attack",
+    "steps_en": [
+        "Sit upright",
+        "Use prescribed inhaler if available",
+        "Stay calm",
+        "Avoid smoke and dust",
+        "Go to hospital if symptoms worsen",
+    ],
+    "steps_bn": [
+        "সোজা হয়ে বসুন",
+        "ইনহেলার থাকলে ব্যবহার করুন",
+        "শান্ত থাকুন",
+        "ধোঁয়া ও ধুলাবালি এড়িয়ে চলুন",
+        "উপসর্গ বাড়লে হাসপাতালে যান",
+    ]
+},
+
+# 4. Severe Allergy
+frozenset(["allergic reaction", "lip swelling", "throat swelling"]): {
+    "condition": "Possible Severe Allergic Reaction",
+    "steps_en": [
+        "Call 999 immediately",
+        "Avoid the suspected allergen",
+        "Use an adrenaline auto-injector if prescribed",
+        "Keep the person sitting upright",
+        "Go to hospital immediately",
+    ],
+    "steps_bn": [
+        "এখনই ৯৯৯ নম্বরে ফোন করুন",
+        "যে কারণে অ্যালার্জি হয়েছে তা এড়িয়ে চলুন",
+        "প্রেসক্রাইব করা এপিনেফ্রিন থাকলে ব্যবহার করুন",
+        "রোগীকে সোজা বসিয়ে রাখুন",
+        "অবিলম্বে হাসপাতালে যান",
+    ]
+},
+
+# 5. Mild Allergy
+frozenset(["skin rash", "itching of skin"]): {
+    "condition": "Possible Mild Allergy",
+    "steps_en": [
+        "Wash the affected area",
+        "Apply a cool compress",
+        "Avoid scratching",
+        "Avoid known allergens",
+        "See a doctor if swelling develops",
+    ],
+    "steps_bn": [
+        "স্থানটি পরিষ্কার পানি দিয়ে ধুয়ে নিন",
+        "ঠান্ডা সেঁক দিন",
+        "চুলকাবেন না",
+        "অ্যালার্জির কারণ এড়িয়ে চলুন",
+        "ফুলে গেলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 6. UTI
+frozenset(["painful urination", "frequent urination", "blood in urine"]): {
+    "condition": "Possible Urinary Tract Infection",
+    "steps_en": [
+        "Drink plenty of water",
+        "Do not hold urine",
+        "Maintain genital hygiene",
+        "Avoid self-medicating with antibiotics",
+        "Visit a doctor today",
+    ],
+    "steps_bn": [
+        "পর্যাপ্ত পানি পান করুন",
+        "প্রস্রাব আটকে রাখবেন না",
+        "যৌনাঙ্গ পরিষ্কার রাখুন",
+        "নিজে থেকে অ্যান্টিবায়োটিক খাবেন না",
+        "আজই চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 7. Kidney Stone
+frozenset(["back pain", "blood in urine", "painful urination"]): {
+    "condition": "Possible Kidney Stone",
+    "steps_en": [
+        "Drink water unless vomiting",
+        "Rest",
+        "Do not ignore severe pain",
+        "Avoid heavy activity",
+        "Go to hospital today",
+    ],
+    "steps_bn": [
+        "বমি না হলে পর্যাপ্ত পানি পান করুন",
+        "বিশ্রাম নিন",
+        "তীব্র ব্যথা অবহেলা করবেন না",
+        "ভারী কাজ করবেন না",
+        "আজই হাসপাতালে যান",
+    ]
+},
+
+# 8. Gastritis
+frozenset(["burning abdominal pain", "heartburn", "nausea"]): {
+    "condition": "Possible Gastritis",
+    "steps_en": [
+        "Eat small meals",
+        "Avoid spicy food",
+        "Drink water",
+        "Avoid alcohol and smoking",
+        "See a doctor if vomiting blood develops",
+    ],
+    "steps_bn": [
+        "অল্প অল্প করে খাবার খান",
+        "ঝাল খাবার এড়িয়ে চলুন",
+        "পানি পান করুন",
+        "ধূমপান ও অ্যালকোহল এড়িয়ে চলুন",
+        "রক্তবমি হলে হাসপাতালে যান",
+    ]
+},
+
+# 9. Food Poisoning
+frozenset(["vomiting", "diarrhea", "nausea"]): {
+    "condition": "Possible Food Poisoning",
+    "steps_en": [
+        "Drink ORS frequently",
+        "Take small sips of water",
+        "Avoid oily food",
+        "Rest",
+        "Go to hospital if unable to keep fluids down",
+    ],
+    "steps_bn": [
+        "বারবার ওআরএস পান করুন",
+        "অল্প অল্প করে পানি পান করুন",
+        "তেলযুক্ত খাবার এড়িয়ে চলুন",
+        "বিশ্রাম নিন",
+        "পানি ধরে রাখতে না পারলে হাসপাতালে যান",
+    ]
+},
+
+# 10. Eye Infection
+frozenset(["eye redness", "white discharge from eye", "itchiness of eye"]): {
+    "condition": "Possible Eye Infection",
+    "steps_en": [
+        "Wash hands frequently",
+        "Avoid touching the eye",
+        "Use a clean cloth to wipe discharge",
+        "Do not share towels",
+        "Visit an eye doctor",
+    ],
+    "steps_bn": [
+        "ঘন ঘন হাত ধুয়ে নিন",
+        "চোখে হাত দেবেন না",
+        "পরিষ্কার কাপড় দিয়ে ময়লা পরিষ্কার করুন",
+        "তোয়ালে ভাগাভাগি করবেন না",
+        "চোখের ডাক্তার দেখান",
+    ]
+},
+
+# 11. Sinusitis
+frozenset(["nasal congestion", "painful sinuses", "headache"]): {
+    "condition": "Possible Sinusitis",
+    "steps_en": [
+        "Drink plenty of fluids",
+        "Use steam inhalation or saline nasal spray",
+        "Take paracetamol for pain or fever if needed",
+        "Rest and avoid smoke or dust",
+        "See a doctor if symptoms last more than 10 days or worsen",
+    ],
+    "steps_bn": [
+        "পর্যাপ্ত পানি পান করুন",
+        "ভাপ নিন বা স্যালাইন নাকের স্প্রে ব্যবহার করুন",
+        "প্রয়োজনে ব্যথা বা জ্বরের জন্য প্যারাসিটামল খান",
+        "বিশ্রাম নিন এবং ধোঁয়া বা ধুলাবালি এড়িয়ে চলুন",
+        "১০ দিনের বেশি থাকলে বা অবস্থা খারাপ হলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 12. Ear Infection
+frozenset(["ear pain", "diminished hearing", "fever"]): {
+    "condition": "Possible Ear Infection",
+    "steps_en": [
+        "Keep the ear dry",
+        "Do not insert anything into the ear",
+        "Take paracetamol for pain or fever if needed",
+        "See a doctor within 24 hours",
+        "Seek urgent care if swelling behind the ear or severe pain develops",
+    ],
+    "steps_bn": [
+        "কান শুকনো রাখুন",
+        "কানের ভেতরে কিছু প্রবেশ করাবেন না",
+        "প্রয়োজনে ব্যথা বা জ্বরের জন্য প্যারাসিটামল খান",
+        "২৪ ঘণ্টার মধ্যে চিকিৎসকের কাছে যান",
+        "কানের পেছনে ফোলা বা তীব্র ব্যথা হলে জরুরি চিকিৎসা নিন",
+    ]
+},
+
+# 13. Migraine
+frozenset(["headache", "nausea", "dizziness"]): {
+    "condition": "Possible Migraine",
+    "steps_en": [
+        "Rest in a quiet, dark room",
+        "Drink plenty of water",
+        "Take prescribed migraine medicine or paracetamol if appropriate",
+        "Avoid bright lights and loud sounds",
+        "Go to hospital immediately if this is the worst headache ever or with weakness",
+    ],
+    "steps_bn": [
+        "শান্ত ও অন্ধকার ঘরে বিশ্রাম নিন",
+        "পর্যাপ্ত পানি পান করুন",
+        "প্রয়োজনে চিকিৎসকের পরামর্শ অনুযায়ী ওষুধ বা প্যারাসিটামল খান",
+        "উজ্জ্বল আলো ও উচ্চ শব্দ এড়িয়ে চলুন",
+        "জীবনের সবচেয়ে তীব্র মাথাব্যথা বা দুর্বলতা থাকলে দ্রুত হাসপাতালে যান",
+    ]
+},
+
+# 14. Heat Exhaustion
+frozenset(["dizziness", "weakness", "sweating"]): {
+    "condition": "Possible Heat Exhaustion",
+    "steps_en": [
+        "Move to a cool shaded place",
+        "Drink cool water or oral rehydration solution",
+        "Loosen or remove excess clothing",
+        "Cool the body with wet cloths or a fan",
+        "Seek medical care if symptoms do not improve within 30 minutes",
+    ],
+    "steps_bn": [
+        "ঠান্ডা বা ছায়াযুক্ত স্থানে যান",
+        "ঠান্ডা পানি বা ওআরএস পান করুন",
+        "আঁটসাঁট বা অতিরিক্ত কাপড় খুলে ফেলুন",
+        "ভেজা কাপড় বা পাখা দিয়ে শরীর ঠান্ডা করুন",
+        "৩০ মিনিটেও উন্নতি না হলে চিকিৎসা নিন",
+    ]
+},
+
+# 15. Dehydration
+frozenset(["decreased appetite", "dizziness", "weakness"]): {
+    "condition": "Possible Dehydration",
+    "steps_en": [
+        "Drink oral rehydration solution frequently",
+        "Take small sips of water often",
+        "Rest in a cool place",
+        "Avoid alcohol and excessive heat",
+        "Go to hospital if unable to drink or symptoms become severe",
+    ],
+    "steps_bn": [
+        "বারবার ওআরএস পান করুন",
+        "অল্প অল্প করে বারবার পানি পান করুন",
+        "ঠান্ডা স্থানে বিশ্রাম নিন",
+        "অ্যালকোহল ও অতিরিক্ত গরম এড়িয়ে চলুন",
+        "পানি পান করতে না পারলে বা অবস্থা খারাপ হলে হাসপাতালে যান",
+    ]
+},
+
+# 16. Pregnancy Warning
+frozenset(["problems during pregnancy", "vaginal discharge", "lower abdominal pain"]): {
+    "condition": "Pregnancy Warning Signs",
+    "steps_en": [
+        "Rest and avoid strenuous activity",
+        "Do not self-medicate",
+        "Monitor bleeding, discharge, or pain",
+        "Contact your obstetrician immediately",
+        "Go to the nearest hospital if severe pain, bleeding, or reduced fetal movement occurs",
+    ],
+    "steps_bn": [
+        "বিশ্রাম নিন এবং ভারী কাজ এড়িয়ে চলুন",
+        "নিজে থেকে ওষুধ খাবেন না",
+        "রক্তপাত, স্রাব বা ব্যথার দিকে নজর রাখুন",
+        "অবিলম্বে স্ত্রীরোগ বিশেষজ্ঞের সাথে যোগাযোগ করুন",
+        "তীব্র ব্যথা, রক্তপাত বা শিশুর নড়াচড়া কমে গেলে দ্রুত হাসপাতালে যান",
+    ]
+},
+
+# 17. Pelvic Infection
+frozenset(["pelvic pain", "vaginal discharge", "fever"]): {
+    "condition": "Possible Pelvic Infection",
+    "steps_en": [
+        "Rest and drink plenty of fluids",
+        "Avoid sexual activity until evaluated",
+        "Do not self-medicate with antibiotics",
+        "See a doctor as soon as possible",
+        "Go to hospital immediately if severe abdominal pain or fainting occurs",
+    ],
+    "steps_bn": [
+        "বিশ্রাম নিন এবং পর্যাপ্ত পানি পান করুন",
+        "চিকিৎসা না হওয়া পর্যন্ত যৌন সম্পর্ক এড়িয়ে চলুন",
+        "নিজে থেকে অ্যান্টিবায়োটিক খাবেন না",
+        "যত দ্রুত সম্ভব চিকিৎসকের কাছে যান",
+        "তীব্র পেটব্যথা বা অজ্ঞান হলে দ্রুত হাসপাতালে যান",
+    ]
+},
+
+# 18. Hemorrhoids / Anal Disease
+frozenset(["rectal bleeding", "pain of the anus", "constipation"]): {
+    "condition": "Possible Hemorrhoids or Anal Disease",
+    "steps_en": [
+        "Drink plenty of water",
+        "Eat high-fiber foods",
+        "Avoid straining during bowel movements",
+        "Take warm sitz baths",
+        "See a doctor if bleeding continues or is heavy",
+    ],
+    "steps_bn": [
+        "পর্যাপ্ত পানি পান করুন",
+        "আঁশযুক্ত খাবার বেশি খান",
+        "পায়খানার সময় অতিরিক্ত চাপ দেবেন না",
+        "কুসুম গরম পানিতে সিটজ বাথ নিন",
+        "রক্তপাত চলতে থাকলে বা বেশি হলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 19. Dental Infection
+frozenset(["toothache", "mouth pain", "mouth ulcer"]): {
+    "condition": "Possible Dental Infection",
+    "steps_en": [
+        "Rinse your mouth with warm salt water",
+        "Maintain good oral hygiene",
+        "Avoid very hot or cold foods",
+        "Take paracetamol if needed for pain",
+        "Visit a dentist as soon as possible",
+    ],
+    "steps_bn": [
+        "হালকা গরম লবণ পানিতে কুলি করুন",
+        "মুখের পরিচ্ছন্নতা বজায় রাখুন",
+        "খুব গরম বা ঠান্ডা খাবার এড়িয়ে চলুন",
+        "প্রয়োজনে ব্যথার জন্য প্যারাসিটামল খান",
+        "যত দ্রুত সম্ভব দন্ত চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 20. Neck Infection
+frozenset(["neck swelling", "sore throat", "fever"]): {
+    "condition": "Possible Neck Infection",
+    "steps_en": [
+        "Rest and drink plenty of fluids",
+        "Gargle with warm salt water",
+        "Take paracetamol for fever if needed",
+        "See a doctor the same day",
+        "Go to hospital immediately if breathing or swallowing becomes difficult",
+    ],
+    "steps_bn": [
+        "বিশ্রাম নিন এবং পর্যাপ্ত পানি পান করুন",
+        "হালকা গরম লবণ পানিতে গার্গল করুন",
+        "প্রয়োজনে জ্বরের জন্য প্যারাসিটামল খান",
+        "আজই চিকিৎসকের কাছে যান",
+        "শ্বাস নিতে বা গিলতে কষ্ট হলে দ্রুত হাসপাতালে যান",
+    ]
+},
+
+# 21. Severe Lung Disease
+frozenset(["hemoptysis", "cough", "shortness of breath"]): {
+    "condition": "Possible Severe Lung Disease",
+    "steps_en": [
+        "Go to the nearest hospital immediately",
+        "Keep the patient sitting upright",
+        "Avoid strenuous activity",
+        "Do not smoke",
+        "Call emergency services if breathing worsens",
+    ],
+    "steps_bn": [
+        "অবিলম্বে নিকটস্থ হাসপাতালে যান",
+        "রোগীকে সোজা বসিয়ে রাখুন",
+        "ভারী কাজ করবেন না",
+        "ধূমপান করবেন না",
+        "শ্বাসকষ্ট বাড়লে জরুরি সেবায় ফোন করুন",
+    ]
+},
+
+# 22. Liver Disease
+frozenset(["jaundice", "decreased appetite", "nausea"]): {
+    "condition": "Possible Liver Disease",
+    "steps_en": [
+        "Avoid alcohol completely",
+        "Drink adequate fluids",
+        "Eat light, nutritious meals",
+        "See a doctor as soon as possible",
+        "Go to hospital immediately if confusion, severe abdominal pain, or persistent vomiting develops",
+    ],
+    "steps_bn": [
+        "সম্পূর্ণভাবে অ্যালকোহল এড়িয়ে চলুন",
+        "পর্যাপ্ত তরল পান করুন",
+        "হালকা ও পুষ্টিকর খাবার খান",
+        "যত দ্রুত সম্ভব চিকিৎসকের কাছে যান",
+        "অচেতনভাব, তীব্র পেটব্যথা বা বারবার বমি হলে দ্রুত হাসপাতালে যান",
+    ]
+},
+# 23. Neurological Emergency
+frozenset(["difficulty speaking", "loss of sensation", "problems with movement"]): {
+    "condition": "Possible Stroke",
+    "steps_en": [
+        "Call 999 immediately",
+        "Note the time symptoms started",
+        "Do not give food or water",
+        "Keep the patient lying on one side if vomiting",
+        "Go to the nearest hospital immediately",
+    ],
+    "steps_bn": [
+        "এখনই ৯৯৯ নম্বরে ফোন করুন",
+        "লক্ষণ শুরুর সময় লিখে রাখুন",
+        "মুখে কিছু খেতে দেবেন না",
+        "বমি হলে পাশ ফিরিয়ে শুইয়ে দিন",
+        "অবিলম্বে হাসপাতালে যান",
+    ]
+},
+
+# 24. Musculoskeletal Pain
+frozenset(["back pain", "arm pain", "leg pain"]): {
+    "condition": "Possible Muscle Strain",
+    "steps_en": [
+        "Rest the painful areas",
+        "Apply a warm compress or hot water bag for 15–20 minutes",
+        "Avoid heavy lifting",
+        "Drink water",
+        "See a doctor if pain persists or follows an injury",
+    ],
+    "steps_bn": [
+        "ব্যথার অংশ বিশ্রামে রাখুন",
+        "১৫–২০ মিনিট গরম পানির ব্যাগ বা গরম সেঁক দিন",
+        "ভারী কাজ এড়িয়ে চলুন",
+        "পর্যাপ্ত পানি পান করুন",
+        "ব্যথা না কমলে চিকিৎসকের কাছে যান",
+    ]
+},
+
+# 25. Allergy + Pain
+frozenset(["allergic reaction", "back pain", "arm pain"]): {
+    "condition": "Allergic Reaction with Muscle Pain",
+    "steps_en": [
+        "Avoid the suspected allergen",
+        "Apply a warm compress to painful muscles",
+        "Drink plenty of water",
+        "Take an antihistamine if previously prescribed",
+        "Go to hospital immediately if swelling of lips or breathing difficulty develops",
+    ],
+    "steps_bn": [
+        "যে কারণে অ্যালার্জি হয়েছে তা এড়িয়ে চলুন",
+        "ব্যথার স্থানে গরম পানির ব্যাগ দিয়ে সেঁক দিন",
+        "পর্যাপ্ত পানি পান করুন",
+        "আগে থেকে পরামর্শ থাকলে অ্যান্টিহিস্টামিন গ্রহণ করুন",
+        "ঠোঁট ফুলে গেলে বা শ্বাসকষ্ট হলে দ্রুত হাসপাতালে যান",
     ]
 },
 
@@ -595,11 +1076,11 @@ SPECIAL_FIRST_AID = {
     "drug_injection_exposure": SYMPTOM_FIRST_AID[
         frozenset(["drug exposure", "pain", "swelling"])
     ],
-    "heavy_menstrual_bleeding": SYMPTOM_FIRST_AID[
-        frozenset(["heavy menstrual bleeding"])
+    "heavy_menstrual_flow": SYMPTOM_FIRST_AID[
+    frozenset(["heavy menstrual flow"])
     ],
-    "painful_periods": SYMPTOM_FIRST_AID[
-        frozenset(["painful periods"])
+    "painful_menstruation": SYMPTOM_FIRST_AID[
+    frozenset(["painful menstruation"])
     ],
     "irregular_periods": SYMPTOM_FIRST_AID[
         frozenset(["irregular periods"])
@@ -630,8 +1111,8 @@ def get_first_aid_from_followup(followup_answers: dict, language: str, symptoms:
         "wound": "fall_injury",
         "drowning": "drowning",
         "seizure": "electrocution",
-        "heavy_menstrual_bleeding": "heavy_menstrual_bleeding",
-        "painful_periods": "painful_periods",
+        "heavy_menstrual_flow": "heavy_menstrual_flow",
+        "painful_menstruation": "painful_menstruation",
         "irregular_periods": "irregular_periods",
     }
 
@@ -647,12 +1128,132 @@ def get_first_aid_from_followup(followup_answers: dict, language: str, symptoms:
         "condition": "General Care" if language == "English" else "সাধারণ পরামর্শ",
         "steps": DEFAULT_FIRST_AID[lang_key]
     }
+
+    
 def get_first_aid(symptoms: dict, language: str) -> dict:
-    active = set(k for k, v in symptoms.items() if v == 1 and k not in ['age', 'sex-no', 'ispregnant'])
+    active = set()
+
+    for k, v in symptoms.items():
+        if v == 1 and k not in ["age", "sex-no", "ispregnant"]:
+            active.add(SYMPTOM_ALIASES.get(k, k))
+
     lang_key = "bn" if language == "বাংলা" else "en"
 
-    for symptom_set, advice in SYMPTOM_FIRST_AID.items():
-        if len(symptom_set & active) >= len(symptom_set) * 0.5:
+    menstrual_symptoms = {
+        "painful menstruation",
+        "heavy menstrual flow",
+        "irregular periods",
+        "pelvic pain",
+        "lower abdominal pain",
+        "vaginal discharge",
+        "vaginal pain",
+    }
+    abdominal_symptoms = {"sharp abdominal pain", "lower abdominal pain", "pelvic pain"}
+    limb_pain_symptoms = {"arm pain", "leg pain", "back pain", "knee pain", "joint pain", "neck pain", "hip pain"}
+
+    if active.intersection(abdominal_symptoms) and active.intersection({"vomiting", "nausea", "diarrhea"}):
+        return {
+            "condition": "Possible Abdominal/Gastrointestinal Illness" if language == "English" else "à¦ªà§‡à¦Ÿ/à¦ªà¦°à¦¿à¦ªà¦¾à¦•à¦¤à¦¨à§à¦¤à§à¦°à§‡à¦° à¦¸à¦®à¦¸à§à¦¯à¦¾ à¦¹à¦¤à§‡ à¦ªà¦¾à¦°à§‡",
+            "steps": [
+                "Take small sips of clean water or ORS",
+                "Eat light food and avoid oily or spicy food",
+                "Rest and monitor pain, vomiting, stool, and fever",
+                "Do not take painkillers or antibiotics without medical advice",
+                "Go to hospital urgently if pain is severe, persistent, right-sided, with blood, fainting, or repeated vomiting",
+            ] if language == "English" else [
+                "à¦…à¦²à§à¦ª à¦…à¦²à§à¦ª à¦•à¦°à§‡ à¦ªà¦°à¦¿à¦·à§à¦•à¦¾à¦° à¦ªà¦¾à¦¨à¦¿ à¦¬à¦¾ à¦“à¦†à¦°à¦à¦¸ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨",
+                "à¦¹à¦¾à¦²à¦•à¦¾ à¦–à¦¾à¦¬à¦¾à¦° à¦–à¦¾à¦¨ à¦à¦¬à¦‚ à¦¤à§‡à¦²/à¦à¦¾à¦² à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
+                "à¦¬à¦¿à¦¶à§à¦°à¦¾à¦® à¦¨à¦¿à¦¨ à¦à¦¬à¦‚ à¦¬à§à¦¯à¦¥à¦¾, à¦¬à¦®à¦¿, à¦ªà¦¾à¦¯à¦¼à¦–à¦¾à¦¨à¦¾ à¦“ à¦œà§à¦¬à¦° à¦²à¦•à§à¦· à¦•à¦°à§à¦¨",
+                "à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦›à¦¾à¦¡à¦¼à¦¾ à¦¬à§à¦¯à¦¥à¦¾à¦° à¦“à¦·à§à¦§ à¦¬à¦¾ à¦…à§à¦¯à¦¾à¦¨à§à¦Ÿà¦¿à¦¬à¦¾à¦¯à¦¼à§‹à¦Ÿà¦¿à¦• à¦–à¦¾à¦¬à§‡à¦¨ à¦¨à¦¾",
+                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°/à¦¦à§€à¦°à§à¦˜à¦¸à§à¦¥à¦¾à¦¯à¦¼à§€, à¦¡à¦¾à¦¨ à¦ªà¦¾à¦¶à§‡, à¦°à¦•à§à¦¤, à¦…à¦œà§à¦žà¦¾à¦¨ à¦¬à¦¾ à¦¬à¦¾à¦°à¦¬à¦¾à¦° à¦¬à¦®à¦¿ à¦¹à¦²à§‡ à¦œà¦°à§à¦°à¦¿ à¦¹à¦¾à¦¸à¦ªà¦¾à¦¤à¦¾à¦²à§‡ à¦¯à¦¾à¦¨",
+            ],
+        }
+
+    if len(active) >= 3 and active.intersection(menstrual_symptoms):
+        return {
+            "condition": (
+                "Multiple Symptoms With Menstrual/Gynecological Pain"
+                if language == "English"
+                else "à¦®à¦¾à¦¸à¦¿à¦•/à¦—à¦¾à¦‡à¦¨à¦¿ à¦¬à§à¦¯à¦¥à¦¾à¦¸à¦¹ à¦à¦•à¦¾à¦§à¦¿à¦• à¦‰à¦ªà¦¸à¦°à§à¦—"
+            ),
+            "steps": [
+                "Rest and avoid heavy activity",
+                "Use a warm compress on the lower abdomen if comfortable",
+                "Drink clean water and eat light food",
+                "Do not take multiple medicines without medical advice",
+                "See a gynecologist or clinic if pain is severe, recurrent, with heavy bleeding, fever, fainting, or unusual discharge",
+            ] if language == "English" else [
+                "à¦¬à¦¿à¦¶à§à¦°à¦¾à¦® à¦¨à¦¿à¦¨ à¦à¦¬à¦‚ à¦­à¦¾à¦°à§€ à¦•à¦¾à¦œ à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
+                "à¦†à¦°à¦¾à¦® à¦²à¦¾à¦—à¦²à§‡ à¦¤à¦²à¦ªà§‡à¦Ÿà§‡ à¦—à¦°à¦® à¦¸à§‡à¦à¦• à¦¦à¦¿à¦¨",
+                "à¦ªà¦°à¦¿à¦·à§à¦•à¦¾à¦° à¦ªà¦¾à¦¨à¦¿ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨ à¦à¦¬à¦‚ à¦¹à¦¾à¦²à¦•à¦¾ à¦–à¦¾à¦¬à¦¾à¦° à¦–à¦¾à¦¨",
+                "à¦šà¦¿à¦•à¦¿à§Žà¦¸à¦•à§‡à¦° à¦ªà¦°à¦¾à¦®à¦°à§à¦¶ à¦›à¦¾à¦¡à¦¼à¦¾ à¦à¦•à¦¾à¦§à¦¿à¦• à¦“à¦·à§à¦§ à¦–à¦¾à¦¬à§‡à¦¨ à¦¨à¦¾",
+                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°/à¦¬à¦¾à¦°à¦¬à¦¾à¦° à¦¹à¦²à§‡ à¦¬à¦¾ à¦¬à§‡à¦¶à¦¿ à¦°à¦•à§à¦¤à¦ªà¦¾à¦¤, à¦œà§à¦¬à¦°, à¦…à¦œà§à¦žà¦¾à¦¨, à¦…à¦¸à§à¦¬à¦¾à¦­à¦¾à¦¬à¦¿à¦• à¦¸à§à¦°à¦¾à¦¬ à¦¥à¦¾à¦•à¦²à§‡ à¦—à¦¾à¦‡à¦¨à¦¿ à¦¬à¦¾ à¦•à§à¦²à¦¿à¦¨à¦¿à¦•à§‡ à¦¯à¦¾à¦¨",
+            ]
+        }
+
+    if len(active.intersection(limb_pain_symptoms)) >= 2:
+        return {
+            "condition": "Possible Muscle or Joint Pain" if language == "English" else "à¦®à¦¾à¦‚à¦¸à¦ªà§‡à¦¶à§€ à¦¬à¦¾ à¦œà¦¯à¦¼à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¬à§à¦¯à¦¥à¦¾ à¦¹à¦¤à§‡ à¦ªà¦¾à¦°à§‡",
+            "steps": [
+                "Rest the painful areas",
+                "Use warm compresses for muscle aches, or cold compresses if pain followed an injury",
+                "Avoid heavy lifting and strenuous activity",
+                "Drink water and monitor swelling, redness, numbness, or weakness",
+                "See a doctor if pain is severe, follows injury, or does not improve",
+            ] if language == "English" else [
+                "à¦¬à§à¦¯à¦¥à¦¾à¦° à¦…à¦‚à¦¶ à¦¬à¦¿à¦¶à§à¦°à¦¾à¦®à§‡ à¦°à¦¾à¦–à§à¦¨",
+                "à¦®à¦¾à¦‚à¦¸à¦ªà§‡à¦¶à§€à¦° à¦¬à§à¦¯à¦¥à¦¾à¦¯à¦¼ à¦—à¦°à¦® à¦¸à§‡à¦à¦•, à¦†à¦˜à¦¾à¦¤à§‡à¦° à¦ªà¦° à¦¹à¦²à§‡ à¦ à¦¾à¦¨à§à¦¡à¦¾ à¦¸à§‡à¦à¦• à¦¦à¦¿à¦¨",
+                "à¦­à¦¾à¦°à§€ à¦•à¦¾à¦œ à¦à¦¬à¦‚ à¦•à¦·à§à¦Ÿà¦•à¦° à¦•à¦¾à¦œ à¦à¦¡à¦¼à¦¿à¦¯à¦¼à§‡ à¦šà¦²à§à¦¨",
+                "à¦ªà¦¾à¦¨à¦¿ à¦ªà¦¾à¦¨ à¦•à¦°à§à¦¨ à¦à¦¬à¦‚ à¦«à§‹à¦²à¦¾, à¦²à¦¾à¦² à¦¹à¦“à¦¯à¦¼à¦¾, à¦…à¦¬à¦¶ à¦¬à¦¾ à¦¦à§à¦°à§à¦¬à¦²à¦¤à¦¾ à¦²à¦•à§à¦· à¦•à¦°à§à¦¨",
+                "à¦¬à§à¦¯à¦¥à¦¾ à¦¤à§€à¦¬à§à¦°, à¦†à¦˜à¦¾à¦¤à§‡à¦° à¦ªà¦° à¦¹à¦²à§‡, à¦¬à¦¾ à¦•à¦®à§‡ à¦¨à¦¾ à¦—à§‡à¦²à§‡ à¦¡à¦¾à¦•à§à¦¤à¦¾à¦° à¦¦à§‡à¦–à¦¾à¦¨",
+            ],
+        }
+
+    # Check largest combinations first
+    rules = sorted(
+        SYMPTOM_FIRST_AID.items(),
+        key=lambda x: len(x[0]),
+        reverse=True
+    )
+
+    for symptom_set, advice in rules:
+        if len(symptom_set) <= 2:
+            continue
+
+        matched = len(symptom_set & active)
+
+        # Larger rules need at least three actual matches; two vague overlaps are too noisy.
+        if matched >= max(3, len(symptom_set) - 1):
+            return {
+                "condition": advice["condition"],
+                "steps": advice[f"steps_{lang_key}"]
+            }
+
+    # Multiple unrelated symptoms
+    if len(active) >= 4 or (len(active) >= 3 and active.intersection(abdominal_symptoms)):
+        return {
+            "condition": (
+                "Multiple Symptoms Requiring Medical Evaluation"
+                if language == "English"
+                else "একাধিক উপসর্গের জন্য চিকিৎসা মূল্যায়ন প্রয়োজন"
+            ),
+            "steps": [
+                "Rest and avoid strenuous activity",
+                "Drink plenty of clean water",
+                "Treat each symptom safely (warm compress for muscle pain, cool compress for rash/itching)",
+                "Avoid taking multiple medicines without medical advice",
+                "Visit a healthcare facility today"
+            ] if language == "English" else [
+                "বিশ্রাম নিন",
+                "পর্যাপ্ত বিশুদ্ধ পানি পান করুন",
+                "উপসর্গ অনুযায়ী নিরাপদ প্রাথমিক পরিচর্যা করুন (ব্যথায় গরম সেঁক, র‍্যাশে ঠান্ডা সেঁক)",
+                "চিকিৎসকের পরামর্শ ছাড়া একাধিক ওষুধ একসাথে খাবেন না",
+                "আজই নিকটস্থ চিকিৎসাকেন্দ্রে যান"
+            ]
+        }
+
+    for symptom_set, advice in rules:
+        if len(symptom_set) <= 2 and len(symptom_set & active) == len(symptom_set):
             return {
                 "condition": advice["condition"],
                 "steps": advice[f"steps_{lang_key}"]

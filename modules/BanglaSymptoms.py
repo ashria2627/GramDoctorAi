@@ -1,3 +1,6 @@
+import re
+
+
 SYMPTOMS = {
  # Nasal congestion
     "নাক বন্ধ": "nasal congestion",
@@ -20,6 +23,12 @@ SYMPTOMS = {
     "হাতে ব্যথা": "arm pain",
     "হাত ব্যথা": "arm pain",
     "বাহুতে ব্যথা": "arm pain",
+    "হাতে ব্যাথা": "arm pain",
+    "হাত ব্যাথা": "arm pain",
+    "বাহু ব্যথা": "arm pain",
+    "বাহু ব্যাথা": "arm pain",
+    "হাতের ব্যথা": "arm pain",
+    "হাতের ব্যাথা": "arm pain",
 
     # Loss of sensation
     "অনুভূতি হারানো": "loss of sensation",
@@ -151,6 +160,28 @@ SYMPTOMS = {
     # Heavy menstrual flow
     "অতিরিক্ত মাসিক": "heavy menstrual flow",
     "বেশি রক্তপাত হচ্ছে": "heavy menstrual flow",
+    "মাসিকে বেশি রক্ত": "heavy menstrual flow",
+    "মাসিক বেশি হচ্ছে": "heavy menstrual flow",
+    "পিরিয়ডে বেশি রক্ত": "heavy menstrual flow",
+    "পিরিয়ডে বেশি রক্ত": "heavy menstrual flow",
+    "heavy period": "heavy menstrual flow",
+    "heavy bleeding period": "heavy menstrual flow",
+
+    # Painful menstruation / period pain
+    "মাসিকের ব্যথা": "painful menstruation",
+    "মাসিক ব্যথা": "painful menstruation",
+    "মাসিকে ব্যথা": "painful menstruation",
+    "মাসিকের সময় ব্যথা": "painful menstruation",
+    "মাসিকের সময় ব্যথা": "painful menstruation",
+    "পিরিয়ডের ব্যথা": "painful menstruation",
+    "পিরিয়ডের ব্যথা": "painful menstruation",
+    "পিরিয়ড ব্যথা": "painful menstruation",
+    "পিরিয়ড ব্যথা": "painful menstruation",
+    "period pain": "painful menstruation",
+    "masik betha": "painful menstruation",
+    "masiker betha": "painful menstruation",
+    "masike betha": "painful menstruation",
+    "period betha": "painful menstruation",
 
     # Vomiting blood
     "রক্তবমি": "vomiting blood",
@@ -215,8 +246,12 @@ SYMPTOMS = {
     # Headache
     "মাথা ব্যথা": "headache",
 "মাথাব্যথা": "headache",
+"মাথা ব্যাথা": "headache",
+"মাথাব্যাথা": "headache",
 "মাথায় ব্যথা": "headache",
 "মাথায় ব্যথা": "headache",
+"মাথায় ব্যাথা": "headache",
+"মাথায় ব্যাথা": "headache",
 "matha betha": "headache",
 "matha bytha": "headache",
 "matha betha hocche": "headache",
@@ -268,16 +303,34 @@ SYMPTOMS = {
 
     # Cough
     "কাশি": "cough",
+    "কাঁশি": "cough",
     "খুকখুক কাশি": "cough",
     "অনেক কাশি": "cough",
     "কাশ হচ্ছে": "cough",
+    "কাশি হচ্ছে": "cough",
+    "কাশতেছি": "cough",
+    "কাশতেসি": "cough",
     "শুকনা কাশি": "cough",
     "শুষ্ক কাশি": "cough",
 "kashi": "cough",
+"kashi hocche": "cough",
 "cough": "cough",
 "kosi": "cough",
 "kash hoitese": "cough",
 "khashi": "cough",
+
+    # Sneezing
+    "হাঁচি": "sneezing",
+    "হাচি": "sneezing",
+    "হাঁচি হচ্ছে": "sneezing",
+    "হাচি হচ্ছে": "sneezing",
+    "অনেক হাঁচি": "sneezing",
+    "বারবার হাঁচি": "sneezing",
+    "sneezing": "sneezing",
+    "sneeze": "sneezing",
+    "hachi": "sneezing",
+    "hanchi": "sneezing",
+    "haci": "sneezing",
 
     # Sputum
     "কফ": "coughing up sputum",
@@ -332,16 +385,24 @@ SYMPTOMS = {
     "বুক চেপে আছে": "chest tightness",
 
     # Abdominal pain
-    "পেট ব্যথা": "abdominal pain",
-    "পেটে ব্যথা": "abdominal pain",
-    "পেটে অনেক ব্যথা": "abdominal pain",
-    "পেট কামড়াচ্ছে": "abdominal pain",
-    "পেট মোচড়াচ্ছে": "abdominal pain",
-    "pete betha": "abdominal pain",
-"pet betha": "abdominal pain",
-"pete khub betha": "abdominal pain",
-"pet mochrachhe": "abdominal pain",
-"pet kamracche": "abdominal pain",
+    "পেট ব্যথা": "sharp abdominal pain",
+    "পেটে ব্যথা": "sharp abdominal pain",
+    "পেটের ব্যথা": "sharp abdominal pain",
+    "পেটে অনেক ব্যথা": "sharp abdominal pain",
+    "পেটে খুব ব্যথা": "sharp abdominal pain",
+    "পেট কামড়াচ্ছে": "sharp abdominal pain",
+    "পেট কামড়াচ্ছে": "sharp abdominal pain",
+    "পেট মোচড়াচ্ছে": "sharp abdominal pain",
+    "পেট মোচড়াচ্ছে": "sharp abdominal pain",
+    "পেট ব্যাথা": "sharp abdominal pain",
+    "পেটে ব্যাথা": "sharp abdominal pain",
+    "pete betha": "sharp abdominal pain",
+"pet betha": "sharp abdominal pain",
+"pete byatha": "sharp abdominal pain",
+"pet byatha": "sharp abdominal pain",
+"pete khub betha": "sharp abdominal pain",
+"pet mochrachhe": "sharp abdominal pain",
+"pet kamracche": "sharp abdominal pain",
 
     # Burning stomach pain
     "পেটে জ্বালা": "burning abdominal pain",
@@ -439,6 +500,14 @@ SYMPTOMS = {
     # Leg pain
     "পায়ে ব্যথা": "leg pain",
     "পায়ে ব্যথা": "leg pain",
+    "পায়ে ব্যাথা": "leg pain",
+    "পায়ে ব্যাথা": "leg pain",
+    "পা ব্যথা": "leg pain",
+    "পা ব্যাথা": "leg pain",
+    "পায়ের ব্যথা": "leg pain",
+    "পায়ের ব্যথা": "leg pain",
+    "পায়ের ব্যাথা": "leg pain",
+    "পায়ের ব্যাথা": "leg pain",
 
     # Rash
     "ফুসকুড়ি": "skin rash",
@@ -493,6 +562,30 @@ SYMPTOMS = {
 
 
 
+def _contains_symptom_phrase(text, phrase):
+    phrase = str(phrase).strip()
+    if not phrase:
+        return False
+
+    if re.fullmatch(r"[A-Za-z0-9\s'-]+", phrase):
+        escaped = re.escape(phrase.lower()).replace(r"\ ", r"\s+")
+        return re.search(rf"(?<![a-z0-9]){escaped}(?![a-z0-9])", text.lower()) is not None
+
+    return phrase in text
+
+
+def _is_negated_ascii_phrase(text, phrase):
+    if not re.fullmatch(r"[A-Za-z0-9\s'-]+", str(phrase).strip()):
+        return False
+
+    escaped = re.escape(str(phrase).lower().strip()).replace(r"\ ", r"\s+")
+    if not escaped:
+        return False
+
+    negation_pattern = rf"(?<![a-z0-9])(?:no|not|without|deny|denies|denied|never)\s+(?:\w+\s+){{0,1}}{escaped}(?![a-z0-9])"
+    return re.search(negation_pattern, text.lower()) is not None
+
+
 def extract_bangla_symptoms(text, feature_cols):
     extracted = {}
 
@@ -500,7 +593,11 @@ def extract_bangla_symptoms(text, feature_cols):
         return extracted
 
     for bangla_word, feature_name in SYMPTOMS.items():
-        if bangla_word in text and feature_name in feature_cols:
+        if (
+            _contains_symptom_phrase(text, bangla_word)
+            and not _is_negated_ascii_phrase(text, bangla_word)
+            and feature_name in feature_cols
+        ):
             extracted[feature_name] = 1
 
     return extracted

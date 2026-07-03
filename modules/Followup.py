@@ -777,12 +777,12 @@ def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang,detected_spe
             return ["drowning"]
 
     normalized_symptoms = {k.lower().strip(): v for k, v in symptoms_dict.items()}
-    trigger_key = "triggers_en" if lang == "English" else "triggers_bn"
-
     for group_name, group_data in FOLLOWUP_GROUPS.items():
         if group_name == "pregnancy" and symptoms_dict.get("ispregnant", 0) != 1:
             continue
-        triggers = group_data.get(trigger_key, [])
+        triggers = []
+        triggers.extend(group_data.get("triggers_en", []))
+        triggers.extend(group_data.get("triggers_bn", []))
         for trigger in triggers:
             t = trigger.lower().strip()
             if normalized_symptoms.get(t, 0) == 1:

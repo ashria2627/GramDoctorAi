@@ -80,25 +80,43 @@ LOCAL_EMERGENCY_KEYWORDS = {
 }
 
 
-def detect_local_emergency(text, SPECIAL_FIRST_AID):
+def detect_local_emergencies(text, SPECIAL_FIRST_AID):
     if not text:
-        return None
+        return []
 
     lowered = text.lower()
+    found = []
+    seen_keys = set()
 
     for category, data in LOCAL_EMERGENCY_KEYWORDS.items():
         for kw in data["keywords"]:
             if kw.lower() in lowered:
                 key = data["special_key"]
+                if key in seen_keys:
+                    continue
                 advice = SPECIAL_FIRST_AID.get(key)
                 if not advice:
                     continue
-                return {
+                seen_keys.add(key)
+                found.append({
                     "found": True,
                     "condition": data["condition"],
                     "color": data["color"],
                     "advice_en": advice.get("steps_en", []),
                     "advice_bn": advice.get("steps_bn", []),
-                }
+                    "special_key": key,
+                })
+                break
 
-    return None
+    return found
+
+
+def detect_local_emergency(text, SPECIAL_FIRST_AID):
+    emergencies = detect_local_emergencies(text, SPECIAL_FIRST_AID)
+    if not emergencies:
+        return None
+    return sorted(
+        emergencies,
+        key=lambda item: item.get("color") == "red",
+        reverse=True,
+    )[0]

@@ -2,6 +2,11 @@ import pickle
 import pandas as pd
 from modules.triage_rules import check_red_flags
 
+try:
+    import shap
+except Exception:
+    shap = None
+
 
 LABELS = {
     0: "green",
@@ -90,14 +95,142 @@ def make_input_dataframe(symptoms, feature_cols):
     return input_df
 
 
+def red_flag_scope_limiter(symptoms):
+    """
+    Prevents broad symptoms such as difficulty breathing from becoming emergency
+    by themselves. Emergency is reserved for serious standalone symptoms or
+    clinically meaningful symptom combinations.
+    """
+    symptoms = {k.lower().strip(): v for k, v in symptoms.items()}
+
+    serious_single_symptoms = [
+        "blindness",
+        "seizures",
+        "fainting",
+        "vomiting blood",
+        "rectal bleeding",
+        "blood in stool",
+        "involuntary urination",
+        "loss of sensation",
+        "slurring words",
+        "irregular heartbeat",
+        "spots or clouds in vision",
+    ]
+
+    if any(symptoms.get(symptom, 0) == 1 for symptom in serious_single_symptoms):
+        return {
+            "color": "red",
+            "source": "Safety rules",
+            "message": "Emergency symptoms detected. Seek medical care.",
+            "confidence": None,
+        }
+
+    breathing_symptom = (
+        symptoms.get("shortness of breath", 0) == 1
+        or symptoms.get("difficulty breathing", 0) == 1
+    )
+    breathing_danger_pair = any(
+        symptoms.get(symptom, 0) == 1
+        for symptom in ["sharp chest pain", "chest pain", "fainting", "sweating", "hemoptysis"]
+    )
+
+    if breathing_symptom and breathing_danger_pair:
+        return {
+            "color": "red",
+            "source": "Safety rules",
+            "message": "Breathing difficulty with danger signs detected. Seek emergency care.",
+            "confidence": None,
+        }
+
+    return None
+
+
+def red_flag_override(symptoms):
+    scoped_result = red_flag_scope_limiter(symptoms)
+    if scoped_result:
+        return scoped_result
+
+    red_result = check_red_flags(symptoms)
+    if red_result == "red":
+        return {
+            "color": "red",
+            "source": "Safety rules",
+            "message": "Emergency red-flag symptoms detected. Immediately visit a doctor. You might be showing silent symptoms of something serious.",
+            "confidence": None,
+        }
+
+    return None
+
+
+def explain_prediction(model, input_df, feature_cols, top_n=5):
+    if shap is None:
+        return []
+
+    try:
+        explainer = shap.TreeExplainer(model)
+        values = explainer.shap_values(input_df)
+
+        if isinstance(values, list):
+            predicted_class = int(model.predict(input_df)[0])
+            values = values[predicted_class]
+
+        row_values = values[0]
+        meta_features = {"age", "sex-no", "ispregnant"}
+        ranked = sorted(
+            [
+                (feature, value)
+                for feature, value in zip(feature_cols, row_values)
+                if feature not in meta_features and abs(float(value)) > 0.0001
+            ],
+            key=lambda item: abs(float(item[1])),
+            reverse=True,
+        )
+        return [
+            {"feature": feature, "impact": round(float(value), 4)}
+            for feature, value in ranked[:top_n]
+        ]
+    except Exception:
+        return []
+
+
 def check_orange_flags(symptoms):
     """
     Orange means the patient should visit a doctor within 24-48 hours.
     These are not immediate emergency rules, but symptoms need clinical review.
     """
 
-    # Fever-related moderate risk
-    if symptoms.get("fever", 0) == 1 or  symptoms.get("vomiting", 0) == 1 or symptoms.get("weakness", 0) == 1 or symptoms.get("headache", 0) == 1 or symptoms.get("chills", 0) == 1:
+    # Common symptoms become orange only when they cluster or persist with warning signs.
+    fever_cluster = (
+        symptoms.get("fever", 0) == 1
+        and (
+            symptoms.get("vomiting", 0) == 1
+            or symptoms.get("weakness", 0) == 1
+            or symptoms.get("chills", 0) == 1
+            or symptoms.get("skin rash", 0) == 1
+            or symptoms.get("cough", 0) == 1
+            or symptoms.get("headache", 0) == 1
+        )
+    )
+    headache_cluster = (
+        symptoms.get("headache", 0) == 1
+        and (
+            symptoms.get("dizziness", 0) == 1
+            or symptoms.get("vomiting", 0) == 1
+            or symptoms.get("diminished vision", 0) == 1
+            or symptoms.get("fever", 0) == 1
+        )
+    )
+    weakness_cluster = (
+        symptoms.get("weakness", 0) == 1
+        and (
+            symptoms.get("dizziness", 0) == 1
+            or symptoms.get("decreased appetite", 0) == 1
+            or symptoms.get("palpitations", 0) == 1
+            or symptoms.get("fever", 0) == 1
+        )
+    )
+
+    if fever_cluster or headache_cluster or weakness_cluster:
         return "orange"
 
     # Gastrointestinal symptoms needing review
@@ -168,41 +301,10 @@ def predict_triage(symptoms, model, feature_cols):
     
     symptoms = {k.lower().strip(): v for k, v in symptoms.items()}
 
-    SERIOUS_SINGLE_SYMPTOMS = [
-        "blindness", "seizures", "fainting",
-        "vomiting blood", "rectal bleeding", "blood in stool",
-        "involuntary urination", "loss of sensation", "slurring words",
-        "irregular heartbeat", "spots or clouds in vision"
-    ]
+    override_result = red_flag_override(symptoms)
+    if override_result:
+        return override_result
 
-    SERIOUS_SINGLE_SYMPTOMS = [s.lower().strip() for s in SERIOUS_SINGLE_SYMPTOMS]
-
-    
-    if any(symptoms.get(s, 0) == 1 for s in SERIOUS_SINGLE_SYMPTOMS):
-        return {
-            "color": "red",
-            "source": "Safety rules",
-            "message": "Emergency symptoms detected. Seek medical care.",
-            "confidence": None
-        }
-
-    respiratory_danger = (
-        (symptoms.get("shortness of breath", 0) == 1 or symptoms.get("difficulty breathing", 0) == 1)
-        and (
-            symptoms.get("sharp chest pain", 0) == 1
-            or symptoms.get("chest pain", 0) == 1
-            or symptoms.get("fainting", 0) == 1
-            or symptoms.get("sweating", 0) == 1
-        )
-    )
-
-    if respiratory_danger:
-        return {
-            "color": "red",
-            "source": "Safety rules",
-            "message": "Breathing difficulty with danger signs detected. Seek emergency care.",
-            "confidence": None
-        }
     active_symptoms = [
         k for k, v in symptoms.items()
         if v == 1 and k not in ["age", "sex-no", "ispregnant"]
@@ -231,31 +333,19 @@ def predict_triage(symptoms, model, feature_cols):
             "message": "You are fine. Drink water and take rest !",
             "confidence": None
         }
-    
-    red_result = check_red_flags(symptoms)
-    if red_result == "red":
-        return {
-            "color": "red",
-            "source": "Safety rules",
-            "message": "Emergency red-flag symptoms detected. Immediately visit a doctor . You might be showing silent symptoms of something serious",
-            "confidence": None
-        }
-
-    
- 
-        
-    
     input_df = make_input_dataframe(symptoms, feature_cols)
     prediction = model.predict(input_df)[0]
     confidence = round(max( model.predict_proba(input_df)[0]) * 100, 1)
     color = LABELS.get(prediction, str(prediction))
+    shap_drivers = explain_prediction(model, input_df, feature_cols)
 
     if confidence<95 and color== 'red':
         return{
             "color": "orange",
             "source": "Low confidence fallback",
             "message": f"Uncertain prediction ({confidence}%). Please consult a doctor.",
-            "confidence": confidence
+            "confidence": confidence,
+            "explanation": shap_drivers
         }
     
     if confidence < 40:
@@ -263,7 +353,8 @@ def predict_triage(symptoms, model, feature_cols):
             "color": "orange",
             "source": "Low confidence fallback",
             "message": f"Uncertain prediction ({confidence}%). Please consult a doctor.",
-            "confidence": confidence
+            "confidence": confidence,
+            "explanation": shap_drivers
         }
     
 
@@ -272,19 +363,22 @@ def predict_triage(symptoms, model, feature_cols):
             "color": "orange",
             "source": "Machine Learning Model",
             "message": f"Observe your condition. If worsen then visit a doctor within 24-48 hours.",
-            "confidence": confidence
+            "confidence": confidence,
+            "explanation": shap_drivers
         }
     if color=='red':
         return {
             "color": "red",
             "source": "Machine Learning Model",
             "message": f"Emergency symptoms detected . Please consult a doctor within few hours.",
-            "confidence": confidence
+            "confidence": confidence,
+            "explanation": shap_drivers
         }
     if color=='green':
         return {
             "color": "green",
             "source": "Machine Learning Model",
             "message": f"Do not worry!! you are doing fine. Overthinking will make it worse.",
-            "confidence": confidence
+            "confidence": confidence,
+            "explanation": shap_drivers
         }
