@@ -1,6 +1,6 @@
 LOCAL_EMERGENCY_KEYWORDS = {
     "snake bite": {
-        "keywords": ["সাপ", "snake bite", "সাপে কামড়", "সাপের কামড়"],
+        "keywords": ["সাপ", "snake bite", "snake bit", "snake bitten", "bit by snake", "snake bit me", "সাপে কামড়", "সাপের কামড়"],
         "special_key": "snake_bite",
         "condition": "Snake Bite",
         "color": "red",
@@ -54,7 +54,7 @@ LOCAL_EMERGENCY_KEYWORDS = {
         "color": "orange",
     },
     "insect sting": {
-        "keywords": ["মৌমাছি", "wasp", "bee sting", "insect bite", "পোকার কামড়"],
+        "keywords": ["মৌমাছি", "wasp", "wasp sting", "bee", "bee sting", "bee stung", "stung by a bee", "got stung by a bee", "insect bite", "insect sting", "stung by insect", "পোকার কামড়"],
         "special_key": "insect_sting",
         "condition": "Insect Sting",
         "color": "orange",

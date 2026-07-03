@@ -97,6 +97,7 @@ ROMANIZED_BANGLA_SYNONYMS = {
     "chulkani": "itching of skin", "rash": "skin rash", "fuskuri": "skin rash", "fula": "skin swelling",
     "masike beshi rokto": "heavy menstrual flow", "shada srab": "vaginal discharge", "yoni chulkani": "vaginal itching", "komor betha": "pelvic pain",
     "jondis": "jaundice", "chokh holud": "jaundice", "mukh gha": "mouth ulcer", "dat betha": "toothache",
+    "period pain": "painful menstruation", "menstruation pain": "painful menstruation", "menstrual pain": "painful menstruation",
 }
 
 ADDITIONAL_ENGLISH_SYNONYMS = {
@@ -154,7 +155,42 @@ def _is_negated(text, phrase):
     return re.search(negation_pattern, text.lower()) is not None
 
 
-def normalize_symptom_input(text, feature_cols, min_score=88):
+EXACT_ONLY_FEATURES = {
+    "sharp chest pain",
+    "chest pain",
+    "chest tightness",
+    "shortness of breath",
+    "difficulty breathing",
+    "sharp abdominal pain",
+    "lower abdominal pain",
+    "burning abdominal pain",
+    "blood in stool",
+    "blood in urine",
+    "vomiting blood",
+    "hemoptysis",
+    "rectal bleeding",
+    "painful urination",
+    "frequent urination",
+    "retention of urine",
+    "involuntary urination",
+    "pain in eye",
+    "diminished vision",
+    "blindness",
+    "seizures",
+    "fainting",
+    "slurring words",
+    "loss of sensation",
+    "irregular heartbeat",
+    "palpitations",
+    "painful menstruation",
+    "heavy menstrual flow",
+    "spotting or bleeding during pregnancy",
+    "vaginal discharge",
+    "vaginal pain",
+}
+
+
+def normalize_symptom_input(text, feature_cols, min_score=95):
     extracted = {}
 
     if not text:
@@ -183,7 +219,7 @@ def normalize_symptom_input(text, feature_cols, min_score=88):
     choices = {
         phrase: feature
         for phrase, feature in {**ENGLISH_SYNONYMS, **ROMANIZED_BANGLA_SYNONYMS, **ADDITIONAL_ENGLISH_SYNONYMS}.items()
-        if feature in feature_set
+        if feature in feature_set and feature not in EXACT_ONLY_FEATURES
     }
 
     for phrase in _candidate_phrases(text):

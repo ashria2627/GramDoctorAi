@@ -151,6 +151,8 @@ def generate_ai_response(symptoms, triage_result):
     active_symptoms = get_active_symptoms(symptoms)
     color = triage_result["color"]
     followup_text = "\n".join(f"{k}: {v}" for k,v in symptoms.items() if k.split("_")[0] in FOLLOWUP_GROUPS and v)
+    sex_label = {0: "Male", 1: "Female"}.get(symptoms.get("sex-no"), "Unknown")
+    pregnancy_label = {0: "No", 1: "Yes", 2: "N/A"}.get(symptoms.get("ispregnant"), "Unknown")
     prompt = f"""
 You are GramDoctor AI, a rural Bangladesh triage and referral assistant.
 
@@ -176,8 +178,8 @@ Rules:
 
 Patient data:
 Age: {symptoms.get("age", "unknown")}
-Sex code: {symptoms.get("sex-no", "unknown")}
-Pregnancy code: {symptoms.get("ispregnant", "unknown")}
+Sex: {sex_label}
+Pregnancy: {pregnancy_label}
 Active symptoms: {active_symptoms}
 Additional details : {followup_text}
 System triage signal: {color}

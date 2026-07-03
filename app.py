@@ -8,7 +8,7 @@ import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from modules.FIRSTAID import get_first_aid
-from modules.model_backend import load_model_and_features, predict_triage,load_anomaly_model,predict_deterioration,get_deterioration_recommendations
+from modules.model_backend import load_model_and_features, predict_triage
 from modules.BanglaSymptoms import extract_bangla_symptoms
 from modules.gemini_helper import generate_ai_response
 from modules.FIRSTAID import SYMPTOM_FIRST_AID,SPECIAL_FIRST_AID
@@ -675,7 +675,7 @@ def format_prediction_driver(item, triage_color=None):
     return f"{feature} {direction} confidence in{target}."
 
 
-def create_structured_referral_pdf(ai_response, triage_result, symptoms, vitals=None, referral=None, first_aid=None, hospitals=None):
+def create_structured_referral_pdf(ai_response, triage_result, symptoms, referral=None, first_aid=None, hospitals=None):
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
@@ -710,17 +710,13 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, vitals=
     y -= 30
 
     section("Patient Info")
+    sex_label = {0: "Male", 1: "Female"}.get(symptoms.get("sex-no"), "Unknown")
+    pregnancy_label = {0: "No", 1: "Yes", 2: "N/A"}.get(symptoms.get("ispregnant"), "Unknown")
     write_lines([
         f"Age: {symptoms.get('age', 'unknown')}",
-        f"Sex code: {symptoms.get('sex-no', 'unknown')}",
-        f"Pregnancy code: {symptoms.get('ispregnant', 'unknown')}",
+        f"Sex: {sex_label}",
+        f"Pregnancy: {pregnancy_label}",
     ])
-
-    section("Vitals")
-    if vitals:
-        write_lines([f"{k.replace('_', ' ').title()}: {v}" for k, v in vitals.items()])
-    else:
-        write_lines("No vitals recorded.")
 
     active_symptoms = [
         symptom
@@ -1151,96 +1147,6 @@ def create_tts_audio(text):
     tts.write_to_fp(buffer)
     buffer.seek(0)
     return buffer
-
-NORMAL_RANGES = {
-    "heart_rate": (60, 100, "bpm"),
-    "respiratory_rate": (12, 20, "breaths/min"),
-    "spo2_pct": (95, 100, "%"),
-    "temperature_c": (36.1, 37.2, "Â°C"),
-    "systolic_bp": (90, 120, "mmHg"),
-    "diastolic_bp": (60, 80, "mmHg"),
-    "hemoglobin": (12, 16, "g/dL"),
-    "wbc_count": (4, 11, "x10^9/L"),
-    "crp_level": (0, 10, "mg/L"),
-    "creatinine": (0.6, 1.3, "mg/dL"),
-}
-
-NORMAL_RANGES_BN = {
-    "heart_rate": "হৃদস্পন্দন",
-    "respiratory_rate": "শ্বাসের গতি",
-    "spo2_pct": "অক্সিজেন স্যাচুরেশন",
-    "temperature_c": "তাপমাত্রা",
-    "systolic_bp": "সিস্টোলিক রক্তচাপ",
-    "diastolic_bp": "ডায়াস্টোলিক রক্তচাপ",
-    "hemoglobin": "হিমোগ্লোবিন",
-    "wbc_count": "WBC কাউন্ট",
-    "crp_level": "CRP লেভেল",
-    "creatinine": "ক্রিয়েটিনিন",
-}
-
-
-def check_abnormal_vitals(vitals, language="English"):
-    abnormal = []
-
-    for key, (low, high, unit) in NORMAL_RANGES.items():
-        val = vitals.get(key)
-        if val is None:
-            continue
-
-        if val < low or val > high:
-            name = NORMAL_RANGES_BN[key] if language == "বাংলা" else key.replace("_", " ").title()
-
-            if language == "বাংলা":
-                abnormal.append(f"{name}: {val} {unit} (স্বাভাবিক সীমা: {low}-{high} {unit})")
-            else:
-                abnormal.append(f"{name}: {val} {unit} (normal range: {low}-{high} {unit})")
-
-    return abnormal
-
-
-def vitals_red_flag_override(vitals, language="English"):
-    critical_rules = [
-        vitals.get("spo2_pct", 98) < 90,
-        vitals.get("systolic_bp", 120) < 80,
-        vitals.get("heart_rate", 80) > 140,
-        vitals.get("respiratory_rate", 16) > 30,
-        vitals.get("temperature_c", 37) >= 40,
-    ]
-
-    if any(critical_rules):
-        return {
-            "color": "red",
-            "source": "Vitals red-flag override" if language == "English" else "ভাইটাল রেড-ফ্ল্যাগ ওভাররাইড",
-            "message": "Critical vital signs detected. Refer for emergency care now." if language == "English" else "গুরুতর ভাইটাল সাইন পাওয়া গেছে। এখনই জরুরি চিকিৎসায় রেফার করুন।",
-            "confidence": None,
-        }
-
-    return None
-
-
-def apply_vitals_to_triage(triage_result, vitals, language="English"):
-    override = vitals_red_flag_override(vitals, language)
-    if override:
-        return override
-
-    abnormal_list = check_abnormal_vitals(vitals, language)
-    order = ["green", "orange", "red"]
-    base_color = normalize_color(triage_result.get("color", "gray"))
-
-    if len(abnormal_list) >= 2 and base_color in order:
-        idx = order.index(base_color)
-        new_color = order[min(idx + 1, len(order) - 1)]
-        updated = dict(triage_result)
-        updated["color"] = new_color
-        updated["source"] = "Vitals-based escalation" if language == "English" else "ভাইটাল-ভিত্তিক উন্নতি"
-        updated["message"] = (
-            "Multiple abnormal vitals detected — possible deterioration risk."
-            if language == "English"
-            else "একাধিক অস্বাভাবিক ভাইটাল পাওয়া গেছে — স্বাস্থ্যের অবনতির ঝুঁকি থাকতে পারে।"
-        )
-        return updated
-
-    return triage_result
 
 
 def worker_referral_decision(triage_result, symptom_count, consciousness, language="English"):
@@ -1730,86 +1636,7 @@ with tab3:
             st.success(decision_text)
         st.success("Worker intake triage complete. Open Result tab." if language == "English" else "ওয়ার্কার ইনটেক ট্রায়াজ সম্পন্ন। Result ট্যাব দেখুন।")
 
-    st.divider()
 
-    st.header("Vital Signs Monitor" if language == "English" else "ভাইটাল সাইন মনিটর")
-
-    
-    v_age = st.number_input("Age" if language=="English" else "à¦¬à¦¯à¦¼à¦¸", 0, 120, 30, key="v_age")
-    v_gender = st.selectbox(
-            "Gender" if language=="English" else "à¦²à¦¿à¦™à§à¦—",
-            [t["male"], t["female"]], key="v_gender"
-        )
-    hour_from_admission = st.number_input("Hours Since Admission" if language=="English" else "ভর্তির পর কত ঘণ্টা", 0, 72, 1)
-    heart_rate = st.number_input("Heart Rate (bpm)" if language=="English" else "হৃদস্পন্দন (bpm)", 30, 220, 80)
-    respiratory_rate = st.number_input("Respiratory Rate (breaths/min)" if language=="English" else "শ্বাসের গতি", 5, 60, 16)
-    spo2_pct = st.number_input("SpO2 (%)" if language=="English" else "অক্সিজেন স্যাচুরেশন (%)", 50, 100, 98)
-    temperature_c = st.number_input("Temperature (Â°C)" if language=="English" else "তাপমাত্রা (°C)", 30.0, 43.0, 37.0, step=0.1)
-
-    
-    systolic_bp = st.number_input("Systolic BP" if language=="English" else "সিস্টোলিক রক্তচাপ", 50, 250, 120)
-    diastolic_bp = st.number_input("Diastolic BP" if language=="English" else "ডায়াস্টোলিক রক্তচাপ", 30, 150, 80)
-    oxygen_flow = st.number_input("Oxygen Flow (L/min)" if language=="English" else "অক্সিজেন প্রবাহ (L/min)", 0.0, 15.0, 0.0, step=0.5)
-  
-    comorbidity_index = st.number_input("Comorbidity Index (0-5)" if language=="English" else "সহ-রোগ সংখ্যা (0-5)", 0, 5, 0)
-    hemoglobin = st.number_input("Hemoglobin (g/dL)" if language=="English" else "হিমোগ্লোবিন (g/dL)", 3.0, 20.0, 13.0, step=0.1)
-    wbc_count = st.number_input("WBC Count (x10^9/L)" if language=="English" else "WBC কাউন্ট", 1.0, 40.0, 7.0, step=0.1)
-    crp_level = st.number_input("CRP Level (mg/L)" if language=="English" else "CRP লেভেল", 0.0, 300.0, 5.0, step=0.5)
-    creatinine = st.number_input("Creatinine (mg/dL)" if language=="English" else "ক্রিয়েটিনিন (mg/dL)", 0.1, 15.0, 1.0, step=0.1)
-    
-
-    if st.button("Check Deterioration Risk" if language=="English" else "ঝুঁকি যাচাই করুন", type="primary", key="check_anomaly"):
-      with st.spinner("Checking vitals..." if language=="English" else "ভাইটাল যাচাই হচ্ছে..."):
-        vitals = {
-            "heart_rate": heart_rate,
-            "respiratory_rate": respiratory_rate,
-            "spo2_pct": spo2_pct,
-            "temperature_c": temperature_c,
-            "systolic_bp": systolic_bp,
-            "diastolic_bp": diastolic_bp,
-            "age": v_age,
-            "sex": 1 if v_gender == t["female"] else 0,
-            "comorbidity_index": comorbidity_index,
-            "hemoglobin": hemoglobin,
-            "wbc_count": wbc_count,
-            "crp_level": crp_level,
-            "oxygen_flow": oxygen_flow,
-            "creatinine": creatinine,
-            "hour_from_admission": hour_from_admission,
-    }
-
-        anomaly_model, anomaly_cols, threshold = load_anomaly_model()
-        anomaly, probability = predict_deterioration(vitals, anomaly_model, anomaly_cols, threshold)
-        st.session_state.vitals = vitals
-        st.session_state.anomaly = anomaly
-        st.session_state.anomaly_proba = probability
-
-        if st.session_state.triage_result is not None:
-            st.session_state.triage_result = apply_vitals_to_triage(
-                st.session_state.triage_result,
-                vitals,
-                language
-            )
-
-        st.success("Check completed. See result below." if language=="English" else "যাচাই সম্পন্ন হয়েছে। নিচে ফলাফল দেখুন।")
-
-    if "vitals" in st.session_state:
-        vitals = st.session_state.vitals
-        abnormal_list = check_abnormal_vitals(vitals, language)
-
-        if abnormal_list:
-            st.warning("Abnormal Vitals Detected" if language=="English" else "অস্বাভাবিক ভাইটাল পাওয়া গেছে")
-            for item in abnormal_list:
-                st.write(f"- {item}")
-        else:
-            st.success("âœ… All vitals within normal range" if language=="English" else "সব ভাইটাল স্বাভাবিক সীমার মধ্যে")
-
-        st.subheader("Recommendations" if language=="English" else "সুপারিশ")
-        recs = get_deterioration_recommendations(vitals, language)
-        for r in recs:
-            st.write(f"- {r}")
-
-        
 
 with tab4:
     st.header(t["triage_result"])
@@ -1983,7 +1810,6 @@ with tab4:
                     st.session_state.ai_response,
                     st.session_state.triage_result,
                     st.session_state.symptoms,
-                    vitals=st.session_state.get("vitals"),
                     referral=referral,
                     first_aid=first_aid,
                     hospitals=st.session_state.get("recommended_hospitals")
