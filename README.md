@@ -1,3 +1,15 @@
+---
+title: GramDoctor AI
+emoji: 🩺
+colorFrom: green
+colorTo: blue
+sdk: streamlit
+sdk_version: "1.38.0"
+python_version: "3.12"
+app_file: app.py
+pinned: false
+---
+
 # GramDoctor AI
 
 GramDoctor AI is a Bangla AI-powered triage and referral assistant for rural Bangladesh. It accepts Bangla symptom input, detects red-flag symptoms, predicts triage urgency using a trained machine learning model, and generates patient-friendly advice with a referral note.
@@ -35,3 +47,4 @@ Install dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
