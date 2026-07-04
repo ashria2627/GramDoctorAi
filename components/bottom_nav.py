@@ -1,8 +1,3 @@
-"""
-components/bottom_nav.py
-Navigation row linking to the real pages. Unlike the earlier cosmetic
-version, these links are functional now that pages/ actually exist.
-"""
 
 import streamlit as st
 

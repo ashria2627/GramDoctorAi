@@ -519,6 +519,9 @@ SYMPTOMS = {
     # Eye pain
     "চোখে ব্যথা": "pain in eye",
     "চোখ ব্যথা": "pain in eye",
+    "চোখ চলছে": "pain in eye",
+    "চোখ জ্বালা": "pain in eye",
+    "চোখ জ্বালা": "pain in eye",
 
     # Eye itching
     "চোখ চুলকায়": "itchiness of eye",

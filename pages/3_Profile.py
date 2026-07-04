@@ -1,7 +1,3 @@
-"""
-pages/3_Profile.py
-Basic account info page. Reads from database.py only — no ML/triage logic here.
-"""
 
 import streamlit as st
 

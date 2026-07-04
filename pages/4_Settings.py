@@ -1,9 +1,3 @@
-"""
-pages/4_Settings.py
-Lets the user set preferred language / theme / font size.
-These are stored in the users table (database.py) and are cosmetic
-preferences only — they do not touch triage/ML logic.
-"""
 
 import streamlit as st
 

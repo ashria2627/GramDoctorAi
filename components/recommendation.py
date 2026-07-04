@@ -1,9 +1,4 @@
-"""
-components/recommendation.py
-Specialist-referral clustering and recommendation-card rendering.
-Logic moved verbatim from app.py — only the specialist_lookup.json
-path was fixed since this file now lives one folder deeper (components/).
-"""
+
 
 import os
 import json

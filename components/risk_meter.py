@@ -1,8 +1,4 @@
-"""
-components/risk_meter.py
-Renders the model-confidence progress bar under the triage result.
-Same behaviour as before, just extracted into its own component.
-"""
+
 
 import streamlit as st
 

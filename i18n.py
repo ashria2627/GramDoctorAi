@@ -1,8 +1,3 @@
-"""
-i18n.py
-Bilingual (English / বাংলা) text strings and symptom-name translations.
-Pure data — moved out of app.py, unchanged.
-"""
 
 TEXTS = {
     "English": {

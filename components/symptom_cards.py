@@ -1,9 +1,3 @@
-"""
-components/symptom_cards.py
-Symptom selection UI — a searchable dropdown (st.multiselect), not
-checkboxes and not quick-select shortcut cards. Backend feature_cols
-list is passed in untouched.
-"""
 
 import streamlit as st
 from i18n import BANGLA_FEATURES

@@ -1,8 +1,4 @@
-"""
-components/header.py
-App-wide CSS loader, green header banner, and the medical disclaimer banner.
-UI only — no backend logic here.
-"""
+
 
 import os
 import streamlit as st

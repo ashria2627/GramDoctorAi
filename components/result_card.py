@@ -1,8 +1,4 @@
-"""
-components/result_card.py
-Renders the colored triage/diagnosis card and small display helpers.
-Functions moved verbatim from the original app.py — no logic changed.
-"""
+
 
 import streamlit as st
 from i18n import BANGLA_FEATURES

@@ -1,10 +1,3 @@
-"""
-auth.py
-Registration / login helpers for GramDoctor AI.
-Uses Python's built-in hashlib (PBKDF2-HMAC-SHA256) so no extra
-dependency needs to be added to requirements.txt.
-New file — does not touch any ML/triage backend logic.
-"""
 
 import hashlib
 import os

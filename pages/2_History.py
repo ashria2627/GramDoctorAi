@@ -1,8 +1,4 @@
-"""
-pages/2_History.py
-Displays past triage sessions for the logged-in user.
-Reads only from database.py (new file) — never touches the ML/triage backend.
-"""
+
 
 import json
 import streamlit as st
