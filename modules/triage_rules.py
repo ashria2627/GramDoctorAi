@@ -106,7 +106,7 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
     confused = yes(get("dengue", 12))
  
     severe_joint_pain = yes(get("dengue", 13))
-    fever_7_days = yes(get("dengue", 14)) or fever_days >= 7
+    fever_7_days =fever_days >= 7
     weight_loss = yes(get("dengue", 15))
     spleen_fullness = yes(get("dengue", 16))
     jaundice = yes(get("dengue", 17))

@@ -129,7 +129,6 @@ FOLLOWUP_GROUPS = {
 
 "questions_en": [
     "How many days have you had the fever?",
-    "Which day of fever is this?",
     "What is the highest temperature you have measured?",
     "Have you been having chills or shivering?",
     "Have you had recent travel or mosquito bites?",
@@ -142,7 +141,6 @@ FOLLOWUP_GROUPS = {
     "Have you noticed any rash on your body?",
     "Are you feeling unusually sleepy or confused?",
     "Do you have severe joint pain?",
-    "Have you had fever for 7 days or more?",
     "Do you have weight loss?",
     "Do you have swelling or fullness in the left upper abdomen?",
     "Do you have yellow eyes or jaundice?",
@@ -157,7 +155,6 @@ FOLLOWUP_GROUPS = {
  
 "questions_bn": [
     "কত দিন ধরে আপনার জ্বর আছে?",
-    "আজ জ্বরের কততম দিন?",
     "আপনার সর্বোচ্চ কত তাপমাত্রা মাপা হয়েছে?",
     "আপনার কি কাঁপুনি বা শীত শীত লাগছে?",
     "সম্প্রতি কি কোথাও ভ্রমণ করেছেন বা মশার কামড় বেশি খেয়েছেন?",
@@ -170,7 +167,6 @@ FOLLOWUP_GROUPS = {
     "শরীরে কি কোনো ফুসকুড়ি বা র‍্যাশ হয়েছে?",
     "আপনি কি অস্বাভাবিকভাবে ঝিমাচ্ছেন বা বিভ্রান্ত বোধ করছেন?",
     "আপনার কি তীব্র জয়েন্ট/গিরায় ব্যথা আছে?",
-    "আপনার কি ৭ দিন বা তার বেশি সময় ধরে জ্বর আছে?",
     "আপনার কি ওজন কমে যাচ্ছে?",
     "বাম ওপরের পেটে কি ফুলে থাকা বা ভারী লাগছে?",
     "আপনার চোখ বা শরীর কি হলুদ হয়ে গেছে?",

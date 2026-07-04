@@ -369,7 +369,7 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.success("GREEN — বাসায় পর্যবেক্ষণ")
             st.markdown("""
-            **অর্থ:** বর্তমান তথ্য অনুযায়ী লক্ষণগুলো কম ঝুঁকিপূর্ণ মনে হচ্ছে। আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন।
+             আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন।
              
             **করণীয়:** বিশ্রাম, পর্যাপ্ত পানি এবং লক্ষণ পর্যবেক্ষণ।  
             
@@ -378,7 +378,7 @@ def show_triage_card(color, language):
         else:
             st.success("GREEN — Home care / observe")
             st.markdown("""
-            **Meaning:** Current symptoms appear low risk based on triage input. If you have not yet answered ***follow-up*** questions ,please do so you get perfect recommendation for your current condition.  
+             If you have not yet answered ***follow-up*** questions ,please do so you get perfect recommendation for your current condition.  
              
             **Recommended action:** Rest, drink fluids, and monitor symptoms.  
             
@@ -389,7 +389,7 @@ def show_triage_card(color, language):
         if language == "বাংলা":
             st.warning("ORANGE - পর্যবেক্ষণে রাখুন। উপসর্গ বেড়ে গেলে বা অবস্থার অবনতি হলে ১–২ দিনের মধ্যে চিকিৎসকের পরামর্শ নিন।  ")
             st.markdown("""
-            **অর্থ:** লক্ষণগুলো চিকিৎসকের মূল্যায়ন প্রয়োজন হতে পারে। আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন। 
+             আপনি যদি এখনও ***ফলো-আপ*** প্রশ্নগুলোর উত্তর না দিয়ে থাকেন, তবে অনুগ্রহ করে তা দিয়ে দিন, যাতে আপনি আপনার বর্তমান অবস্থার জন্য নিখুঁত সুপারিশ পেতে পারেন। 
             
             **করণীয়:** **২৪-৪৮ ঘণ্টার** মধ্যে ডাক্তার, ক্লিনিক বা উপজেলা স্বাস্থ্য কমপ্লেক্সে যান। 
              
@@ -398,7 +398,7 @@ def show_triage_card(color, language):
         else:
             st.warning("ORANGE — Observe and if worsen Visit doctor within 1-2 days")
             st.markdown("""
-            **Meaning:** Symptoms need medical review but may not be an immediate emergency. If you have not yet answered  ***follow-up questions*** ,please do so you get perfect recommendation for your current condition.
+             If you have not yet answered  ***follow-up questions*** ,please do so you get perfect recommendation for your current condition.
             
             **Recommended action:** Visit a local doctor, clinic, or Upazila Health Complex within **24-48 hours.**
             
@@ -418,7 +418,7 @@ def show_triage_card(color, language):
         else:
             st.error("RED — Emergency care now")
             st.markdown("""
-            **Meaning:** Emergency red-flag silent symptoms may be present. 
+           
              
             **Recommended action:** Go to the nearest ***emergency department immediately.***
              
@@ -729,7 +729,6 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, referra
     write_lines([
         f"Triage Level: {triage_result.get('color', 'unknown').upper()}",
         f"Decision Source: {triage_result.get('source', 'unknown')}",
-        f"Reason: {triage_result.get('message', '')}",
     ])
 
     section("Confidence Score")
@@ -1199,16 +1198,7 @@ with tab1:
     for symptom in sorted_symptoms
      }
 
-    uploaded_file = st.file_uploader(
-        t["upload_note"],
-        type=["txt"]
-    )
 
-    uploaded_text = ""
-
-    if uploaded_file is not None:
-        uploaded_text = uploaded_file.read().decode("utf-8")
-        st.text_area(t["uploaded_preview"], uploaded_text, height=150)
 
     if st.button(t["check_triage"], type="primary", key="check_triage_button"):
       with st.spinner("Analyzing symptoms..." if language=="English" else "লক্ষণ বিশ্লেষণ হচ্ছে..."):
@@ -1226,7 +1216,7 @@ with tab1:
         for symptom_name, value in selected_symptoms.items():
             symptoms[symptom_name] = value
 
-        combined_text = f"{bangla_text}\n{uploaded_text}\n{st.session_state.voice_text}".strip()
+        combined_text = f"{bangla_text}\n{st.session_state.voice_text}".strip()
         st.session_state.extra_symptoms = detect_extra_display_symptoms(combined_text)
 
         bangla_extracted = extract_bangla_symptoms(combined_text, feature_cols)
@@ -1410,7 +1400,6 @@ with tab3:
                        st.markdown(f"**{i}.** {step}")
          
         st.write(t["decision_source"], result["source"])
-        st.write(t["reason"], result["message"])
         confidence = result.get("confidence")
         if confidence is not None:
             st.progress(min(max(float(confidence) / 100, 0), 1), text=f"Model Confidence: {confidence}%")
