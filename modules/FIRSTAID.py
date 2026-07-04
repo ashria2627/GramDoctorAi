@@ -23,7 +23,7 @@ SYMPTOM_FIRST_AID = {
             "রোগীকে একা রাখবেন না",
         ]
     },
-    frozenset(["fever", "vomiting", "sharp abdominal pain"]): {
+    frozenset(["fever", "vomiting", "sharp abdominal pain","skin rash","weakness","decreased appetite"]): {
         "condition": "Possible Dengue Warning",
         "steps_en": [
             "Give oral saline (ORS) every 30 minutes",

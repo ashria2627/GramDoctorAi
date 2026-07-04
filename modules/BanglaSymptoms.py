@@ -46,6 +46,8 @@ SYMPTOMS = {
     "শ্রোণী ব্যথা": "pelvic pain",
     "পেলভিকে ব্যথা": "pelvic pain",
     "কোমরের নিচে ব্যথা": "pelvic pain",
+    "কোমরে ব্যথা": "pelvic pain",
+    "কোমর ব্যথা": "pelvic pain",
 
     # Movement problems
     "নড়াচড়ায় সমস্যা": "problems with movement",
@@ -57,6 +59,7 @@ SYMPTOMS = {
     "দৃষ্টিশক্তি কমে গেছে": "diminished vision",
     "কম দেখতে পাচ্ছি": "diminished vision",
     "ঝাপসা দেখছি": "diminished vision",
+    "চোখে ঝাপসা": "diminished vision",
 
     # Painful urination
     "প্রস্রাবে ব্যথা": "painful urination",
@@ -568,6 +571,7 @@ SYMPTOMS = {
     "গায়ে ফুসকুড়ি": "skin rash",
     " লাল লাল দাগ": "skin rash",
     " লাল লাল বিচি": "skin rash",
+    "র‍্যাশ": "skin rash",
 
     # Itching
     "চুলকানি": "itching of skin",
@@ -581,6 +585,7 @@ SYMPTOMS = {
 
     # Appetite loss
     "ক্ষুধা নেই": "decreased appetite",
+    "ক্ষুধা কম": "decreased appetite",
     "খেতে ইচ্ছা করছে না": "decreased appetite",
     "রুচি নেই": "decreased appetite",
 

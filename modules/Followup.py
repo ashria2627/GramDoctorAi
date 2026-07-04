@@ -430,13 +430,16 @@ FOLLOWUP_GROUPS = {
     # Burns
 
 "triggers_en": [
-    "burn",
+    "burnt",
     "scald"
 ],
 
 "triggers_bn": [
     "পোড়া",
-    "গরম পানিতে পোড়া"
+    "গরম পানিতে পোড়া",
+    "আগুন",
+    "পুড়ে গেছে",
+    "ফোস্কা",
 ],
 
 "questions_en": [

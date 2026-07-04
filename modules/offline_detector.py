@@ -12,7 +12,7 @@ LOCAL_EMERGENCY_KEYWORDS = {
         "color": "red",
     },
     "burn": {
-        "keywords": ["পোড়া", "পুড়ে", "burn", "scald", "দগ্ধ"],
+        "keywords": ["পোড়া", "পুড়ে", "burn", "scald", "দগ্ধ","ফোস্কা","fire",'burnt',"আগুন"],
         "special_key": "burn",
         "condition": "Burn Injury",
         "color": "orange",

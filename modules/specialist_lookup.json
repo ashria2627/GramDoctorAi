@@ -65,6 +65,6 @@
   },
   "Surgery": {
     "specialist": "General Surgeon",
-    "symptoms": ["pain in testicles", "rectal bleeding", "vomiting blood"]
+    "symptoms": ["pain in testicles", "rectal bleeding", "vomiting blood","fever","vomiting","cough","nasal congestion","decreased appetite"]
   }
 }
