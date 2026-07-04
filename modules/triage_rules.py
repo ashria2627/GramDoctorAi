@@ -1,3 +1,6 @@
+import re
+
+
 def check_red_flags(symptoms):
     from collections import defaultdict
     symptoms = defaultdict(int, symptoms)
@@ -92,11 +95,16 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
     def no(val):
         return any(w in val for w in ["no", "না", "নেই", "n"])
 
+    def first_number(val):
+        match = re.search(r"\d+(?:\.\d+)?", str(val))
+        return float(match.group(0)) if match else 0
+
 #  DENGUE
     try:
         fever_days = int(get("dengue", 0).split()[0])
     except:
         fever_days = 0
+    highest_temperature = first_number(get("dengue", 1))
  
     abdominal_pain = yes(get("dengue", 5))
     bleeding = yes(get("dengue", 6))
@@ -111,7 +119,6 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
     spleen_fullness = yes(get("dengue", 16))
     jaundice = yes(get("dengue", 17))
     flood_water = yes(get("dengue", 18))
-    muscle_pain = yes(get("dengue", 19))
     eschar = yes(get("dengue", 20))
     post_sore_throat_joint = yes(get("dengue", 21))
     mouth_sores = yes(get("dengue", 22))
@@ -125,6 +132,13 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
             "color": "red",
             "source": "Possible - ***Neonatal Sepsis***" if lang == "English" else "সম্ভাব্য - ***নবজাতকের সেপসিস***",
             "message": "Newborn fever with poor feeding is dangerous. Go to hospital immediately." if lang == "English" else "নবজাতকের জ্বর ও দুধ না খাওয়া বিপজ্জনক। অবিলম্বে হাসপাতালে যান।"
+        }
+
+    if symptoms.get("fever", 0) == 1 and highest_temperature > 103 and fever_days >= 2:
+        return {
+            "color": "red",
+            "source": "***Severe High Fever***" if lang == "English" else "***তীব্র উচ্চ জ্বর***",
+            "message": "Fever above 103°F for multiple days can be dangerous. Go to hospital or emergency care now." if lang == "English" else "১০৩°F এর বেশি জ্বর একাধিক দিন থাকলে বিপজ্জনক হতে পারে। এখনই হাসপাতাল বা জরুরি চিকিৎসা নিন।"
         }
  
     if fever_days >= 3 and any([abdominal_pain, bleeding, poor_urine, confused]):
@@ -162,11 +176,11 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
             "message": "Prolonged fever with weight loss and left upper abdominal fullness may suggest kala-azar. Medical testing is needed." if lang == "English" else "দীর্ঘদিনের জ্বর, ওজন কমা ও বাম ওপরের পেট ভারী লাগলে কালা-আজার হতে পারে। পরীক্ষা দরকার।"
         }
  
-    if symptoms.get("fever", 0) == 1 and jaundice and muscle_pain and flood_water:
+    if symptoms.get("fever", 0) == 1 and jaundice  and flood_water:
         return {
             "color": "red",
             "source": "***Leptospirosis Suspicion***" if lang == "English" else "***লেপ্টোস্পাইরোসিস সন্দেহ***",
-            "message": "Fever with jaundice and severe muscle pain after flood/dirty water exposure can be serious. Go to hospital today." if lang == "English" else "বন্যা/নোংরা পানির সংস্পর্শের পর জ্বর, জন্ডিস ও তীব্র পেশি ব্যথা গুরুতর হতে পারে। আজই হাসপাতালে যান।"
+            "message": "Fever with jaundice after flood/dirty water exposure can be serious. Go to hospital today." if lang == "English" else "বন্যা/নোংরা পানির সংস্পর্শের পর জ্বর, জন্ডিস ও তীব্র পেশি ব্যথা গুরুতর হতে পারে। আজই হাসপাতালে যান।"
         }
  
     if symptoms.get("fever", 0) == 1 and rash and eschar:

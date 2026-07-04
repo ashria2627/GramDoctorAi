@@ -145,7 +145,6 @@ FOLLOWUP_GROUPS = {
     "Do you have swelling or fullness in the left upper abdomen?",
     "Do you have yellow eyes or jaundice?",
     "Were you exposed to flood water, dirty water, or waterlogged areas recently?",
-    "Do you have severe calf or muscle pain?",
     "Do you have a black scab or eschar after an insect/tick bite?",
     "Did joint pain or fever happen after a recent sore throat?",
     "Do you have mouth sores?",

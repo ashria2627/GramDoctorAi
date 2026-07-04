@@ -1,0 +1,99 @@
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --gd-success-bg: #D4DB74;
+    --gd-success-text: #A6AD37;
+    --gd-info-bg: #aed9c5;
+    --gd-info-text: #6276CC;
+    --gd-warning-bg: #FAFAC3;
+    --gd-warning-text: #6C8F36;
+    --gd-emergency-bg: #bf3054;
+    --gd-emergency-text: #C95165;
+    --gd-neutral-bg: #188AA3;
+    --gd-neutral-text: #DBA79E;
+    --gd-card-border: #F4FCEB;
+}
+
+html, body, p, span, div, label, h1, h2, h3, h4, h5, h6,
+.stApp, .stMarkdown, .stTextInput, .stSelectbox, .stButton, .stTextArea {
+    font-family: 'Montserrat','Anek Bangla', sans-serif;
+}
+.bangla, [lang="bn"] { font-family: 'Anek Bangla', sans-serif !important; }
+
+/* Responsive centering: comfortable width on desktop, no wasted side padding on mobile */
+.block-container {
+    padding-top: 3rem !important;
+    padding-bottom: 2.2rem !important;
+    max-width: 640px !important;
+    margin: 0 auto !important;
+}
+
+/* Header */
+.gd-header{
+    display:flex; align-items:center; gap:16px;
+    background: var(--gd-neutral-bg);
+    border-radius: 18px; padding: 26px 24px; margin: 6px 0 20px;
+    box-shadow: 0 6px 18px rgba(16,86,102,0.35);
+}
+.gd-header-logo{
+    width:52px; height:52px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    flex-shrink:0;
+}
+.gd-header-title{ color:#fff; font-size:1.4rem; font-weight:800; line-height:1.15; }
+.gd-header-subtitle{ color: var(--gd-neutral-text); font-size:0.85rem; margin-top:4px; }
+
+/* Warning banner */
+.gd-warning-banner{
+    background: var(--gd-warning-bg); border-left: 6px solid var(--gd-warning-text);
+    color: var(--gd-warning-text); padding:16px 18px; border-radius:12px; font-size:0.9rem;
+    margin-bottom:18px; box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+/* Section headings */
+.gd-card-heading{ font-size:1.08rem; font-weight:700; margin:20px 0 8px; }
+.gd-section-title{ font-size:1.25rem; font-weight:800; color: var(--gd-neutral-bg); margin:8px 0 14px; }
+.gd-mic-label{ font-size:1.08rem; font-weight:700; margin-top:18px; }
+.gd-divider{ border:none; border-top:2px solid var(--gd-card-border); margin:24px 0; }
+
+/* Mic / voice recorder section */
+.gd-mic-wrap{
+    background: var(--gd-neutral-bg); border-radius:16px; padding:18px; text-align:center;
+}
+.gd-mic-wrap button{
+    border-radius:50% !important; width:84px !important; height:84px !important;
+    background: #fff !important; color: var(--gd-neutral-bg) !important; font-size:1.6rem !important;
+    box-shadow: 0 0 0 8px rgba(255,255,255,0.15); margin: 8px auto !important; display:flex !important;
+}
+
+/* Primary action buttons */
+.stButton > button[kind="primary"]{
+    background-color: var(--gd-neutral-bg) !important; border-color: var(--gd-neutral-bg) !important;
+    border-radius: 12px !important; font-weight:700 !important; padding: 12px !important;
+}
+.stButton > button[kind="primary"]:hover{ filter: brightness(1.1); }
+
+/* Recommendation / referral cards */
+.gd-recommend-card{
+    background: var(--gd-info-bg); color: var(--gd-info-text); border-left:5px solid var(--gd-info-text);
+    border-radius:12px; padding:14px 16px; margin:10px 0; font-size:0.92rem;
+}
+
+/* Progress bar (confidence) */
+.stProgress > div > div{ background-color: var(--gd-neutral-bg) !important; }
+
+/* Streamlit alerts mapped to the requested palette */
+div[data-testid="stAlertContentSuccess"] { color: var(--gd-success-text) !important; }
+div[data-testid="stAlertContentInfo"] { color: var(--gd-info-text) !important; }
+div[data-testid="stAlertContentWarning"] { color: var(--gd-warning-text) !important; }
+div[data-testid="stAlertContentError"] { color: var(--gd-emergency-text) !important; }
+.stAlert{ border-radius:12px !important; }
+
+/* Nav row */
+div[data-testid="stPageLink"] { border-radius: 10px; }
+
+</style>

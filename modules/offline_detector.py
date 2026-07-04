@@ -1,3 +1,6 @@
+from modules.text_negation import is_symptom_negated
+
+
 LOCAL_EMERGENCY_KEYWORDS = {
     "snake bite": {
         "keywords": ["সাপ", "snake bite", "snake bit", "snake bitten", "bit by snake", "snake bit me", "সাপে কামড়", "সাপের কামড়"],
@@ -350,8 +353,21 @@ def detect_local_emergencies(text, SPECIAL_FIRST_AID):
     seen_keys = set()
 
     for category, data in LOCAL_EMERGENCY_KEYWORDS.items():
-        for kw in data["keywords"]:
-            if kw.lower() in lowered:
+        keywords = sorted(data["keywords"], key=len, reverse=True)
+        for kw in keywords:
+            keyword = kw.lower()
+            longer_negated_match = any(
+                keyword != other_kw.lower()
+                and keyword in other_kw.lower()
+                and other_kw.lower() in lowered
+                and is_symptom_negated(lowered, other_kw.lower())
+                for other_kw in keywords
+            )
+            if (
+                keyword in lowered
+                and not longer_negated_match
+                and not is_symptom_negated(lowered, keyword)
+            ):
                 key = data["special_key"]
                 if key in seen_keys:
                     continue

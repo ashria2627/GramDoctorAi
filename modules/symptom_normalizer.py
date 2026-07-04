@@ -1,7 +1,7 @@
 import re
 
 from modules.BanglaSymptoms import SYMPTOMS as BANGLA_SYMPTOMS
-
+from modules.text_negation import is_symptom_negated, CLAUSE_SPLIT_PATTERN
 try:
     from rapidfuzz import fuzz, process
 except Exception:
@@ -20,6 +20,7 @@ ENGLISH_SYNONYMS = {
     "head hurts": "headache",
     "cephalgia": "headache",
     "vomiting": "vomiting",
+    "vomitting": "vomiting",
     "vomit": "vomiting",
     "throwing up": "vomiting",
     "nausea": "nausea",
@@ -130,12 +131,15 @@ ADDITIONAL_ENGLISH_SYNONYMS = {
 
 def _candidate_phrases(text):
     lowered = text.lower()
-    phrases = set(re.findall(r"[a-z][a-z\s-]{2,}", lowered))
-    words = re.findall(r"[a-z]+", lowered)
+    phrases = set()
 
-    for size in (2, 3, 4):
-        for idx in range(0, max(len(words) - size + 1, 0)):
-            phrases.add(" ".join(words[idx:idx + size]))
+    for clause in re.split(CLAUSE_SPLIT_PATTERN, lowered):
+        phrases.update(re.findall(r"[a-z][a-z\s-]{2,}", clause))
+        words = re.findall(r"[a-z]+", clause)
+
+        for size in (2, 3, 4):
+            for idx in range(0, max(len(words) - size + 1, 0)):
+                phrases.add(" ".join(words[idx:idx + size]))
 
     return phrases
 
@@ -151,12 +155,7 @@ def _contains_phrase(text, phrase):
 
 
 def _is_negated(text, phrase):
-    escaped = re.escape(str(phrase).lower().strip()).replace(r"\ ", r"\s+")
-    if not escaped:
-        return False
-
-    negation_pattern = rf"(?<![a-z0-9])(?:no|not|without|deny|denies|denied|never)\s+(?:\w+\s+){{0,1}}{escaped}(?![a-z0-9])"
-    return re.search(negation_pattern, text.lower()) is not None
+    return is_symptom_negated(text, phrase)
 
 
 EXACT_ONLY_FEATURES = {
@@ -227,15 +226,21 @@ def normalize_symptom_input(text, feature_cols, min_score=95):
     }
 
     for phrase in _candidate_phrases(text):
-        if _is_negated(normalized_text, phrase):
-            continue
         match = process.extractOne(
             phrase,
             choices.keys(),
             scorer=fuzz.WRatio
         )
-        if match and match[1] >= min_score:
-            extracted[choices[match[0]]] = 1
+        if not match or match[1] < min_score:
+            continue
+
+        canonical_phrase = match[0]
+        feature = choices[canonical_phrase]
+
+        if _is_negated(normalized_text, canonical_phrase) or _is_negated(normalized_text, phrase):
+            continue
+
+        extracted[feature] = 1
 
     return extracted
 

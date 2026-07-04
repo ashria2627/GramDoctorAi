@@ -1,5 +1,7 @@
 import re
 
+from modules.text_negation import is_symptom_negated
+
 
 SYMPTOMS = {
  # Nasal congestion
@@ -635,14 +637,13 @@ def _contains_symptom_phrase(text, phrase):
 
 def _is_negated_ascii_phrase(text, phrase):
     if not re.fullmatch(r"[A-Za-z0-9\s'-]+", str(phrase).strip()):
-        return False
+        return is_symptom_negated(text, phrase)
 
     escaped = re.escape(str(phrase).lower().strip()).replace(r"\ ", r"\s+")
     if not escaped:
         return False
 
-    negation_pattern = rf"(?<![a-z0-9])(?:no|not|without|deny|denies|denied|never)\s+(?:\w+\s+){{0,1}}{escaped}(?![a-z0-9])"
-    return re.search(negation_pattern, text.lower()) is not None
+    return is_symptom_negated(text, phrase)
 
 
 def extract_bangla_symptoms(text, feature_cols):
