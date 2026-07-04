@@ -184,15 +184,7 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, referra
 
     section("Recommended Specialist")
     write_lines(referral or "General Physician")
-
-    section("First Aid Steps")
-    if first_aid:
-        steps = first_aid.get("steps_en") or first_aid.get("steps") or []
-        write_lines([f"- {step}" for step in steps[:6]] or "No first aid steps available.")
-    else:
-        write_lines("No first aid steps available.")
-
-    
+   
 
     section("Follow-up Advice")
     write_lines(extract_english_referral_note(ai_response))
