@@ -840,13 +840,14 @@ def detect_followup_categories(symptoms_dict, FOLLOWUP_GROUPS, lang, detected_sp
         elif "drown" in cond:
             return ["drowning"]
 
-    normalized_symptoms = {k.lower().strip(): v for k, v in symptoms_dict.items()}
+    normalized_symptoms = {
+        k.lower().strip(): v
+        for k, v in symptoms_dict.items()
+    }
+
     for group_name, group_data in FOLLOWUP_GROUPS.items():
-        if group_name == "pregnancy" and symptoms_dict.get("ispregnant", 0) != 1:
-            continue
-        triggers = []
-        triggers.extend(group_data.get("triggers_en", []))
-        triggers.extend(group_data.get("triggers_bn", []))
+
+        # Skip pregnancy follow-up unless pregnant
         if group_name == "pregnancy" and symptoms_dict.get("ispregnant", 0) != 1:
             continue
 

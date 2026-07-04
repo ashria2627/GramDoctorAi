@@ -4,6 +4,7 @@ import json
 import re
 from io import BytesIO
 import streamlit as st
+import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from modules.FIRSTAID import get_first_aid
@@ -187,6 +188,7 @@ div[data-testid="stMultiSelect"] label {
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 TEXTS = {
@@ -1035,6 +1037,7 @@ def create_tts_audio(text):
     tts.write_to_fp(buffer)
     buffer.seek(0)
     return buffer
+
 
 
 
