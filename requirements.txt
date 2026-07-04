@@ -12,3 +12,4 @@ streamlit-js-eval
 ollama
 rapidfuzz
 shap
+streamlit_cookies_controller
