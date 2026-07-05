@@ -37,6 +37,8 @@ ENGLISH_SYNONYMS = {
     "airway issue": "difficulty breathing",
     "abdominal pain": "sharp abdominal pain",
     "stomach pain": "sharp abdominal pain",
+    "stomach ache": "sharp abdominal pain",
+    "stomachache": "sharp abdominal pain",
     "belly pain": "sharp abdominal pain",
     "diarrhea": "diarrhea",
     "loose motion": "diarrhea",
