@@ -204,13 +204,13 @@ LOCAL_EMERGENCY_KEYWORDS = {
         "color": "red",
     },
     "heat stroke": {
-        "keywords": ["হিট স্ট্রোক", "heat stroke", "রোদে পড়া", "sunstroke","রোদে "],
+        "keywords": ["হিট স্ট্রোক", "heat stroke", "রোদে পড়া", "sunstroke","রোদে",'রোদ'],
         "special_key": "heat_stroke",
         "condition": "Possible Heat Stroke",
         "color": "red",
     },
     "scorpion sting": {
-        "keywords": ["বিচ্ছু", "scorpion", "কাঁকড়াবিছা"],
+        "keywords": ["বিচ্ছু", "scorpion", "কাঁকড়াবিছা","বিছা"],
         "special_key": "scorpion_sting",
         "condition": "Possible Scorpion Sting",
         "color": "orange",

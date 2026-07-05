@@ -14,6 +14,7 @@ from modules.triage_rules import apply_bd_rules
 from modules.offline_detector import detect_local_emergency, detect_local_emergencies
 from modules.Followup import FOLLOWUP_GROUPS, detect_followup_categories
 from modules.symptom_normalizer import normalize_symptom_input
+from modules.condition_groups import apply_condition_group_rules
 from gtts import gTTS
 
 try:
@@ -83,7 +84,7 @@ for key, default in [
     ("triage_result", None), ("symptoms", None), ("ai_response", None),
     ("voice_text", ""), ("referral", None), ("alternate_referral", None),
     ("first_aid", None), ("detected_special", "none"), ("extra_symptoms", []),
-    ("followup_done", False), ("history_saved", False),
+    ("condition_group_matches", []), ("followup_done", False), ("history_saved", False),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -193,6 +194,14 @@ if predict_clicked:
         else:
             result = create_gray_result(language)
 
+        result, group_matches = apply_condition_group_rules(
+            symptoms,
+            result,
+            st.session_state.extra_symptoms,
+            language,
+        )
+        st.session_state.condition_group_matches = group_matches
+
         if special.get("found"):
             color_messages = {
                 "red": "Possible {cond} detected. This needs urgent medical attention.",
@@ -298,6 +307,12 @@ if st.session_state.triage_result is not None:
                 st.session_state.followup_answers = followup_answers
                 result = predict_triage(st.session_state.symptoms, model, feature_cols)
                 result = apply_bd_rules(st.session_state.symptoms, result, followup_answers, language)
+                result, group_matches = apply_condition_group_rules(
+                    st.session_state.symptoms,
+                    result,
+                    st.session_state.get("extra_symptoms", []),
+                    language,
+                )
                 from modules.FIRSTAID import get_first_aid_from_followup
                 st.session_state.first_aid = get_first_aid_from_followup(
                     followup_answers,
@@ -306,6 +321,7 @@ if st.session_state.triage_result is not None:
                     triage_color=st.session_state.triage_result["color"]
                 )
                 st.session_state.triage_result = result
+                st.session_state.condition_group_matches = group_matches
                 st.session_state.tts_audio = None
                 st.session_state.followup_done = True
             st.rerun()
@@ -324,10 +340,12 @@ if st.session_state.triage_result is not None:
         if st.session_state.referral:
             referral = st.session_state.referral
             alternate_referral = st.session_state.alternate_referral
+            specialist_key = st.session_state.get("specialist_key")
         else:
-            referral, alternate_referral = get_specialist_referral_clustered(
+            referral, alternate_referral, specialist_key = get_specialist_referral_clustered(
                 result, st.session_state.symptoms, language
             )
+            st.session_state.specialist_key = specialist_key
         show_triage_card(color, language)
 
         special = st.session_state.get("detected_special")
@@ -391,12 +409,23 @@ if st.session_state.triage_result is not None:
             st.markdown(f'<div class="gd-recommend-card"><b>{t["refer_to"]}</b> {referral}</div>', unsafe_allow_html=True)
         if alternate_referral:
             st.markdown(f'<div class="gd-recommend-card">{t["alternate_referral"]} {alternate_referral}</div>', unsafe_allow_html=True)
-
+        from components.recommendation import render_doctor_suggestions
+        if referral:
+            from components.recommendation import render_doctor_suggestions
+        if specialist_key:
+            render_doctor_suggestions(specialist_key, language)
+            
         concern_lines = format_additional_concerns(st.session_state.symptoms, language, primary_specialist=referral)
         if concern_lines and not special_events:
             st.markdown("**Additional possible concerns:**" if language == "English" else "**অতিরিক্ত সম্ভাব্য সমস্যা:**")
             for line in concern_lines:
                 st.write(f"- {line}")
+
+        group_matches = st.session_state.get("condition_group_matches", [])
+        if group_matches and not special_events:
+            st.markdown("**Grouped symptom patterns:**" if language == "English" else "**সমন্বিত লক্ষণের প্যাটার্ন:**")
+            for item in group_matches[:3]:
+                st.write(f"- {item['source']}: {item['message']}")
 
         active_symptoms = [
             BANGLA_FEATURES.get(symptom, symptom) if language == "বাংলা" else symptom
@@ -435,16 +464,15 @@ if st.session_state.triage_result is not None:
                 st.subheader(t["ai_title"])
                 st.markdown(st.session_state.ai_response)
 
-                pdf_buffer = create_structured_referral_pdf(
-                    st.session_state.ai_response, st.session_state.triage_result,
-                    st.session_state.symptoms, referral=referral, first_aid=first_aid,
-                )
-
-                st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
-                st.download_button(
-                    label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
-                    mime="application/pdf", use_container_width=True
-                )
+        pdf_buffer = create_structured_referral_pdf(
+            st.session_state.ai_response, st.session_state.triage_result,
+            st.session_state.symptoms, referral=referral, first_aid=first_aid,
+        )
+        st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
+        st.download_button(
+            label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
+            mime="application/pdf", use_container_width=True
+        )
 
         # NEW: log this completed result to history once per prediction
         if not st.session_state.history_saved:

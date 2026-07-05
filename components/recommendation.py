@@ -4,6 +4,7 @@ import os
 import json
 import streamlit as st
 from components.result_card import normalize_color, get_active_symptom_keys, get_symptom_display
+from modules.doctor_finder import find_doctors, google_search_url
 
 SPECIALIST_LABELS = {
     "General Physician": {"English": "General Physician", "বাংলা": "জেনারেল ফিজিশিয়ান"},
@@ -158,14 +159,18 @@ def get_specialist_referral_clustered(triage_result, symptoms, language):
     if color == "green":
         return None, None
 
+    source = str(triage_result.get("source", "")).lower()
+    if "pcos" in source or "hormonal disorder" in source:
+        return specialist_label("Gynecologist", language), specialist_label("General Physician", language)
+
     scored = build_specialist_concerns(symptoms)
 
     if not scored:
         if symptoms.get("ispregnant", 2) == 1:
-            return specialist_label("Gynecologist", language), specialist_label("General Physician", language)
+            return specialist_label("Gynecologist", language), specialist_label("General Physician", language), "Gynecologist"
         if symptoms.get("age", 30) < 13:
-            return specialist_label("Pediatrician", language), specialist_label("General Physician", language)
-        return specialist_label("General Physician", language), None
+            return specialist_label("Pediatrician", language), specialist_label("General Physician", language), "Pediatrician"
+        return specialist_label("General Physician", language), None, "General Physician"
 
     selected = scored[0]
     specialist_name = selected["specialist"]
@@ -180,8 +185,28 @@ def get_specialist_referral_clustered(triage_result, symptoms, language):
     elif symptoms.get("age", 30) < 13 and selected["score"] <= 1:
         specialist_name = "Pediatrician"
 
-    return emergency_note + specialist_label(specialist_name, language), specialist_label("General Physician", language)
+    return emergency_note + specialist_label(specialist_name, language), specialist_label("General Physician", language), specialist_name
 
 def render_recommendation_card(text):
     """UI helper: same visual card style used across the app."""
     st.markdown(f'<div class="gd-recommend-card">{text}</div>', unsafe_allow_html=True)
+
+
+def render_doctor_suggestions(specialist_name, language):
+    doctors = find_doctors(specialist_name, language, limit=5)
+    if not doctors:
+        return
+
+    heading = "👨‍⚕️ Recommended Specialists" if language == "English" else "👨‍⚕️ প্রস্তাবিত বিশেষজ্ঞ"
+    st.markdown(f'<div class="gd-card-heading">{heading}</div>', unsafe_allow_html=True)
+
+    for doc in doctors:
+        st.markdown(f"""
+        <div class="gd-recommend-card">
+            <a href="{doc['profile_url']}" target="_blank" style="text-decoration:none;font-weight:700;">{doc['name']}</a><br>
+            <small>{doc['hospital']} — {doc['speciality']}</small>
+        </div>
+        """, unsafe_allow_html=True)
+
+    search_label = "🔍 See more nearby" if language == "English" else "🔍 আরও দেখুন"
+    st.markdown(f'<a href="{google_search_url(specialist_name)}" target="_blank">{search_label}</a>', unsafe_allow_html=True)

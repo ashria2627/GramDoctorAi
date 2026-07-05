@@ -273,11 +273,107 @@ BANGLA_FEATURES = {
     "eyelid swelling": "চোখের পাতা ফুলে যাওয়া",
     "jaundice": "জন্ডিস",
     "nosebleed": "নাক দিয়ে রক্ত পড়া",
+    "fatigue": "ক্লান্তি",
+    "irregular_periods": "মাসিক অনিয়মিত",
+    "missed_period": "মাসিক বন্ধ",
+    "weight_loss": "ওজন কমে যাচ্ছে",
+    "weight_gain": "ওজন বেড়ে যাচ্ছে",
+    "increased_appetite": "বেশি ক্ষুধা",
+    "excessive_thirst": "বেশি তৃষ্ণা",
+    "night_sweats": "রাতে ঘাম",
+    "facial_swelling": "মুখ ফুলে যাওয়া",
+    "reduced_urine_output": "প্রস্রাব কম হওয়া",
+    "black_stool": "কালো পায়খানা",
+    "hair_loss": "চুল পড়া",
+    "tingling": "ঝিনঝিন করা",
+    "confusion": "বিভ্রান্তি",
+    "cold_intolerance": "ঠান্ডা সহ্য না হওয়া",
+    "heat_intolerance": "গরম সহ্য না হওয়া",
     "sneezing": "হাঁচি",
 }
 
 
 EXTRA_DISPLAY_SYMPTOMS = {
+    "fatigue": {
+        "English": "Fatigue / Tiredness",
+        "বাংলা": "ক্লান্তি",
+        "terms": ["fatigue", "tiredness", "tired", "low energy", "ক্লান্তি", "ক্লান্ত লাগছে", "অবসাদ", "clanto lagche"],
+    },
+    "irregular_periods": {
+        "English": "Irregular Periods",
+        "বাংলা": "মাসিক অনিয়মিত",
+        "terms": ["irregular period", "irregular periods", "irregular menstruation", "periods irregular", "মাসিক অনিয়মিত", "মাসিক অনিয়মিত", "পিরিয়ড অনিয়মিত", "পিরিয়ড অনিয়মিত"],
+    },
+    "missed_period": {
+        "English": "Missed Period",
+        "বাংলা": "মাসিক বন্ধ",
+        "terms": ["missed period", "period missed", "no period", "late period", "period delayed", "stopped period", "মাসিক বন্ধ", "মাসিক হয়নি", "মাসিক হয়নি", "পিরিয়ড বন্ধ", "পিরিয়ড বন্ধ"],
+    },
+    "weight_loss": {
+        "English": "Weight Loss",
+        "বাংলা": "ওজন কমে যাচ্ছে",
+        "terms": ["weight loss", "losing weight", "lost weight", "weight decreasing", "ওজন কমে যাচ্ছে", "ওজন কমেছে", "ওজন কমছে"],
+    },
+    "weight_gain": {
+        "English": "Weight Gain",
+        "বাংলা": "ওজন বেড়ে যাচ্ছে",
+        "terms": ["weight gain", "gaining weight", "weight increased", "ওজন বেড়ে যাচ্ছে", "ওজন বেড়েছে", "ওজন বাড়ছে", "ওজন বাড়ছে"],
+    },
+    "increased_appetite": {
+        "English": "Increased Appetite",
+        "বাংলা": "বেশি ক্ষুধা",
+        "terms": ["increased appetite", "excessive appetite", "hungry all the time", "more hungry", "বেশি ক্ষুধা", "অনেক ক্ষুধা", "ক্ষুধা বেশি"],
+    },
+    "excessive_thirst": {
+        "English": "Excessive Thirst",
+        "বাংলা": "বেশি তৃষ্ণা",
+        "terms": ["excessive thirst", "increased thirst", "very thirsty", "too much thirst", "বেশি তৃষ্ণা", "অনেক পিপাসা", "বেশি পিপাসা", "পানি বেশি লাগে"],
+    },
+    "night_sweats": {
+        "English": "Night Sweats",
+        "বাংলা": "রাতে ঘাম",
+        "terms": ["night sweats", "sweating at night", "রাতে ঘাম", "রাতে ঘাম হয়", "রাতে ঘাম হয়", "রাতে অতিরিক্ত ঘাম"],
+    },
+    "facial_swelling": {
+        "English": "Facial Swelling",
+        "বাংলা": "মুখ ফুলে যাওয়া",
+        "terms": ["facial swelling", "face swelling", "swollen face", "মুখ ফুলে গেছে", "মুখ ফোলা", "মুখ ফুলে যাওয়া", "চেহারা ফুলে গেছে"],
+    },
+    "reduced_urine_output": {
+        "English": "Reduced Urine Output",
+        "বাংলা": "প্রস্রাব কম হওয়া",
+        "terms": ["reduced urine", "low urine", "less urine", "urine decreased", "প্রস্রাব কম", "প্রস্রাব কম হচ্ছে", "প্রস্রাব কম হওয়া"],
+    },
+    "black_stool": {
+        "English": "Black Stool",
+        "বাংলা": "কালো পায়খানা",
+        "terms": ["black stool", "black stools", "black motion", "tarry stool", "কালো পায়খানা", "কালো পায়খানা", "কালো মল"],
+    },
+    "hair_loss": {
+        "English": "Hair Loss",
+        "বাংলা": "চুল পড়া",
+        "terms": ["hair loss", "hair fall", "losing hair", "hair falling", "চুল পড়া", "চুল পড়া", "চুল ঝরছে", "চুল পড়ছে", "চুল পড়ছে"],
+    },
+    "tingling": {
+        "English": "Tingling / Pins and Needles",
+        "বাংলা": "ঝিনঝিন করা",
+        "terms": ["tingling", "pins and needles", "ঝিনঝিন", "ঝিনঝিন করছে", "ঝিঁঝিঁ করছে"],
+    },
+    "confusion": {
+        "English": "Confusion",
+        "বাংলা": "বিভ্রান্তি",
+        "terms": ["confusion", "confused", "disoriented", "বিভ্রান্তি", "বিভ্রান্ত", "মাথা গুলিয়ে যাচ্ছে", "মাথা গুলিয়ে যাচ্ছে"],
+    },
+    "cold_intolerance": {
+        "English": "Cold Intolerance",
+        "বাংলা": "ঠান্ডা সহ্য না হওয়া",
+        "terms": ["cold intolerance", "cannot tolerate cold", "sensitive to cold", "ঠান্ডা সহ্য হয় না", "ঠান্ডা সহ্য হয় না", "ঠান্ডা সহ্য না হওয়া"],
+    },
+    "heat_intolerance": {
+        "English": "Heat Intolerance",
+        "বাংলা": "গরম সহ্য না হওয়া",
+        "terms": ["heat intolerance", "cannot tolerate heat", "sensitive to heat", "গরম সহ্য হয় না", "গরম সহ্য হয় না", "গরম সহ্য না হওয়া"],
+    },
     "sneezing": {
         "English": "Sneezing",
         "বাংলা": "হাঁচি",
@@ -297,4 +393,3 @@ EXTRA_DISPLAY_SYMPTOMS = {
         ],
     },
 }
-

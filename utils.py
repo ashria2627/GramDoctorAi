@@ -170,17 +170,6 @@ def create_structured_referral_pdf(ai_response, triage_result, symptoms, referra
     else:
         write_lines(f"Model Confidence: {confidence}%")
 
-    section("Prediction Drivers")
-    explanation = triage_result.get("explanation") or []
-    explanation_lines = [
-        format_prediction_driver(item, triage_result.get("color"))
-        for item in explanation
-    ]
-    explanation_lines = [line for line in explanation_lines if line]
-    if explanation_lines:
-        write_lines([f"- {line}" for line in explanation_lines])
-    else:
-        write_lines("No SHAP explanation available for this decision.")
 
     section("Recommended Specialist")
     write_lines(referral or "General Physician")
