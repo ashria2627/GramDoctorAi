@@ -9,7 +9,7 @@ import database as db
 COOKIE_NAME = "gd_session"
 
 
-@st.cache_resource
+
 def get_controller():
     return CookieController()
 
