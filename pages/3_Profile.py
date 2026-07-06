@@ -10,7 +10,7 @@ from i18n import TEXTS
 st.set_page_config(page_title="GramDoctor AI — Profile", page_icon="👤", layout="centered")
 
 require_login()
-load_css()
+load_css(st.session_state.get("pref_theme", "light"))
 
 language = st.session_state.get("language_selector", "English")
 t = TEXTS[language]
@@ -29,12 +29,12 @@ history_count = len(db.get_history_for_user(st.session_state.user_id, limit=1000
 st.markdown(f"""
 <div class="gd-recommend-card">
 <b>Username:</b> {user['username']}<br>
+<b>Email:</b> {user['email'] if user['email'] else 'N/A'}<br>
 <b>Member since:</b> {user['created_at'][:10]}<br>
 <b>Preferred language:</b> {user['language']}<br>
 <b>Triage sessions logged:</b> {history_count}
 </div>
 """, unsafe_allow_html=True)
-
 st.divider()
 logout_button(label="Log out", key="profile_logout")
 

@@ -12,7 +12,7 @@ from i18n import TEXTS
 st.set_page_config(page_title="GramDoctor AI — History", page_icon="🕘", layout="centered")
 
 require_login()
-load_css()
+load_css(st.session_state.get("pref_theme", "light"))
 
 language = st.session_state.get("language_selector", "English")
 t = TEXTS[language]

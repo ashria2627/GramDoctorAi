@@ -157,11 +157,11 @@ def get_specialist_referral_clustered(triage_result, symptoms, language):
     active = set(get_active_symptom_keys(symptoms))
 
     if color == "green":
-        return None, None
+        return None, None, None
 
     source = str(triage_result.get("source", "")).lower()
     if "pcos" in source or "hormonal disorder" in source:
-        return specialist_label("Gynecologist", language), specialist_label("General Physician", language)
+        return specialist_label("Gynecologist", language), specialist_label("General Physician", language), "Gynecologist"
 
     scored = build_specialist_concerns(symptoms)
 
@@ -197,7 +197,7 @@ def render_doctor_suggestions(specialist_name, language):
     if not doctors:
         return
 
-    heading = "👨‍⚕️ Recommended Specialists" if language == "English" else "👨‍⚕️ প্রস্তাবিত বিশেষজ্ঞ"
+    heading = "👨‍⚕️Some Recommended Specialists" if language == "English" else "👨‍⚕️ কিছু প্রস্তাবিত বিশেষজ্ঞ"
     st.markdown(f'<div class="gd-card-heading">{heading}</div>', unsafe_allow_html=True)
 
     for doc in doctors:

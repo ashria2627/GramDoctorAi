@@ -4,6 +4,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
 <style>
+html, body {
+    height: 100%;
+}
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    overflow-y: auto !important;
+}
+
+/* Give focused inputs breathing room above the (fixed) bottom nav / mobile keyboard */
+.stTextInput, .stForm, div[data-testid="stForm"] {
+    scroll-margin-bottom: 260px;
+}
 :root{
     --gd-success-bg: #D4DB74;
     --gd-success-text: #A6AD37;
@@ -45,13 +57,13 @@ html, body, p, span, div, label, h1, h2, h3, h4, h5, h6,
     flex-shrink:0;
 }
 .gd-header-title{ color:#fff; font-size:1.4rem; font-weight:800; line-height:1.15; }
-.gd-header-subtitle{ color: var(--gd-neutral-text); font-size:0.85rem; margin-top:4px; }
+.gd-header-subtitle{ color: var(--gd-neutral-text); font-size:0.95rem;font-weight: 600; margin-top:4px; }
 
 /* Warning banner */
 .gd-warning-banner{
     background: var(--gd-warning-bg); border-left: 6px solid var(--gd-warning-text);
     color: var(--gd-warning-text); padding:16px 18px; border-radius:12px; font-size:0.9rem;
-    margin-bottom:18px; box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    margin-bottom:18px; box-shadow: 0 3px 10px rgba(0,0,0,0.06);font-weight: 500;
 }
 
 /* Section headings */
@@ -61,14 +73,14 @@ html, body, p, span, div, label, h1, h2, h3, h4, h5, h6,
 .gd-divider{ border:none; border-top:2px solid var(--gd-card-border); margin:24px 0; }
 
 /* Mic / voice recorder section */
-.gd-mic-wrap{
+/* .gd-mic-wrap{
     background: var(--gd-neutral-bg); border-radius:16px; padding:18px; text-align:center;
 }
 .gd-mic-wrap button{
     border-radius:50% !important; width:84px !important; height:84px !important;
     background: #fff !important; color: var(--gd-neutral-bg) !important; font-size:1.6rem !important;
     box-shadow: 0 0 0 8px rgba(255,255,255,0.15); margin: 8px auto !important; display:flex !important;
-}
+} */
 
 /* Primary action buttons */
 .stButton > button[kind="primary"]{
@@ -80,20 +92,51 @@ html, body, p, span, div, label, h1, h2, h3, h4, h5, h6,
 /* Recommendation / referral cards */
 .gd-recommend-card{
     background: var(--gd-info-bg); color: var(--gd-info-text); border-left:5px solid var(--gd-info-text);
-    border-radius:12px; padding:14px 16px; margin:10px 0; font-size:0.92rem;
+    border-radius:12px; padding:16px 18px; margin:10px 0; font-size:0.95rem;font-weight: 500;
 }
 
 /* Progress bar (confidence) */
 .stProgress > div > div{ background-color: var(--gd-neutral-bg) !important; }
 
 /* Streamlit alerts mapped to the requested palette */
-div[data-testid="stAlertContentSuccess"] { color: var(--gd-success-text) !important; }
-div[data-testid="stAlertContentInfo"] { color: var(--gd-info-text) !important; }
-div[data-testid="stAlertContentWarning"] { color: var(--gd-warning-text) !important; }
-div[data-testid="stAlertContentError"] { color: var(--gd-emergency-text) !important; }
-.stAlert{ border-radius:12px !important; }
+div[data-testid="stAlertContentSuccess"] { color: var(--gd-success-text) !important;font-weight: 600; }
+div[data-testid="stAlertContentInfo"] { color: var(--gd-info-text) !important;font-weight: 600; }
+div[data-testid="stAlertContentWarning"] { color: var(--gd-warning-text) !important;font-weight: 600; }
+div[data-testid="stAlertContentError"] { color: var(--gd-emergency-text) !important;font-weight: 600; }
+.stAlert{ border-radius:12px !important;font-weight: 600; }
 
 /* Nav row */
 div[data-testid="stPageLink"] { border-radius: 10px; }
+.gd-triage-body{
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.7;
+}
+.gd-triage-body b{
+    font-weight: 800;
+}
+/* Force the bottom nav's columns to stay in a row, fixed to viewport bottom */
+.st-key-gd_bottom_nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 999;
+    background: var(--gd-neutral-bg);
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    box-shadow: 0 -3px 12px rgba(0,0,0,0.15);
+}
+.st-key-gd_bottom_nav [data-testid="stHorizontalBlock"] {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+}
+.st-key-gd_bottom_nav [data-testid="column"] {
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+}
 
+/* Leave room at the bottom of every page so content isn't hidden under the fixed nav */
+.block-container {
+    padding-bottom: 5.5rem !important;
+}
 </style>

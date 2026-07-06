@@ -47,7 +47,7 @@ st.set_page_config(page_title="GramDoctor AI — Home", page_icon="🩺", layout
 
 require_login()
 db.init_db()
-load_css()
+load_css(st.session_state.get("pref_theme", "light"))
 
 
 @st.cache_resource

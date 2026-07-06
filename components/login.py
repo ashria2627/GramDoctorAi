@@ -45,49 +45,130 @@ def show_login():
     </div>
     """, unsafe_allow_html=True)
 
+    if "auth_view" not in st.session_state:
+        st.session_state.auth_view = "login"
+
     tab_login, tab_register = st.tabs(["Log In", "Register"])
 
     with tab_login:
-        with st.form("login_form"):
-            username = st.text_input("Username", key="login_username")
-            password = st.text_input("Password", type="password", key="login_password")
-            submitted = st.form_submit_button("Log In", type="primary", use_container_width=True)
-
-        if submitted:
-            user = auth.verify_user(username, password)
-            if user:
-                token = db.create_session(user["id"])
-
-                st.session_state.logged_in = True
-                st.session_state.user_id = user["id"]
-                st.session_state.username = user["username"]
-                st.session_state.pref_language = user["language"]
-                st.session_state.pref_theme = user["theme"]
-                st.session_state.pref_font_size = user["font_size"]
-                st.session_state.session_token = token
-
-                get_controller().set(COOKIE_NAME, token)
-                st.rerun()
-            else:
-                st.error("Incorrect username or password.")
+        if st.session_state.auth_view == "login":
+            _render_login_form()
+        elif st.session_state.auth_view == "forgot_request":
+            _render_forgot_request()
+        elif st.session_state.auth_view == "forgot_verify":
+            _render_forgot_verify()
+        elif st.session_state.auth_view == "forgot_reset":
+            _render_forgot_reset()
 
     with tab_register:
-        with st.form("register_form"):
-            new_username = st.text_input("Choose a username", key="reg_username")
-            new_password = st.text_input("Choose a password", type="password", key="reg_password")
-            confirm_password = st.text_input("Confirm password", type="password", key="reg_confirm")
-            reg_submitted = st.form_submit_button("Create Account", type="primary", use_container_width=True)
+        _render_register_form()
 
-        if reg_submitted:
-            if new_password != confirm_password:
-                st.error("Passwords do not match.")
+
+def _render_login_form():
+    with st.form("login_form"):
+        identifier = st.text_input("Username or Email", key="login_identifier")
+        password = st.text_input("Password", type="password", key="login_password")
+        submitted = st.form_submit_button("Log In", type="primary", use_container_width=True)
+
+    # sits directly below the password field, outside the form
+    if st.button("Forgot password?", key="forgot_password_link"):
+        st.session_state.auth_view = "forgot_request"
+        st.rerun()
+
+    if submitted:
+        user = auth.verify_user_by_identifier(identifier, password)
+        if user:
+            token = db.create_session(user["id"])
+            st.session_state.logged_in = True
+            st.session_state.user_id = user["id"]
+            st.session_state.username = user["username"]
+            st.session_state.pref_language = user["language"]
+            st.session_state.pref_theme = user["theme"]
+            st.session_state.pref_font_size = user["font_size"]
+            st.session_state.session_token = token
+            get_controller().set(COOKIE_NAME, token)
+            st.rerun()
+        else:
+            st.error("Incorrect username/email or password.")
+
+
+def _render_register_form():
+    with st.form("register_form"):
+        new_username = st.text_input("Username", key="reg_username")
+        new_email = st.text_input("Email", key="reg_email")
+        new_password = st.text_input("Password", type="password", key="reg_password")
+        confirm_password = st.text_input("Confirm password", type="password", key="reg_confirm")
+        reg_submitted = st.form_submit_button("Create Account", type="primary", use_container_width=True)
+
+    if reg_submitted:
+        if new_password != confirm_password:
+            st.error("Passwords do not match.")
+        else:
+            success, message = auth.register_user(new_username, new_email, new_password)
+            (st.success if success else st.error)(message)
+
+
+def _render_forgot_request():
+    st.caption("Enter your account email — we'll send you a 6-digit code.")
+    with st.form("forgot_request_form"):
+        email = st.text_input("Email", key="forgot_email")
+        send_submitted = st.form_submit_button("Send Code", type="primary", use_container_width=True)
+
+    if st.button("← Back to Log In", key="back_to_login_1"):
+        st.session_state.auth_view = "login"
+        st.rerun()
+
+    if send_submitted:
+        success, message = auth.request_password_reset(email)
+        if success:
+            st.session_state.reset_email = email.strip().lower()
+            st.session_state.auth_view = "forgot_verify"
+            st.rerun()
+        else:
+            st.error(message)
+
+
+def _render_forgot_verify():
+    st.caption(f"Enter the 6-digit code sent to {st.session_state.get('reset_email', '')}")
+    with st.form("forgot_verify_form"):
+        code = st.text_input("6-digit code", key="forgot_code")
+        verify_submitted = st.form_submit_button("Verify Code", type="primary", use_container_width=True)
+
+    if st.button("← Back", key="back_to_login_2"):
+        st.session_state.auth_view = "forgot_request"
+        st.rerun()
+
+    if verify_submitted:
+        if auth.check_reset_code(st.session_state.reset_email, code.strip()):
+            st.session_state.reset_code = code.strip()
+            st.session_state.auth_view = "forgot_reset"
+            st.rerun()
+        else:
+            st.error("Invalid or expired code.")
+
+
+def _render_forgot_reset():
+    st.caption("Choose a new password.")
+    with st.form("forgot_reset_form"):
+        new_password = st.text_input("New password", type="password", key="forgot_new_password")
+        confirm_new = st.text_input("Confirm new password", type="password", key="forgot_confirm_password")
+        reset_submitted = st.form_submit_button("Set New Password", type="primary", use_container_width=True)
+
+    if reset_submitted:
+        if new_password != confirm_new:
+            st.error("Passwords do not match.")
+        else:
+            success, message = auth.reset_password_with_code(
+                st.session_state.reset_email, st.session_state.reset_code, new_password
+            )
+            if success:
+                st.success("Password reset successfully. Please log in.")
+                for k in ["reset_email", "reset_code"]:
+                    st.session_state.pop(k, None)
+                st.session_state.auth_view = "login"
+                st.rerun()
             else:
-                success, message = auth.register_user(new_username, new_password)
-                if success:
-                    st.success(message)
-                else:
-                    st.error(message)
-
+                st.error(message)
 
 def require_login():
     """Call at the top of every protected page."""

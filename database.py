@@ -24,6 +24,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             salt TEXT NOT NULL,
             language TEXT DEFAULT 'English',
@@ -61,7 +62,22 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS password_resets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL,
+            code TEXT NOT NULL,
+            expires_at TEXT NOT NULL,
+            used INTEGER DEFAULT 0
+        )
+    """)
     conn.commit()
+    conn = get_connection()
+    try:
+      conn.execute("ALTER TABLE users ADD COLUMN email TEXT")
+      conn.commit()
+    except Exception:
+      pass
     conn.close()
 
 
@@ -124,7 +140,60 @@ def create_user(username, password_hash, salt):
     )
     conn.commit()
     conn.close()
+def get_user_by_email(email):
+    conn = get_connection()
+    row = conn.execute("SELECT * FROM users WHERE email = ?", (email.strip().lower(),)).fetchone()
+    conn.close()
+    return row
 
+
+def create_user(username, email, password_hash, salt):
+    conn = get_connection()
+    conn.execute(
+        "INSERT INTO users (username, email, password_hash, salt, created_at) VALUES (?, ?, ?, ?, ?)",
+        (username, email.strip().lower(), password_hash, salt, datetime.now().isoformat())
+    )
+    conn.commit()
+    conn.close()
+
+
+def update_user_password(user_id, password_hash, salt):
+    conn = get_connection()
+    conn.execute("UPDATE users SET password_hash = ?, salt = ? WHERE id = ?", (password_hash, salt, user_id))
+    conn.commit()
+    conn.close()
+
+
+def create_password_reset(email, code, minutes_valid=15):
+    conn = get_connection()
+    expires = (datetime.now() + timedelta(minutes=minutes_valid)).isoformat()
+    conn.execute(
+        "INSERT INTO password_resets (email, code, expires_at, used) VALUES (?, ?, ?, 0)",
+        (email.strip().lower(), code, expires)
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_valid_reset(email, code):
+    conn = get_connection()
+    row = conn.execute(
+        "SELECT * FROM password_resets WHERE email = ? AND code = ? AND used = 0 ORDER BY id DESC LIMIT 1",
+        (email.strip().lower(), code)
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    if datetime.fromisoformat(row["expires_at"]) < datetime.now():
+        return None
+    return row
+
+
+def mark_reset_used(reset_id):
+    conn = get_connection()
+    conn.execute("UPDATE password_resets SET used = 1 WHERE id = ?", (reset_id,))
+    conn.commit()
+    conn.close()
 
 def update_user_preferences(user_id, language=None, theme=None, font_size=None):
     conn = get_connection()
@@ -184,5 +253,11 @@ def get_history_for_user(user_id, limit=50):
 def delete_history_entry(entry_id, user_id):
     conn = get_connection()
     conn.execute("DELETE FROM history WHERE id = ? AND user_id = ?", (entry_id, user_id))
+    conn.commit()
+    conn.close()
+
+def update_user_email(user_id, email):
+    conn = get_connection()
+    conn.execute("UPDATE users SET email = ? WHERE id = ?", (email.strip().lower(), user_id))
     conn.commit()
     conn.close()
