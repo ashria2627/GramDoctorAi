@@ -1,4 +1,3 @@
-
 from io import BytesIO
 import streamlit as st
 import pandas as pd
@@ -367,8 +366,46 @@ if st.session_state.triage_result is not None:
                 result, st.session_state.symptoms, language
             )
             st.session_state.specialist_key = specialist_key
+        # ── 1. Triage card (colour + message) ──────────────────────────────
         show_triage_card(color, language)
 
+        # ── 2. Confidence score ─────────────────────────────────────────────
+        render_confidence(result.get("confidence"), language)
+
+        # ── 3. Detected symptoms (user needs to see WHAT was found first) ───
+        active_symptoms = [
+            BANGLA_FEATURES.get(symptom, symptom) if language == "বাংলা" else symptom
+            for symptom, value in st.session_state.symptoms.items()
+            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+        ]
+        for extra_symptom in st.session_state.get("extra_symptoms", []):
+            active_symptoms.append(
+                BANGLA_FEATURES.get(extra_symptom, extra_symptom)
+                if language == "বাংলা"
+                else EXTRA_DISPLAY_SYMPTOMS.get(extra_symptom, {}).get("English", extra_symptom.replace("_", " ").title())
+            )
+
+        if active_symptoms:
+            st.subheader(t["detected_symptoms"])
+            cols = st.columns(3)
+            for i, symptom in enumerate(active_symptoms):
+                cols[i % 3].markdown(f"🔹 {symptom}")
+        else:
+            st.info(t["no_symptoms"])
+
+        st.divider()
+
+        # ── 4. Prediction drivers (explainability) ──────────────────────────
+        explanation = result.get("explanation") or []
+        explanation_lines = [format_prediction_driver(item, result.get("color")) for item in explanation]
+        explanation_lines = [line for line in explanation_lines if line]
+        if explanation_lines:
+            with st.expander("🔍 Why this result?" if language == "English" else "🔍 এই ফলাফল কেন?"):
+                st.caption("Decision source: " + result["source"])
+                for line in explanation_lines:
+                    st.write(f"- {line}")
+
+        # ── 5. First aid ────────────────────────────────────────────────────
         special = st.session_state.get("detected_special")
         special_events = st.session_state.get("detected_specials", [])
 
@@ -396,38 +433,6 @@ if st.session_state.triage_result is not None:
             for i, step in enumerate(steps, 1):
                 st.markdown(f"**{i}.** {step}")
 
-        st.write(t["decision_source"], result["source"])
-        
-        render_confidence(result.get("confidence"), language)
-
-        explanation = result.get("explanation") or []
-        explanation_lines = [format_prediction_driver(item, result.get("color")) for item in explanation]
-        explanation_lines = [line for line in explanation_lines if line]
-        if explanation_lines:
-            st.caption("Top prediction drivers")
-            for line in explanation_lines:
-                st.write(f"- {line}")
-    
-
-        active_symptoms = [
-            BANGLA_FEATURES.get(symptom, symptom) if language == "বাংলা" else symptom
-            for symptom, value in st.session_state.symptoms.items()
-            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-        ]
-        for extra_symptom in st.session_state.get("extra_symptoms", []):
-            active_symptoms.append(
-                BANGLA_FEATURES.get(extra_symptom, extra_symptom)
-                if language == "বাংলা"
-                else EXTRA_DISPLAY_SYMPTOMS.get(extra_symptom, {}).get("English", extra_symptom.replace("_", " ").title())
-            )
-
-        if active_symptoms:
-            st.subheader(t["detected_symptoms"])
-            for symptom in active_symptoms:
-                st.write(f"- {symptom}")
-        else:
-            st.info(t["no_symptoms"])
-    
         st.divider()
 
         if referral:
@@ -435,8 +440,6 @@ if st.session_state.triage_result is not None:
         if alternate_referral:
             st.markdown(f'<div class="gd-recommend-card">{t["alternate_referral"]} {alternate_referral}</div>', unsafe_allow_html=True)
         from components.recommendation import render_doctor_suggestions
-        if referral:
-            from components.recommendation import render_doctor_suggestions
         if specialist_key:
             render_doctor_suggestions(specialist_key, language)
             
@@ -457,17 +460,21 @@ if st.session_state.triage_result is not None:
         
         st.subheader(t["ai_title"])
         if color == "gray":
-            st.info(...)
+            st.info(
+                "No symptoms were detected. Please describe your symptoms using voice or text, or select them from the list above."
+                if language == "English"
+                else "কোনো লক্ষণ সনাক্ত হয়নি। অনুগ্রহ করে ভয়েস বা টেক্সটে আপনার লক্ষণ বর্ণনা করুন, অথবা উপরের তালিকা থেকে বেছে নিন।"
+            )
         else:
             if st.session_state.ai_response is None:
-               with st.spinner(t["generating"]):
-                   st.session_state.ai_response = generate_ai_response(
-                st.session_state.symptoms, st.session_state.triage_result
-            )
+                with st.spinner(t["generating"]):
+                    st.session_state.ai_response = generate_ai_response(
+                        st.session_state.symptoms, st.session_state.triage_result
+                    )
 
-            with st.container(key="gd_ai_card"):
-             st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
-             st.markdown(st.session_state.ai_response)
+            with st.container():
+                st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
+                st.markdown(st.session_state.ai_response)
 
             
 
