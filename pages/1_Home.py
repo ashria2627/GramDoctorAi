@@ -49,8 +49,22 @@ require_login()
 db.init_db()
 load_css(st.session_state.get("pref_theme", "light"))
 
+def get_matched_symptoms_display(cat, symptoms_dict, language):
+    from modules.Followup import FOLLOWUP_GROUPS
+    group_data = FOLLOWUP_GROUPS.get(cat, {})
+    triggers = group_data.get("triggers_en", []) + group_data.get("triggers_bn", [])
+    normalized_symptoms = {k.lower().strip(): v for k, v in symptoms_dict.items()}
 
-@st.cache_resource
+    matched = []
+    for trigger in triggers:
+        t = trigger.lower().strip()
+        for sym, val in normalized_symptoms.items():
+            if val == 1 and (t == sym or t in sym or sym in t):
+                display = BANGLA_FEATURES.get(sym, sym) if language == "বাংলা" else sym
+                if display not in matched:
+                    matched.append(display)
+    return matched
+
 def load_resources():
     return load_model_and_features()
 
@@ -281,7 +295,14 @@ if st.session_state.triage_result is not None:
 
         followup_answers = {}
         for cat_idx, cat in enumerate(cats):
-            st.subheader(('Probable ' if language == "English" else "সম্ভাব্য ") + cat.title())
+            matched_syms = get_matched_symptoms_display(cat, st.session_state.symptoms, language)
+
+            if language == "English":
+               st.markdown(f"**Because you mentioned:** {', '.join(matched_syms) if matched_syms else 'your symptoms'}")
+               st.caption(f"We're asking a few extra questions related to **{cat.title()}** to be safe — this does *not* mean you have it.")
+            else:
+               st.markdown(f"**আপনি উল্লেখ করেছেন:** {', '.join(matched_syms) if matched_syms else 'আপনার লক্ষণ'}")
+               st.caption(f"নিরাপত্তার জন্য **{cat.title()}**-সম্পর্কিত কিছু অতিরিক্ত প্রশ্ন জিজ্ঞাসা করা হচ্ছে — এর মানে এই নয় যে আপনার এটি আছে।")
             qs = FOLLOWUP_GROUPS[cat]["questions_bn" if language == "বাংলা" else "questions_en"]
             for i, q in enumerate(qs):
                 key = f"fu_{cat_idx}_{cat}_{i}"
@@ -386,23 +407,27 @@ if st.session_state.triage_result is not None:
             st.caption("Top prediction drivers")
             for line in explanation_lines:
                 st.write(f"- {line}")
-        st.divider()
+    
 
-        if st.button('listen result', key="listen_result_button"):
-            st.session_state.tts_audio = None
+        active_symptoms = [
+            BANGLA_FEATURES.get(symptom, symptom) if language == "বাংলা" else symptom
+            for symptom, value in st.session_state.symptoms.items()
+            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
+        ]
+        for extra_symptom in st.session_state.get("extra_symptoms", []):
+            active_symptoms.append(
+                BANGLA_FEATURES.get(extra_symptom, extra_symptom)
+                if language == "বাংলা"
+                else EXTRA_DISPLAY_SYMPTOMS.get(extra_symptom, {}).get("English", extra_symptom.replace("_", " ").title())
+            )
 
-        if st.session_state.get("tts_audio") is None and st.session_state.get("triage_result"):
-            try:
-                summary_text = get_tts_summary_bangla(
-                    st.session_state.triage_result, st.session_state.symptoms,
-                    st.session_state.get("referral"), st.session_state.get("alternate_referral")
-                )
-                st.session_state.tts_audio = create_tts_audio(summary_text)
-            except Exception as e:
-                st.error(f"TTS error: {e}")
-
-        if st.session_state.get("tts_audio"):
-            st.audio(st.session_state.tts_audio, format="audio/mp3")
+        if active_symptoms:
+            st.subheader(t["detected_symptoms"])
+            for symptom in active_symptoms:
+                st.write(f"- {symptom}")
+        else:
+            st.info(t["no_symptoms"])
+    
         st.divider()
 
         if referral:
@@ -427,38 +452,21 @@ if st.session_state.triage_result is not None:
             for item in group_matches[:3]:
                 st.write(f"- {item['source']}: {item['message']}")
 
-        active_symptoms = [
-            BANGLA_FEATURES.get(symptom, symptom) if language == "বাংলা" else symptom
-            for symptom, value in st.session_state.symptoms.items()
-            if value == 1 and symptom not in ["age", "sex-no", "ispregnant"]
-        ]
-        for extra_symptom in st.session_state.get("extra_symptoms", []):
-            active_symptoms.append(
-                BANGLA_FEATURES.get(extra_symptom, extra_symptom)
-                if language == "বাংলা"
-                else EXTRA_DISPLAY_SYMPTOMS.get(extra_symptom, {}).get("English", extra_symptom.replace("_", " ").title())
-            )
-
-        if active_symptoms:
-            st.subheader(t["detected_symptoms"])
-            for symptom in active_symptoms:
-                st.write(f"- {symptom}")
-        else:
-            st.info(t["no_symptoms"])
 
         st.divider()
 
         if color == "gray":
-            st.info(
-                "Please enter or speak a clear symptom before generating an AI referral note."
-                if language == "English"
-                else "AI রেফারেল নোট তৈরি করার আগে স্পষ্ট লক্ষণ লিখুন বা বলুন।"
-            )
+            st.info(...)
         else:
-            if st.button(t["generate_ai"], key="generate_ai_button"):
-                with st.spinner(t["generating"]):
-                    ai_response = generate_ai_response(st.session_state.symptoms, st.session_state.triage_result)
-                st.session_state.ai_response = ai_response
+            if st.session_state.ai_response is None:
+               with st.spinner(t["generating"]):
+                   st.session_state.ai_response = generate_ai_response(
+                st.session_state.symptoms, st.session_state.triage_result
+            )
+
+            with st.container(key="gd_ai_card"):
+             st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
+             st.markdown(st.session_state.ai_response)
 
             if st.session_state.ai_response:
                 st.subheader(t["ai_title"])
