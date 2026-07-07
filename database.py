@@ -126,7 +126,7 @@ def delete_session(token):
 def get_user_by_username(username):
     conn = get_connection()
     row = conn.execute(
-        "SELECT * FROM users WHERE username = ?", (username,)
+        "SELECT * FROM users WHERE LOWER(username) = LOWER(?)", (username,)
     ).fetchone()
     conn.close()
     return row

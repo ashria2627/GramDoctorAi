@@ -21,7 +21,11 @@ def restore_session():
         return  # already logged in this run, nothing to do
 
     controller = get_controller()
-    token = controller.get(COOKIE_NAME)
+    try:
+        token = controller.get(COOKIE_NAME)
+    except TypeError:
+        return  # cookie controller hasn't finished loading yet — try again next rerun
+
     if not token:
         return
 
@@ -34,7 +38,6 @@ def restore_session():
         st.session_state.pref_theme = user["theme"]
         st.session_state.pref_font_size = user["font_size"]
         st.session_state.session_token = token
-
 
 def show_login():
     st.markdown("""
@@ -79,6 +82,7 @@ def _render_login_form():
         user = auth.verify_user_by_identifier(identifier, password)
         if user:
             token = db.create_session(user["id"])
+
             st.session_state.logged_in = True
             st.session_state.user_id = user["id"]
             st.session_state.username = user["username"]
@@ -86,7 +90,12 @@ def _render_login_form():
             st.session_state.pref_theme = user["theme"]
             st.session_state.pref_font_size = user["font_size"]
             st.session_state.session_token = token
-            get_controller().set(COOKIE_NAME, token)
+
+            try:
+                get_controller().set(COOKIE_NAME, token)
+            except TypeError:
+                pass
+
             st.rerun()
         else:
             st.error("Incorrect username/email or password.")
@@ -182,7 +191,13 @@ def require_login():
 def logout_button(label="Log out", key="logout_btn"):
     if st.button(label, key=key, use_container_width=True):
         db.delete_session(st.session_state.get("session_token"))
-        get_controller().remove(COOKIE_NAME)
+        try:
+            get_controller().remove(COOKIE_NAME)
+        except KeyError:
+            pass  # cookie was already absent/expired — nothing to remove
         for k in ["logged_in", "user_id", "username", "pref_language", "pref_theme", "pref_font_size", "session_token"]:
             st.session_state.pop(k, None)
         st.rerun()
+
+def is_guest():
+    return st.session_state.get("user_id") == 0

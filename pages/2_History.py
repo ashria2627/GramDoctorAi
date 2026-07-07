@@ -1,10 +1,8 @@
-
-
 import json
 import streamlit as st
 
 import database as db
-from components.login import require_login, logout_button
+from components.login import require_login, logout_button, is_guest
 from components.header import load_css, render_header
 from components.bottom_nav import render_nav
 from i18n import TEXTS
@@ -25,49 +23,52 @@ with st.sidebar:
 
 st.markdown('<div class="gd-section-title">🕘 Your Triage History</div>', unsafe_allow_html=True)
 
-rows = db.get_history_for_user(st.session_state.user_id)
-
-if not rows:
-    st.info("No past triage sessions yet. Results are logged automatically once you complete a triage on the Home page.")
+if is_guest():
+    st.info("👀 You're in Guest Mode — triage sessions aren't saved. Register for a real account to keep your history.")
 else:
-    color_icon = {"green": "🟢", "orange": "🟠", "red": "🔴", "gray": "⚪"}
-    for row in rows:
-        icon = color_icon.get(row["triage_color"], "⚪")
-        title = f"{icon} {row['created_at'][:16].replace('T', ' ')} — {(row['triage_color'] or 'unknown').upper()}"
-        with st.expander(title):
-            st.write(f"**Language:** {row['language']}")
-            st.write(f"**Decision source:** {row['decision_source']}")
-            st.write(f"**Message:** {row['message']}")
-            if row["confidence"] is not None:
-                st.write(f"**Confidence:** {row['confidence']}%")
-            if row["referral"]:
-                st.write(f"**Referred to:** {row['referral']}")
-            if row["alternate_referral"]:
-                st.write(f"**Alternate:** {row['alternate_referral']}")
+    rows = db.get_history_for_user(st.session_state.user_id)
 
-            try:
-                active = json.loads(row["active_symptoms_json"] or "[]")
-            except Exception:
-                active = []
-            if active:
-                st.write("**Symptoms:**", ", ".join(active))
+    if not rows:
+        st.info("No past triage sessions yet. Results are logged automatically once you complete a triage on the Home page.")
+    else:
+        color_icon = {"green": "🟢", "orange": "🟠", "red": "🔴", "gray": "⚪"}
+        for row in rows:
+            icon = color_icon.get(row["triage_color"], "⚪")
+            title = f"{icon} {row['created_at'][:16].replace('T', ' ')} — {(row['triage_color'] or 'unknown').upper()}"
+            with st.expander(title):
+                st.write(f"**Language:** {row['language']}")
+                st.write(f"**Decision source:** {row['decision_source']}")
+                st.write(f"**Message:** {row['message']}")
+                if row["confidence"] is not None:
+                    st.write(f"**Confidence:** {row['confidence']}%")
+                if row["referral"]:
+                    st.write(f"**Referred to:** {row['referral']}")
+                if row["alternate_referral"]:
+                    st.write(f"**Alternate:** {row['alternate_referral']}")
 
-            try:
-                followups = json.loads(row["followup_answers_json"] or "{}")
-            except Exception:
-                followups = {}
-            answered = {k: v for k, v in followups.items() if v}
-            if answered:
-                st.write("**Follow-up answers:**")
-                for k, v in answered.items():
-                    st.write(f"- {v}")
+                try:
+                    active = json.loads(row["active_symptoms_json"] or "[]")
+                except Exception:
+                    active = []
+                if active:
+                    st.write("**Symptoms:**", ", ".join(active))
 
-            if row["ai_response"]:
-                st.write("**AI referral note:**")
-                st.markdown(row["ai_response"])
+                try:
+                    followups = json.loads(row["followup_answers_json"] or "{}")
+                except Exception:
+                    followups = {}
+                answered = {k: v for k, v in followups.items() if v}
+                if answered:
+                    st.write("**Follow-up answers:**")
+                    for k, v in answered.items():
+                        st.write(f"- {v}")
 
-            if st.button("Delete this entry", key=f"del_{row['id']}"):
-                db.delete_history_entry(row["id"], st.session_state.user_id)
-                st.rerun()
+                if row["ai_response"]:
+                    st.write("**AI referral note:**")
+                    st.markdown(row["ai_response"])
+
+                if st.button("Delete this entry", key=f"del_{row['id']}"):
+                    db.delete_history_entry(row["id"], st.session_state.user_id)
+                    st.rerun()
 
 render_nav(active="History")

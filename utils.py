@@ -15,6 +15,8 @@ def extract_english_symptoms(text, feature_cols):
     return normalize_symptom_input(text, feature_cols)
 
 
+from modules.text_negation import is_symptom_negated
+
 def detect_extra_display_symptoms(text):
     if not text:
         return []
@@ -24,11 +26,10 @@ def detect_extra_display_symptoms(text):
     for symptom, info in EXTRA_DISPLAY_SYMPTOMS.items():
         for term in info["terms"]:
             term_text = term.lower().strip()
-            if (
-                term_text
-                and re.search(rf"(?<![a-z0-9]){re.escape(term_text)}(?![a-z0-9])", lowered)
-                and not is_symptom_negated(lowered, term_text)
-            ):
+            if not term_text:
+                continue
+            pattern = rf"(?<![a-z0-9]){re.escape(term_text)}(?![a-z0-9])"
+            if re.search(pattern, lowered) and not is_symptom_negated(lowered, term_text):
                 found.append(symptom)
                 break
     return found

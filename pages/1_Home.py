@@ -453,8 +453,9 @@ if st.session_state.triage_result is not None:
                 st.write(f"- {item['source']}: {item['message']}")
 
 
-        st.divider()
-
+        
+        
+        st.subheader(t["ai_title"])
         if color == "gray":
             st.info(...)
         else:
@@ -468,9 +469,7 @@ if st.session_state.triage_result is not None:
              st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
              st.markdown(st.session_state.ai_response)
 
-            if st.session_state.ai_response:
-                st.subheader(t["ai_title"])
-                st.markdown(st.session_state.ai_response)
+            
 
         pdf_buffer = create_structured_referral_pdf(
             st.session_state.ai_response, st.session_state.triage_result,
@@ -483,7 +482,8 @@ if st.session_state.triage_result is not None:
         )
 
         # NEW: log this completed result to history once per prediction
-        if not st.session_state.history_saved:
+        from components.login import is_guest
+        if not st.session_state.history_saved and not is_guest():
             db.save_history_entry(
                 user_id=st.session_state.user_id,
                 language=language,
