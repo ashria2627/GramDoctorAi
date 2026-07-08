@@ -97,6 +97,7 @@ ENGLISH_SYNONYMS = {
     "trouble swallowing": "difficulty in swallowing",
     "numbness": "loss of sensation",
     "tingling": "loss of sensation",
+    "hurts to breathe":"hurts to breath"
 }
 
 
@@ -118,7 +119,7 @@ ROMANIZED_BANGLA_SYNONYMS = {
     "khichuni": "seizures", "fit": "seizures", "oggan": "fainting", "gyan hariyeche": "fainting",
     "hat betha": "arm pain", "pa betha": "leg pain", "hatu betha": "knee pain", "pith betha": "back pain",
     "chulkani": "itching of skin", "rash": "skin rash", "fuskuri": "skin rash", "fula": "skin swelling",
-    "masike beshi rokto": "heavy menstrual flow", "shada srab": "vaginal discharge", "yoni chulkani": "vaginal itching", "komor betha": "pelvic pain",
+    "masike beshi rokto": "heavy menstrual flow", "shada srab": "vaginal discharge", "yoni chulkani": "vaginal itching", "komor betha": "pelvic pain","lower back pain":"pelvic pain","maja betha":"pelvic pain",
     "jondis": "jaundice", "chokh holud": "jaundice", "mukh gha": "mouth ulcer", "dat betha": "toothache",
     "period pain": "painful menstruation", "painful period": "painful menstruation", "painful periods": "painful menstruation",
     "period cramps": "painful menstruation", "menstrual cramps": "painful menstruation",

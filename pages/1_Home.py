@@ -47,6 +47,26 @@ st.set_page_config(page_title="GramDoctor AI — Home", page_icon="🩺", layout
 require_login()
 db.init_db()
 load_css(st.session_state.get("pref_theme", "light"))
+#---follow up labels-----
+
+
+YES_NO_LABELS = {
+    "English": {"yes": "Yes", "no": "No"},
+    "বাংলা": {"yes": "হ্যাঁ", "no": "না"},
+}
+
+
+YES_NO_STARTERS_EN = ("is ", "are ", "do ", "does ", "did ", "have ", "has ", "can ", "will ", "was ", "were ")
+
+def is_yes_no_question(q):
+    q_clean = q.strip().lower()
+    if q_clean.startswith(YES_NO_STARTERS_EN):
+        return True
+    tokens = q.strip().rstrip("?।").split()
+    if "কি" in tokens:
+        return True
+    return False
+
 
 def get_matched_symptoms_display(cat, symptoms_dict, language):
     from modules.Followup import FOLLOWUP_GROUPS
@@ -273,6 +293,7 @@ if predict_clicked:
         if st.session_state.get("detected_special") and st.session_state.detected_special.get("found"):
             st.session_state.referral = "Emergency Department" if language == "English" else "জরুরি বিভাগ"
             st.session_state.alternate_referral = "General Physician" if language == "English" else "জেনারেল ফিজিশিয়ান"
+            st.session_state.specialist_key = None
         else:
             st.session_state.referral = None
             st.session_state.alternate_referral = None
@@ -303,10 +324,19 @@ if st.session_state.triage_result is not None:
                st.markdown(f"**আপনি উল্লেখ করেছেন:** {', '.join(matched_syms) if matched_syms else 'আপনার লক্ষণ'}")
                st.caption(f"নিরাপত্তার জন্য **{cat.title()}**-সম্পর্কিত কিছু অতিরিক্ত প্রশ্ন জিজ্ঞাসা করা হচ্ছে — এর মানে এই নয় যে আপনার এটি আছে।")
             qs = FOLLOWUP_GROUPS[cat]["questions_bn" if language == "বাংলা" else "questions_en"]
+            DURATION_VALUE_MAP = {
+    "English": {"Less than 3 days": "2", "3–5 days": "4", "5–7 days": "6", "More than 7 days": "8"},
+    "বাংলা": {"৩ দিনের কম": "2", "৩-৫ দিনের মধ্যে": "4", "৫-৭ দিনের মধ্যে": "6", "৭ দিনের বেশি": "8"},
+}
+
             for i, q in enumerate(qs):
                 key = f"fu_{cat_idx}_{cat}_{i}"
-                followup_answers[key] = st.text_input(q, key=key)
-
+                if is_yes_no_question(q):
+                    labels = YES_NO_LABELS[language]
+                    answer = st.radio(q, [labels["yes"], labels["no"]], key=key, index=None, horizontal=True)
+                    followup_answers[key] = answer or ""
+                else:
+                   followup_answers[key] = st.text_input(q, key=key)
         col_a, col_b = st.columns(2)
         with col_a:
             update_clicked = st.button(
@@ -352,6 +382,13 @@ if st.session_state.triage_result is not None:
 
     else:
         st.markdown("<hr class='gd-divider'>", unsafe_allow_html=True)
+        if cats:  # follow-up questions exist for this result but were skipped
+         if st.button(
+            "↩️ Answer follow-up questions" if language == "English" else "↩️ ফলো-আপ প্রশ্নে ফিরে যান",
+            key="reopen_followup_button", use_container_width=True
+        ):
+            st.session_state.followup_done = False
+            st.rerun()
         st.markdown(f'<div class="gd-section-title">📋 {t["triage_result"]}</div>', unsafe_allow_html=True)
 
         result = st.session_state.triage_result
@@ -366,9 +403,18 @@ if st.session_state.triage_result is not None:
                 result, st.session_state.symptoms, language
             )
             st.session_state.specialist_key = specialist_key
+            
+        special = st.session_state.get("detected_special")
+        special_events = st.session_state.get("detected_specials", [])
         # ── 1. Triage card (colour + message) ──────────────────────────────
         show_triage_card(color, language)
+        
 
+        group_matches = st.session_state.get("condition_group_matches", [])
+        if group_matches and not special_events:
+            st.markdown("**Grouped symptom patterns:**" if language == "English" else "**সমন্বিত লক্ষণের প্যাটার্ন:**")
+            for item in group_matches[:3]:
+                st.write(f"- {item['source']}: {item['message']}")
         # ── 2. Confidence score ─────────────────────────────────────────────
         render_confidence(result.get("confidence"), language)
 
@@ -406,8 +452,7 @@ if st.session_state.triage_result is not None:
                     st.write(f"- {line}")
 
         # ── 5. First aid ────────────────────────────────────────────────────
-        special = st.session_state.get("detected_special")
-        special_events = st.session_state.get("detected_specials", [])
+        
 
         if result["source"] == "Special emergency detection" and special_events:
             steps_en, steps_bn = [], []
@@ -442,51 +487,43 @@ if st.session_state.triage_result is not None:
         from components.recommendation import render_doctor_suggestions
         if specialist_key:
             render_doctor_suggestions(specialist_key, language)
-            
+             
         concern_lines = format_additional_concerns(st.session_state.symptoms, language, primary_specialist=referral)
         if concern_lines and not special_events:
             st.markdown("**Additional possible concerns:**" if language == "English" else "**অতিরিক্ত সম্ভাব্য সমস্যা:**")
             for line in concern_lines:
                 st.write(f"- {line}")
 
-        group_matches = st.session_state.get("condition_group_matches", [])
-        if group_matches and not special_events:
-            st.markdown("**Grouped symptom patterns:**" if language == "English" else "**সমন্বিত লক্ষণের প্যাটার্ন:**")
-            for item in group_matches[:3]:
-                st.write(f"- {item['source']}: {item['message']}")
-
-
         
         
         st.subheader(t["ai_title"])
         if color == "gray":
-            st.info(
-                "No symptoms were detected. Please describe your symptoms using voice or text, or select them from the list above."
-                if language == "English"
-                else "কোনো লক্ষণ সনাক্ত হয়নি। অনুগ্রহ করে ভয়েস বা টেক্সটে আপনার লক্ষণ বর্ণনা করুন, অথবা উপরের তালিকা থেকে বেছে নিন।"
-            )
+            st.info(...)  # keep your existing gray message
         else:
-            if st.session_state.ai_response is None:
-                with st.spinner(t["generating"]):
-                    st.session_state.ai_response = generate_ai_response(
-                        st.session_state.symptoms, st.session_state.triage_result
-                    )
+          if st.button(t["generate_ai"], key="generate_ai_button"):
+             with st.spinner(t["generating"]):
+                 st.session_state.ai_response = generate_ai_response(
+                 st.session_state.symptoms, st.session_state.triage_result
+            )
 
-            with st.container():
-                st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
-                st.markdown(st.session_state.ai_response)
+        if st.session_state.ai_response:
+          with st.container(key="gd_ai_card"):
+            st.markdown(f'<div class="gd-ai-badge">🤖 {t["ai_title"]}</div>', unsafe_allow_html=True)
+            st.markdown(st.session_state.ai_response)
+        
 
             
 
-        pdf_buffer = create_structured_referral_pdf(
-            st.session_state.ai_response, st.session_state.triage_result,
-            st.session_state.symptoms, referral=referral, first_aid=first_aid,
-        )
-        st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
-        st.download_button(
-            label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
-            mime="application/pdf", use_container_width=True
-        )
+        try:
+          pdf_buffer = create_structured_referral_pdf(
+          st.session_state.ai_response, st.session_state.triage_result,
+          st.session_state.symptoms, referral=referral, first_aid=first_aid,
+    )
+          st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
+          st.download_button(label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
+                        mime="application/pdf", use_container_width=True)
+        except Exception:
+          pass  
 
         # NEW: log this completed result to history once per prediction
         from components.login import is_guest
