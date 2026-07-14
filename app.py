@@ -26,10 +26,5 @@ if st.session_state.logged_in:
     st.page_link("pages/4_Settings.py", label="⚙️ Settings", use_container_width=True)
 else:
     show_login()
-    st.divider()
-    if st.button("👀 Continue as Guest (skip login for demo)", use_container_width=True):
-        st.session_state.logged_in = True
-        st.session_state.user_id = 0
-        st.session_state.username = "guest"
-        st.switch_page("pages/1_Home.py")
+    
 

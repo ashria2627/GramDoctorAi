@@ -13,7 +13,6 @@ TEXTS = {
 1. Select language from the top dropdown.
 2. Enter patient age, sex, and pregnancy status.
 3. Type symptoms in Bangla or English.
-4. Optionally upload a text note.
 5. Use voice input if needed.
 6. Select symptoms manually if needed.
 7. Click Check Triage.
@@ -49,7 +48,7 @@ today the weather is good
         "yes": "Yes",
         "text_input": "Describe symptoms in Bangla or English",
         "text_placeholder": "Example: fever, vomiting, headache or জ্বর, বমি, মাথাব্যথা",
-        "upload_note": "Optional: Upload patient symptom note",
+        
         "uploaded_preview": "Uploaded note preview",
         "voice_input": "Voice input",
         "voice_help": "Click the microphone and speak symptoms. Works best in Chrome.",
@@ -79,7 +78,7 @@ today the weather is good
         "beds": "Beds",
         'search':'Search and click',
         'subwrite':'write your symptoms',
-        'write':'Write / record / select / upload your symptoms',
+        'write':'Write / record / select your symptoms',
          "recommended_hospitals": "Recommended Hospitals",
           "no_symptoms": "No specific symptom detected from the current input.",
         "refer_to": "Refer to:",
@@ -88,10 +87,10 @@ today the weather is good
     },
    "বাংলা": {
         "title": "GramDoctor AI",
-        "subtitle": "বাংলা AI ট্রায়াজ ও রেফারেল সহকারী",
+        "subtitle": "বাংলা AI ট্রিয়াজ ও রেফারেল সহকারী",
         "warning": (
             "এই টুল চূড়ান্ত রোগ নির্ণয় করে না। "
-            "এটি শুধু প্রাথমিক ট্রায়াজ ও রেফারেল গাইডেন্স দেয়। "
+            "এটি শুধু প্রাথমিক ট্রিয়াজ ও রেফারেল গাইডেন্স দেয়। "
             "জরুরি লক্ষণ থাকলে দ্রুত চিকিৎসা নিন।"
         ),
         "sidebar_title": "ব্যবহার করার নিয়ম",
@@ -102,7 +101,7 @@ today the weather is good
 ৪. চাইলে টেক্সট নোট আপলোড করুন।
 ৫. প্রয়োজন হলে ভয়েস ইনপুট ব্যবহার করুন।
 ৬. চাইলে ম্যানুয়ালি লক্ষণ সিলেক্ট করুন।
-৭. ট্রায়াজ চেক করুন।
+৭. ট্রিয়াজ চেক করুন।
 ৮. Result ট্যাবে ফলাফল দেখুন।
 ৯. AI explanation ও referral note তৈরি করুন।
 ১০. Referral note PDF হিসেবে ডাউনলোড করুন।
@@ -135,16 +134,15 @@ today the weather is good
         "yes": "হ্যাঁ",
         "text_input": "বাংলা বা ইংরেজিতে লক্ষণ লিখুন",
         "text_placeholder": "যেমন: আমার জ্বর, বমি, মাথা ব্যথা হচ্ছে",
-        "upload_note": "ঐচ্ছিক: রোগীর লক্ষণের টেক্সট নোট আপলোড করুন",
         "uploaded_preview": "আপলোড করা নোট প্রিভিউ",
         "voice_input": "ভয়েস ইনপুট",
         "voice_help": "মাইক্রোফোনে ক্লিক করে লক্ষণ বলুন। Chrome ব্রাউজারে ভালো কাজ করে।",
         "voice_unavailable": "Voice input package ইনস্টল নেই অথবা কাজ করছে না।",
         "clear_voice": "ভয়েস টেক্সট মুছে ফেলুন",
         "symptoms": "লক্ষণসমূহ",
-        "check_triage": "ট্রায়াজ চেক করুন",
-        "triage_done": "ট্রায়াজ সম্পন্ন হয়েছে। Result ট্যাবে যান।",
-        "triage_result": "ট্রায়াজ ফলাফল",
+        "check_triage": "ট্রিয়াজ চেক করুন",
+        "triage_done": "ট্রিয়াজ সম্পন্ন হয়েছে। Result ট্যাবে যান।",
+        "triage_result": "ট্রিয়াজ ফলাফল",
         "no_result": "এখনো কোনো ফলাফল নেই। আগে রোগীর ফর্ম পূরণ করুন।",
         "decision_source": "সিদ্ধান্তের উৎস:",
         "reason": "কারণ:",
@@ -165,7 +163,7 @@ today the weather is good
         "beds": "শয্যা",
         'search':'অনুসন্ধান করে ক্লিক করুন',
         "subwrite":'আপনার উপসর্গ লিখুন',
-        "write":'আপনার উপসর্গ লিখুন, রেকর্ড করুন, নির্বাচন করুন অথবা আপলোড করুন',
+        "write":'আপনার উপসর্গ লিখুন, রেকর্ড করুন অথবা নির্বাচন করুন ',
           "refer_to": "রেফার করুন:",
         "alternate_referral": "না পেলে বিকল্প হিসেবে দেখান:",
         "recommended_hospitals": "প্রস্তাবিত হাসপাতাল",

@@ -23,7 +23,7 @@ with st.sidebar:
 st.markdown('<div class="gd-section-title">👤 Profile</div>', unsafe_allow_html=True)
 
 if is_guest():
-    st.info("👀 You're in Guest Mode — profile info isn't tracked. Register for a real account to save your data across sessions.")
+    st.info("👀 You're in Guest Mode — profile info isn't tracked. Register for a real account to save your data across sessions."if language=="English" else "👀 আপনি গেস্ট মোডে আছেন — প্রোফাইলের তথ্য ট্র্যাক করা হয় না। বিভিন্ন সেশনে আপনার ডেটা সংরক্ষণ করতে একটি আসল অ্যাকাউন্টের জন্য নিবন্ধন করুন।")
 else:
     user = db.get_user_by_username(st.session_state.username)
     history_count = len(db.get_history_for_user(st.session_state.user_id, limit=1000))

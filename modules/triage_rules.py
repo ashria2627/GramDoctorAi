@@ -147,8 +147,13 @@ def apply_bd_rules(symptoms, result, followup_answers=None ,lang="English"):
             "source": "Possible - ***Dengue Warning Signs***" if lang == "English" else "সম্ভাব্য - ***ডেঙ্গুর সতর্কীকরণ লক্ষণ***",
             "message": "Dengue warning signs detected. Go to hospital today. Do NOT take ibuprofen or aspirin." if lang == "English" else "ডেঙ্গুর সতর্কীকরণ লক্ষণ দেখা গেছে। আজই হাসপাতালে যান। আইবুপ্রোফেন বা অ্যাসপিরিন খাবেন না।"
         }
- 
-    if fever_days >= 3 and (rash or poor_fluids):
+    if rash and (abdominal_pain or bleeding or poor_urine):
+        return {
+            "color": "orange",
+            "source": "***Dengue*** Suspected" if lang == "English" else "***ডেঙ্গু*** সন্দেহ করা হচ্ছে",
+            "message": "Possible dengue. Drink ORS, avoid aspirin/ibuprofen, and see a doctor if symptoms worsen." if lang == "English" else "ডেঙ্গু হতে পারে। ওআরএস পান করুন, অ্যাসপিরিন/আইবুপ্রোফেন এড়িয়ে চলুন এবং অবস্থা খারাপ হলে ডাক্তার দেখান।"
+        }
+    if fever_days >= 3 or any ([rash , poor_fluids,abdominal_pain,poor_urine,bleeding]):
         return {
             "color": "orange",
             "source": "***Dengue*** Suspected" if lang == "English" else "***ডেঙ্গু*** সন্দেহ করা হচ্ছে",

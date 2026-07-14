@@ -47,6 +47,65 @@ st.set_page_config(page_title="GramDoctor AI — Home", page_icon="🩺", layout
 require_login()
 db.init_db()
 load_css(st.session_state.get("pref_theme", "light"))
+
+GD_LOADER_HTML = """
+<style>
+.wrapper {
+  width: 200px;
+  height: 60px;
+  position: relative;
+  z-index: 1;
+  margin: 40px auto;
+}
+.circle {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #2563eb;
+  left: 15%;
+  transform-origin: 50%;
+  animation: circle7124 .5s alternate infinite ease;
+}
+@keyframes circle7124 {
+  0% { top: 60px; height: 5px; border-radius: 50px 50px 25px 25px; transform: scaleX(1.7); }
+  40% { height: 20px; border-radius: 50%; transform: scaleX(1); }
+  100% { top: 0%; }
+}
+.circle:nth-child(2) { left: 45%; animation-delay: .2s; }
+.circle:nth-child(3) { left: auto; right: 15%; animation-delay: .3s; }
+.shadow {
+  width: 20px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.2);
+  position: absolute;
+  top: 62px;
+  transform-origin: 50%;
+  z-index: -1;
+  left: 15%;
+  filter: blur(1px);
+  animation: shadow046 .5s alternate infinite ease;
+}
+@keyframes shadow046 {
+  0% { transform: scaleX(1.5); }
+  40% { transform: scaleX(1); opacity: .7; }
+  100% { transform: scaleX(.2); opacity: .4; }
+}
+.shadow:nth-child(4) { left: 45%; animation-delay: .2s }
+.shadow:nth-child(5) { left: auto; right: 15%; animation-delay: .3s; }
+</style>
+<div class="wrapper">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="shadow"></div>
+    <div class="shadow"></div>
+    <div class="shadow"></div>
+</div>
+"""
+
+
 #---follow up labels-----
 
 
@@ -88,6 +147,16 @@ def load_resources():
     return load_model_and_features()
 
 
+if "app_ready" not in st.session_state:
+    loader = st.empty()
+    loader.markdown(GD_LOADER_HTML, unsafe_allow_html=True)
+    model, feature_cols = load_resources()
+    st.session_state.app_ready = True
+    st.session_state._model_cache = (model, feature_cols)
+    loader.empty()
+else:
+    model, feature_cols = st.session_state._model_cache
+
 model, feature_cols = load_resources()
 
 language = st.selectbox(
@@ -101,6 +170,31 @@ t = TEXTS[language]
 
 render_header(t)
 render_warning_banner(t)
+
+with st.expander(
+    "ℹ️ How does GramDoctor AI decide?" if language == "English" else "ℹ️ GramDoctor AI কীভাবে সিদ্ধান্ত নেয়?",
+    expanded=False
+):
+    if language == "English":
+        st.markdown("""
+**Safety comes first, AI comes last.**
+
+1. **Fixed medical safety rules** run first — 32 hand-authored red-flag and orange-flag rules, built directly into the code. If your symptoms match a known emergency pattern, this decides the result immediately, before any AI is involved.
+2. **A trained triage model** (92% accuracy, tested on 10,000+ patient records) handles the cases the safety rules don't catch.
+3. **AI (Gemini) only explains** the result in plain language afterward — it can never change or override the medical decision made above it.
+
+Same symptoms → same safety-critical answer, every time. It's never left to an AI's guess.
+""")
+    else:
+        st.markdown("""
+**নিরাপত্তা আগে, AI সবার শেষে।**
+
+১. **নির্দিষ্ট মেডিকেল নিরাপত্তা নিয়ম** সবার আগে কাজ করে — কোডে সরাসরি তৈরি ৩২টি রেড-ফ্ল্যাগ ও অরেঞ্জ-ফ্ল্যাগ নিয়ম। লক্ষণ কোনো পরিচিত জরুরি প্যাটার্নের সাথে মিললে, AI জড়িত হওয়ার আগেই এটি ফলাফল নির্ধারণ করে।
+২. **একটি প্রশিক্ষিত ট্রায়াজ মডেল** (৯৩% নির্ভুলতা) বাকি কেসগুলো পরিচালনা করে।
+৩. **AI (Gemini) শুধু ফলাফল ব্যাখ্যা করে** সহজ ভাষায় — এটি কখনও উপরের চিকিৎসা সিদ্ধান্ত পরিবর্তন করতে পারে না।
+
+একই লক্ষণে সবসময় একই নিরাপত্তা-গুরুত্বপূর্ণ উত্তর — এটি AI-এর অনুমানের উপর নির্ভর করে না।
+""")
 
 with st.sidebar:
     st.title(t["sidebar_title"])
@@ -155,7 +249,8 @@ st.caption(t["voice_help"])
 
 if speech_to_text is not None:
     st.markdown('<div class="gd-mic-wrap">', unsafe_allow_html=True)
-    voice_result = speech_to_text(
+    with st.spinner("Listening…" if language == "English" else "শোনা হচ্ছে…"):
+     voice_result = speech_to_text(
         language="bn-BD" if language == "বাংলা" else "en-US",
         use_container_width=True,
         just_once=True,
@@ -319,10 +414,10 @@ if st.session_state.triage_result is not None:
 
             if language == "English":
                st.markdown(f"**Because you mentioned:** {', '.join(matched_syms) if matched_syms else 'your symptoms'}")
-               st.caption(f"We're asking a few extra questions related to **{cat.title()}** to be safe — this does *not* mean you have it.")
+               st.caption(f"We're asking a few extra questions related to **{cat.title()}** to be safe — this does *not* mean you have it.Please make sure to answer fever days otherwise we will not be able to detect your probable disease.")
             else:
                st.markdown(f"**আপনি উল্লেখ করেছেন:** {', '.join(matched_syms) if matched_syms else 'আপনার লক্ষণ'}")
-               st.caption(f"নিরাপত্তার জন্য **{cat.title()}**-সম্পর্কিত কিছু অতিরিক্ত প্রশ্ন জিজ্ঞাসা করা হচ্ছে — এর মানে এই নয় যে আপনার এটি আছে।")
+               st.caption(f"নিরাপত্তার জন্য **{cat.title()}**-সম্পর্কিত কিছু অতিরিক্ত প্রশ্ন জিজ্ঞাসা করা হচ্ছে — এর মানে এই নয় যে আপনার এটি আছে।অনুগ্রহ করে জ্বরের দিনগুলোর তথ্য অবশ্যই উল্লেখ করবেন, অন্যথায় আমরা আপনার সম্ভাব্য রোগটি শনাক্ত করতে পারব না।")
             qs = FOLLOWUP_GROUPS[cat]["questions_bn" if language == "বাংলা" else "questions_en"]
             DURATION_VALUE_MAP = {
     "English": {"Less than 3 days": "2", "3–5 days": "4", "5–7 days": "6", "More than 7 days": "8"},
@@ -408,6 +503,8 @@ if st.session_state.triage_result is not None:
         special_events = st.session_state.get("detected_specials", [])
         # ── 1. Triage card (colour + message) ──────────────────────────────
         show_triage_card(color, language)
+        if result.get("source") and "***" in result.get("source", ""):
+              st.markdown(f"**{result['source'].replace('***', '')}**")
         
 
         group_matches = st.session_state.get("condition_group_matches", [])
@@ -498,8 +595,12 @@ if st.session_state.triage_result is not None:
         
         st.subheader(t["ai_title"])
         if color == "gray":
-            st.info(...)  # keep your existing gray message
-        else:
+              st.info(
+              "No specific symptoms were detected — please describe your symptoms more clearly, or consult a doctor if you're concerned."
+               if language == "English" else
+              "কোনো নির্দিষ্ট লক্ষণ শনাক্ত করা যায়নি — অনুগ্রহ করে লক্ষণগুলো আরও স্পষ্টভাবে লিখুন, অথবা উদ্বিগ্ন হলে ডাক্তারের পরামর্শ নিন।"
+    )  
+        else :
           if st.button(t["generate_ai"], key="generate_ai_button"):
              with st.spinner(t["generating"]):
                  st.session_state.ai_response = generate_ai_response(
@@ -515,12 +616,13 @@ if st.session_state.triage_result is not None:
             
 
         try:
-          pdf_buffer = create_structured_referral_pdf(
-          st.session_state.ai_response, st.session_state.triage_result,
-          st.session_state.symptoms, referral=referral, first_aid=first_aid,
-    )
-          st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
-          st.download_button(label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
+          with st.spinner("Preparing PDF…" if language == "English" else "PDF তৈরি হচ্ছে…"):
+            pdf_buffer = create_structured_referral_pdf(
+            st.session_state.ai_response, st.session_state.triage_result,
+            st.session_state.symptoms, referral=referral, first_aid=first_aid,
+        )
+            st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
+            st.download_button(label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
                         mime="application/pdf", use_container_width=True)
         except Exception:
           pass  

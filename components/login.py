@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 from streamlit_cookies_controller import CookieController
 
@@ -39,6 +37,19 @@ def restore_session():
         st.session_state.pref_font_size = user["font_size"]
         st.session_state.session_token = token
 
+def _start_guest_session():
+    """No-account demo path. is_guest() checks user_id == 0, so this
+    stays consistent with the rest of the app (e.g. history isn't saved)."""
+    st.session_state.logged_in = True
+    st.session_state.user_id = 0
+    st.session_state.username = "Guest"
+    st.session_state.pref_language = "English"
+    st.session_state.pref_theme = "light"
+    st.session_state.pref_font_size = "medium"
+    st.session_state.session_token = None
+    st.rerun()
+
+
 def show_login():
     st.markdown("""
     <div style="text-align:center; margin: 10px 0 20px;">
@@ -47,6 +58,11 @@ def show_login():
         <div style="font-size:0.85rem; opacity:0.75;">Sign in to continue</div>
     </div>
     """, unsafe_allow_html=True)
+
+    if st.button("🚀 Try it now — Guest Access (no signup needed)", key="guest_access_btn", type="primary", use_container_width=True):
+        _start_guest_session()
+    st.caption("Jump straight into a live triage demo — no account required.")
+    st.divider()
 
     if "auth_view" not in st.session_state:
         st.session_state.auth_view = "login"
@@ -194,7 +210,7 @@ def logout_button(label="Log out", key="logout_btn"):
         try:
             get_controller().remove(COOKIE_NAME)
         except KeyError:
-            pass  # cookie was already absent/expired — nothing to remove
+            pass 
         for k in ["logged_in", "user_id", "username", "pref_language", "pref_theme", "pref_font_size", "session_token"]:
             st.session_state.pop(k, None)
         st.rerun()

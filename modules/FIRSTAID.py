@@ -5,6 +5,8 @@ SYMPTOM_ALIASES = {
 }
 
 
+
+
 SYMPTOM_FIRST_AID = {
     frozenset(["sharp chest pain", "shortness of breath",'palpitations']): {
         "condition": "Possible Cardiac Emergency",
