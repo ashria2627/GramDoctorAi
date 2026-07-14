@@ -614,13 +614,24 @@ if st.session_state.triage_result is not None:
         
 
             
+        english_result = apply_bd_rules(
+    st.session_state.symptoms,
+    st.session_state.triage_result,
+    st.session_state.get("followup_answers"),
+    lang="English"
+)       
+        english_referral, english_alternate_referral, _ = get_specialist_referral_clustered(
+        english_result, st.session_state.symptoms, "English"
+)
+        if english_result is None:
+          english_result = st.session_state.triage_result  # rule didn't fire; ML/base result is likely already English-safe
 
         try:
           with st.spinner("Preparing PDF…" if language == "English" else "PDF তৈরি হচ্ছে…"):
             pdf_buffer = create_structured_referral_pdf(
-            st.session_state.ai_response, st.session_state.triage_result,
-            st.session_state.symptoms, referral=referral, first_aid=first_aid,
-        )
+    st.session_state.ai_response, english_result,
+    st.session_state.symptoms, referral=english_referral, first_aid=first_aid,
+)
             st.markdown(f'<div class="gd-card-heading">📄 {t["download_pdf"]}</div>', unsafe_allow_html=True)
             st.download_button(label=t["download_pdf"], data=pdf_buffer, file_name=t["pdf_filename"],
                         mime="application/pdf", use_container_width=True)
